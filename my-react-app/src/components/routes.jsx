@@ -1,14 +1,14 @@
 // src/routes.js
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./components/Pages/Home.js";
-import Profile from "./components/Pages/Profile";
-import Properties from "./components/Pages/Properties";
-import Reservations from "./components/Pages/Reservations";
-import Incidents from "./components/Pages/Incidents";
-import Help from "./components/Pages/Help";
-import Chat from "./components/Pages/Chat";
-import Login from "./components/Auth/Login";
-import Register from "./components/Auth/Register";
+import Home from "./Pages/Home.js";
+import Profile from "./Pages/Profile";
+import Properties from "./Pages/Properties";
+import Reservations from "./Pages/Reservations";
+import Incidents from "./Pages/Incidents";
+import Help from "./Pages/Help";
+import Chat from "./Pages/Chat";
+import Login from "./Auth/Login";
+import Register from "./Auth/Register";
 
 const AppRoutes = () => {
   return (
