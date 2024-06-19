@@ -10,6 +10,7 @@ import Chat from "./Pages/Chat.jsx";
 import Login from "./Auth/Login.jsx";
 import Register from "./Auth/Register.jsx";
 
+//hola
 const AppRoutes = () => {
   return (
     <Router>
