@@ -9,6 +9,7 @@ import Help from "./Pages/Help.jsx";
 import Chat from "./Pages/Chat.jsx";
 import Login from "./Auth/Login.jsx";
 import Register from "./Auth/Register.jsx";
+import Dashboard from "./Dashboard/Dashboard.jsx";
 
 //hola
 const AppRoutes = () => {
@@ -24,6 +25,7 @@ const AppRoutes = () => {
         <Route path="/chat" element={<Chat />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </Router>
   );
