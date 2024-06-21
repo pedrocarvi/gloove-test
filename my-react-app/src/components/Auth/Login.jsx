@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import "./Login.css";
 import { Transition } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
@@ -7,6 +9,8 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
   const validateForm = () => {
     let valid = true;
@@ -30,8 +34,14 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      // Proceed with form submission
-      console.log("Form submitted:", { email, password });
+      const user = login(email, password);
+      if (user.role === 'propietario') {
+        navigate('/dashboard-propietarios');
+      } else if (user.role === 'huesped') {
+        navigate('/dashboard-huespedes');
+      } else if (user.role === 'empleado') {
+        navigate('/dashboard-empleados');
+      }
     }
   };
 
@@ -138,3 +148,5 @@ const Login = () => {
 };
 
 export default Login;
+
+
