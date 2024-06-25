@@ -1,20 +1,22 @@
-import React from 'react';
+// src/routes.jsx
 import { Routes, Route } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Login from './components/Auth/Login';
 import Register from './components/Auth/Register';
+import Home from "./components/Pages/Home.jsx";
 
-import PropietariosLayout from './components/Propietarios/PropietariosLayout';
-import PropietariosDashboard from './components/Propietarios/Dashboard';
-import PropertyForm from './components/Propietarios/PropertyForm';
-import Properties from './components/Propietarios/Properties';
-import Chat from './components/Propietarios/Chat';
+import PropietariosLayout from './components/Propietarios/PropietariosValidados/PropietariosLayout';
+import PropietariosDashboard from './components/Propietarios/PropietariosValidados/Dashboard';
+import PropertyForm from './components/Propietarios/PropietariosValidados/PropertyForm';
+import Properties from './components/Propietarios/PropietariosValidados/Properties';
+import Chat from './components/Propietarios/PropietariosValidados/Chat';
 
 import HuespedesLayout from './components/Huespedes/HuespedesLayout';
 import HuespedesDashboard from './components/Huespedes/Dashboard';
 
 import EmpleadosLayout from './components/Empleados/EmpleadosLayout';
 import EmpleadosDashboard from './components/Empleados/Dashboard';
+import Dashboard from "./components/Dashboard/Dashboard.jsx"; 
 
 const AppRoutes = () => {
   const { user } = useAuth();
@@ -23,6 +25,7 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/" element={<Home />} />
 
       {user && user.role === 'propietario' && (
         <Route element={<PropietariosLayout />}>
@@ -36,7 +39,7 @@ const AppRoutes = () => {
       {user && user.role === 'huesped' && (
         <Route element={<HuespedesLayout />}>
           <Route path="/dashboard-huespedes" element={<HuespedesDashboard />} />
-          {/* Agrega las demás rutas de huéspedes aquí */}
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       )}
 
@@ -53,6 +56,7 @@ const AppRoutes = () => {
 };
 
 export default AppRoutes;
+
 
 
 

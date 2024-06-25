@@ -1,6 +1,9 @@
+// src/components/Auth/Login.jsx
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebaseConfig';
 import "./Login.css";
 import { Transition } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
@@ -31,16 +34,25 @@ const Login = () => {
     return valid;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validateForm()) {
-      const user = login(email, password);
-      if (user.role === 'propietario') {
-        navigate('/dashboard-propietarios');
-      } else if (user.role === 'huesped') {
-        navigate('/dashboard-huespedes');
-      } else if (user.role === 'empleado') {
-        navigate('/dashboard-empleados');
+      try {
+        const userCredential = await login(email, password);
+        const user = userCredential.user;
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const role = userDoc.data().role;
+          if (role === 'propietario') {
+            navigate('/dashboard-propietarios');
+          } else if (role === 'huesped') {
+            navigate('/dashboard-huespedes');
+          } else if (role === 'empleado') {
+            navigate('/dashboard-empleados');
+          }
+        }
+      } catch (error) {
+        setErrors({ email: "", password: error.message });
       }
     }
   };
@@ -148,5 +160,4 @@ const Login = () => {
 };
 
 export default Login;
-
 

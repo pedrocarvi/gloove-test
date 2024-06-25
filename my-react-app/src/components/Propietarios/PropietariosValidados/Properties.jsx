@@ -1,5 +1,4 @@
 // src/components/Propietarios/Properties.jsx
-import React from 'react';
 import PropietariosLayout from './PropietariosLayout';
 
 const Properties = () => {

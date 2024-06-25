@@ -1,5 +1,4 @@
 // src/components/Propietarios/Chat.jsx
-import React from 'react';
 import PropietariosLayout from './PropietariosLayout';
 
 const Chat = () => {
