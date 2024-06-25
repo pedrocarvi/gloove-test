@@ -20,10 +20,20 @@ const Home = () => {
     threshold: 0.1,
   });
 
+  const { ref: section4Ref, inView: section4InView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  const { ref: section5Ref, inView: section5InView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
   return (
     <div>
       <NavbarHome />
-      <Parallax pages={3} className="h-screen">
+      <Parallax pages={5} className="h-screen">
         <ParallaxLayer
           offset={0}
           speed={0.5}
@@ -94,7 +104,7 @@ const Home = () => {
               Colaboradores con los que trabajamos
             </h2>
             <p className="mt-4 text-lg">
-              Airb, Vrbo, Expedia, Booking, Logo (1)
+              Airbnb, Vrbo, Expedia, Booking, Logo (1)
             </p>
             <div className="mt-6 flex justify-center">
               <div className="flex items-center">
@@ -119,6 +129,54 @@ const Home = () => {
             transition={{ duration: 1 }}
             className="text-center max-w-3xl"
           >
+            <h2 className="text-3xl font-bold">Sobre Nosotros</h2>
+            <p className="mt-4 text-lg">
+              Gloove, el gestor de viviendas vacacionales que se apoya en la
+              experiencia de un amplio equipo de profesionales y en las últimas
+              tecnologías para ayudarte a alcanzar los mejores resultados.
+              <br />
+              Logramos ofreceros una alta rentabilidad como propietarios, y a su
+              vez, aportar una gran experiencia con un excelente servicio de
+              calidad para los huéspedes.
+            </p>
+          </motion.div>
+        </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={4}
+          speed={0.5}
+          className="flex items-center justify-center bg-gray-100"
+        >
+          <motion.div
+            ref={section4Ref}
+            initial={{ opacity: 0, y: 50 }}
+            animate={section4InView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1 }}
+            className="text-center max-w-3xl"
+          >
+            <h2 className="text-3xl font-bold">Información Legal</h2>
+            <p className="mt-4 text-lg">
+              Política de privacidad
+              <br />
+              Política de Cookies
+              <br />
+              Aviso Legal
+            </p>
+          </motion.div>
+        </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={5}
+          speed={0.5}
+          className="flex items-center justify-center bg-teal-700"
+        >
+          <motion.div
+            ref={section5Ref}
+            initial={{ opacity: 0, y: 50 }}
+            animate={section5InView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 1 }}
+            className="text-center text-white max-w-3xl"
+          >
             <h2 className="text-3xl font-bold">Contacto</h2>
             <p className="mt-4 text-lg">
               Ponte en CONTACTO con nosotros y te daremos respuesta INMEDIATA
@@ -126,7 +184,7 @@ const Home = () => {
               info@gloove.com | +34 613105559 | Alicante, España
             </p>
             <div className="mt-6 flex justify-center">
-              <button className="bg-teal-600 text-white px-4 py-2 rounded-md hover:bg-teal-700">
+              <button className="bg-white text-teal-700 px-4 py-2 rounded-md hover:bg-teal-600">
                 Contáctanos
               </button>
             </div>
