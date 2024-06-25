@@ -1,12 +1,25 @@
-// src/App.js
-import AppRoutes from "./components/routes";
+// src/App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import AppRoutes from './routes';
+import NavbarHome from './components/Layout/NavbarHome';
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <AppRoutes />
-    </div>
+    <AuthProvider>
+      <Router>
+        <Routes>
+          <Route path="/" element={<NavbarHome />} />
+          <Route path="/*" element={<AppRoutes />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
-}
+};
 
 export default App;
+
+
+
+
