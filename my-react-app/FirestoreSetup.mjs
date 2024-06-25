@@ -1,4 +1,3 @@
-import { promises as fs } from 'fs';
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
 import { getAuth } from 'firebase-admin/auth';
@@ -6,7 +5,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-// Credenciales del servicio usando variables de entorno
 const serviceAccount = {
   type: process.env.SERVICE_ACCOUNT_TYPE,
   project_id: process.env.SERVICE_ACCOUNT_PROJECT_ID,
@@ -20,70 +18,96 @@ const serviceAccount = {
   client_x509_cert_url: process.env.SERVICE_ACCOUNT_CLIENT_X509_CERT_URL,
 };
 
-async function createStructure() {
-  // Inicializa Firebase Admin SDK
+try {
   initializeApp({
     credential: cert(serviceAccount),
     databaseURL: process.env.FIREBASE_DATABASE_URL,
   });
 
+  console.log("Firebase initialized successfully");
+
   const db = getFirestore();
   const auth = getAuth();
 
-  // Crea un usuario
-  const userRef = db.collection('users').doc('user-id');
-  await userRef.set({
-    email: 'user@example.com',
-    role: 'propietario',
-    completedRegistration: false,
-  });
+  async function createStructure() {
+    // Crea un usuario
+    const userRef = db.collection('users').doc('user-id');
+    await userRef.set({
+      email: 'user@example.com',
+      role: 'propietario',
+      completedRegistration: false,
+    });
 
-  // Crea un propietario con subcolecciones
-  const propietarioRef = db.collection('propietarios').doc('propietario-id');
-  await propietarioRef.set({
-    name: 'Nombre del Propietario',
-  });
+    // Crea un propietario con subcolecciones
+    const propietarioRef = db.collection('propietarios').doc('propietario-id');
+    await propietarioRef.set({
+      name: 'Nombre del Propietario',
+    });
 
-  const propertyRef = propietarioRef.collection('properties').doc('property-id');
-  await propertyRef.set({
-    name: 'Casa Bonita',
-    address: '123 Calle Falsa',
-  });
+    // Subcolección: propiedades
+    const propertyRef = propietarioRef.collection('properties').doc('property-id');
+    await propertyRef.set({
+      name: 'Casa Bonita',
+      address: '123 Calle Falsa',
+    });
 
-  const chatRef = propietarioRef.collection('chats').doc('chat-id');
-  await chatRef.set({
-    message: 'Hola',
-  });
+    // Subcolección: chats
+    const chatRef = propietarioRef.collection('chats').doc('chat-id');
+    await chatRef.set({
+      message: 'Hola',
+    });
 
-  // Crea un huésped con subcolecciones
-  const huespedRef = db.collection('huespedes').doc('huesped-id');
-  await huespedRef.set({
-    name: 'Nombre del Huésped',
-  });
+    // Subcolección: propietarios validados
+    const validatedOwnerRef = propietarioRef.collection('propietarios_validados').doc('validated-owner-id');
+    await validatedOwnerRef.set({
+      name: 'Nombre del Propietario Validado',
+      email: 'validated@example.com',
+    });
 
-  const reservationRef = huespedRef.collection('reservations').doc('reservation-id');
-  await reservationRef.set({
-    propertyId: 'property-id',
-    dates: '2024-07-01 to 2024-07-10',
-  });
+    // Subcolección: proceso de alta
+    const registrationProcessRef = propietarioRef.collection('proceso_de_alta').doc('registration-process-id');
+    await registrationProcessRef.set({
+      step: 'Documentación enviada',
+      completed: false,
+    });
 
-  const huespedChatRef = huespedRef.collection('chats').doc('chat-id');
-  await huespedChatRef.set({
-    message: 'Hola',
-  });
+    // Crea un huésped con subcolecciones
+    const huespedRef = db.collection('huespedes').doc('huesped-id');
+    await huespedRef.set({
+      name: 'Nombre del Huésped',
+    });
 
-  // Crea un empleado con subcolecciones
-  const empleadoRef = db.collection('empleados').doc('empleado-id');
-  await empleadoRef.set({
-    name: 'Nombre del Empleado',
-  });
+    const reservationRef = huespedRef.collection('reservations').doc('reservation-id');
+    await reservationRef.set({
+      propertyId: 'property-id',
+      dates: '2024-07-01 to 2024-07-10',
+    });
 
-  const taskRef = empleadoRef.collection('tasks').doc('task-id');
-  await taskRef.set({
-    description: 'Limpiar piscina',
-  });
+    const huespedChatRef = huespedRef.collection('chats').doc('chat-id');
+    await huespedChatRef.set({
+      message: 'Hola',
+    });
 
-  console.log('Estructura de Firestore creada exitosamente');
+    // Crea un empleado con subcolecciones
+    const empleadoRef = db.collection('empleados').doc('empleado-id');
+    await empleadoRef.set({
+      name: 'Nombre del Empleado',
+    });
+
+    const taskRef = empleadoRef.collection('tasks').doc('task-id');
+    await taskRef.set({
+      description: 'Limpiar piscina',
+    });
+
+    console.log('Estructura de Firestore creada exitosamente');
+  }
+
+  createStructure().catch(console.error);
+} catch (error) {
+  console.error("Error initializing Firebase:", error);
 }
 
-createStructure().catch(console.error);
+
+
+
+
