@@ -41,11 +41,13 @@
             +--Sidebar.jsx
             +--Dashboard.jsx
         +--Huespedes
+            +--Header.jsx
             +--Help.jsx
             +--Profile.jsx
-            +--Reservations.jsx
             +--Chat.jsx
+            +--Sidebar.jsx
             +--Dashboard.jsx
+            +--ReservationProcess.jsx
             +--Incidents.jsx
             +--HuespedesLayout.jsx
             +--Properties.jsx
@@ -73,11 +75,12 @@
       +--index.css
       +--main.jsx
       +--App.jsx
-   +--firebase-debug.log
+   +--FirestoreSetup.mjs
    +--index.html
    +--tailwind.config.js
    +--.DS_Store
    +--directory_tree.txt
+   +--testEnv.js
    +--.firebaserc
    +--.eslintrc.cjs
    +--vite.config.js
@@ -86,6 +89,8 @@
    +--.gitignore
    +--package-lock.json
    +--package.json
+   +--.env
    +--index.jsx
    +--firebase.json
+   +--testFirebase.js
    +--postcss.config.js

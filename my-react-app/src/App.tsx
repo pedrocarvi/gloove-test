@@ -1,10 +1,11 @@
-// src/App.jsx
+// src/App.tsx
+import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import AppRoutes from "./routes";
 import NavbarHome from "./components/Layout/NavbarHome";
 
-const App = () => {
+const App: React.FC = () => {
   return (
     <AuthProvider>
       <Router>
@@ -18,3 +19,4 @@ const App = () => {
 };
 
 export default App;
+

@@ -1,11 +1,12 @@
-// src/components/Propietarios/Dashboard.jsx
+// src/components/Propietarios/PropietariosValidados/Chat.tsx
+import React from 'react';
 import PropietariosLayout from './PropietariosLayout';
 
-const Dashboard = () => {
+const Chat: React.FC = () => {
   return (
     <PropietariosLayout>
       <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-semibold mb-4">Encabezado</h1>
+        <h1 className="text-2xl font-semibold mb-4">Chat</h1>
         <p className="text-gray-700 mb-6">Este es un párrafo de descripción para la sección actual del flujo.</p>
         <div className="grid grid-cols-3 gap-6">
           <div className="bg-gray-200 p-4 rounded-lg">
@@ -29,4 +30,5 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+export default Chat;
+

@@ -1,8 +1,11 @@
-// src/components/Empleados/EmpleadosLayout.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const EmpleadosLayout = ({ children }) => {
+interface PropietariosLayoutProps {
+  children: React.ReactNode;
+}
+
+const PropietariosLayout: React.FC<PropietariosLayoutProps> = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-100">
       <aside className="w-56 bg-white border-r border-gray-200 p-4">
@@ -11,9 +14,10 @@ const EmpleadosLayout = ({ children }) => {
           <nav>
             <ul className="space-y-4">
               <li><Link to="/dashboard" className="text-blue-600 font-bold">Dashboard</Link></li>
-              <li><Link to="/owners" className="text-gray-600">Propietarios</Link></li>
-              <li><Link to="/guests" className="text-gray-600">Huéspedes</Link></li>
-              <li><Link to="/notifications" className="text-gray-600">Notificaciones</Link></li>
+              <li><Link to="/property-form" className="text-gray-600">Alta de Vivienda</Link></li>
+              <li><Link to="/properties" className="text-gray-600">Mis Viviendas</Link></li>
+              <li><Link to="/chat" className="text-gray-600">Chat</Link></li>
+              <li><Link to="/documents" className="text-gray-600">Mi Documentación</Link></li>
               <li><Link to="/profile" className="text-gray-600">Mi Perfil</Link></li>
               <li><Link to="/settings" className="text-gray-600">Configuraciones</Link></li>
               <li><Link to="/help" className="text-gray-600">Help</Link></li>
@@ -26,7 +30,7 @@ const EmpleadosLayout = ({ children }) => {
           <div className="flex items-center">
             <div className="bg-gray-300 w-10 h-10 rounded-full mr-4"></div> {/* Placeholder for User Photo */}
             <div>
-              <div className="text-blue-600 font-bold">Empleado</div>
+              <div className="text-blue-600 font-bold">Propietario</div>
               <div className="text-gray-600">Hola XXXXX</div>
             </div>
           </div>
@@ -45,4 +49,4 @@ const EmpleadosLayout = ({ children }) => {
   );
 };
 
-export default EmpleadosLayout;
+export default PropietariosLayout;

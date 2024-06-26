@@ -1,4 +1,5 @@
-import { Link, useLocation } from "react-router-dom";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import {
   HomeIcon,
   CalendarIcon,
@@ -6,47 +7,53 @@ import {
   CogIcon,
   ChatBubbleLeftRightIcon as ChatIcon,
   ArrowRightOnRectangleIcon as LogoutIcon,
-} from "@heroicons/react/24/outline";
+} from '@heroicons/react/24/outline';
 
-const Sidebar = () => {
+interface MenuItem {
+  name: string;
+  path: string;
+  icon: React.ReactNode;
+}
+
+const Sidebar: React.FC = () => {
   const location = useLocation();
 
-  const menuItems = [
-    { name: "Dashboard", path: "/", icon: <HomeIcon className="h-6 w-6" /> },
+  const menuItems: MenuItem[] = [
+    { name: 'Dashboard', path: '/', icon: <HomeIcon className="h-6 w-6" /> },
     {
-      name: "Proceso de reserva",
-      path: "/reservations",
+      name: 'Proceso de reserva',
+      path: '/reservations',
       icon: <CalendarIcon className="h-6 w-6" />,
     },
-    { name: "Chat", path: "/chat", icon: <ChatIcon className="h-6 w-6" /> },
+    { name: 'Chat', path: '/chat', icon: <ChatIcon className="h-6 w-6" /> },
     {
-      name: "Abrir vivienda",
-      path: "/properties",
+      name: 'Abrir vivienda',
+      path: '/properties',
       icon: <HomeIcon className="h-6 w-6" />,
     },
     {
-      name: "Incidencias",
-      path: "/incidents",
+      name: 'Incidencias',
+      path: '/incidents',
       icon: <CogIcon className="h-6 w-6" />,
     },
     {
-      name: "Mi perfil",
-      path: "/profile",
+      name: 'Mi perfil',
+      path: '/profile',
       icon: <UserIcon className="h-6 w-6" />,
     },
     {
-      name: "Configuraciones",
-      path: "/settings",
+      name: 'Configuraciones',
+      path: '/settings',
       icon: <CogIcon className="h-6 w-6" />,
     },
     {
-      name: "Sign Out",
-      path: "/logout",
+      name: 'Sign Out',
+      path: '/logout',
       icon: <LogoutIcon className="h-6 w-6" />,
     },
     {
-      name: "Help",
-      path: "/help",
+      name: 'Help',
+      path: '/help',
       icon: <CogIcon className="h-6 w-6" />,
     },
   ];
@@ -60,7 +67,7 @@ const Sidebar = () => {
             key={item.name}
             to={item.path}
             className={`flex items-center space-x-4 py-2 px-4 rounded-md hover:bg-teal-600 transition ${
-              location.pathname === item.path ? "bg-teal-600" : ""
+              location.pathname === item.path ? 'bg-teal-600' : ''
             }`}
           >
             {item.icon}

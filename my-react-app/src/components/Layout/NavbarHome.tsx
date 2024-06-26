@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import Modal from '../Modals/Modal';
 import Login from '../Auth/Login'; // Para mostrar el componente de login en el modal
 
-const NavbarHome = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
+const NavbarHome: React.FC = () => {
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
 
-  const toggleMenu = () => {
+  const toggleMenu = (): void => {
     setIsOpen(!isOpen);
   };
 
-  const toggleModal = () => {
+  const toggleModal = (): void => {
     setModalOpen(!modalOpen);
   };
 
@@ -103,5 +103,4 @@ const NavbarHome = () => {
 };
 
 export default NavbarHome;
-
 

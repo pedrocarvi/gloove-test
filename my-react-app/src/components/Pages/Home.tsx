@@ -1,10 +1,11 @@
+import React from 'react';
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import NavbarHome from "../Layout/NavbarHome";
 import { CheckIcon } from "@heroicons/react/24/outline";
 
-const Home = () => {
+const Home: React.FC = () => {
   const { ref: section1Ref, inView: section1InView } = useInView({
     triggerOnce: true,
     threshold: 0.1,
