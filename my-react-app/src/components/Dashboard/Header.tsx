@@ -1,11 +1,11 @@
-import { useState } from "react";
-import { BellIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { motion } from "framer-motion";
+import React, { useState } from 'react';
+import { BellIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { motion } from 'framer-motion';
 
-const Header = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+const Header: React.FC = () => {
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const toggleModal = () => {
+  const toggleModal = (): void => {
     setIsModalOpen(!isModalOpen);
   };
 
@@ -100,3 +100,4 @@ const Header = () => {
 };
 
 export default Header;
+

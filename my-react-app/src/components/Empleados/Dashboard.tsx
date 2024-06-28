@@ -1,8 +1,7 @@
-// src/components/Empleados/Dashboard.jsx
 import React from 'react';
 import EmpleadosLayout from './EmpleadosLayout';
 
-const EmpleadosDashboard = () => {
+const EmpleadosDashboard: React.FC = () => {
   return (
     <EmpleadosLayout>
       <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -15,3 +14,4 @@ const EmpleadosDashboard = () => {
 };
 
 export default EmpleadosDashboard;
+

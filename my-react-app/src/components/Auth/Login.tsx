@@ -1,5 +1,5 @@
-// src/components/Auth/Login.jsx
-import { useState } from "react";
+// src/components/Auth/Login.tsx
+import { useState, FormEvent } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { doc, getDoc } from 'firebase/firestore';
@@ -8,14 +8,19 @@ import "./Login.css";
 import { Transition } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 
+interface Errors {
+  email: string;
+  password: string;
+}
+
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState({ email: "", password: "" });
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [errors, setErrors] = useState<Errors>({ email: "", password: "" });
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const validateForm = () => {
+  const validateForm = (): boolean => {
     let valid = true;
     let emailError = "";
     let passwordError = "";
@@ -34,7 +39,7 @@ const Login = () => {
     return valid;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (validateForm()) {
       try {
@@ -42,16 +47,23 @@ const Login = () => {
         const user = userCredential.user;
         const userDoc = await getDoc(doc(db, 'users', user.uid));
         if (userDoc.exists()) {
-          const role = userDoc.data().role;
+          const userData = userDoc.data();
+          const role = userData?.role;
+          const completedRegistration = userData?.completedRegistration;
+
           if (role === 'propietario') {
-            navigate('/dashboard-propietarios');
+            if (completedRegistration) {
+              navigate('/dashboard-propietarios');
+            } else {
+              navigate('/proceso-de-alta');
+            }
           } else if (role === 'huesped') {
             navigate('/dashboard-huespedes');
           } else if (role === 'empleado') {
             navigate('/dashboard-empleados');
           }
         }
-      } catch (error) {
+      } catch (error: any) {
         setErrors({ email: "", password: error.message });
       }
     }
@@ -92,9 +104,7 @@ const Login = () => {
                 <div className="relative">
                   <input
                     type="email"
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.email ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-md ${errors.email ? "border-red-500" : "border-gray-300"}`}
                     placeholder="hello@gloove.me"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -117,9 +127,7 @@ const Login = () => {
                 <div className="relative">
                   <input
                     type="password"
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.password ? "border-red-500" : "border-gray-300"
-                    }`}
+                    className={`w-full px-3 py-2 border rounded-md ${errors.password ? "border-red-500" : "border-gray-300"}`}
                     placeholder="************"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -160,4 +168,6 @@ const Login = () => {
 };
 
 export default Login;
+
+
 

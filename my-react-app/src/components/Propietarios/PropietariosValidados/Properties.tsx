@@ -1,7 +1,7 @@
-// src/components/Propietarios/Properties.jsx
+import React from 'react';
 import PropietariosLayout from './PropietariosLayout';
 
-const Properties = () => {
+const Properties: React.FC = () => {
   return (
     <PropietariosLayout>
       <div className="bg-white p-6 rounded-lg shadow-lg">

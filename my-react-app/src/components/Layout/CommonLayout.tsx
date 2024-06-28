@@ -2,7 +2,11 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import './CommonLayout.css';
 
-const CommonLayout = ({ role }) => {
+interface CommonLayoutProps {
+  role: 'Huésped' | 'Propietario' | 'Empleado';
+}
+
+const CommonLayout: React.FC<CommonLayoutProps> = ({ role }) => {
   return (
     <div className="common-layout">
       <aside className="sidebar">

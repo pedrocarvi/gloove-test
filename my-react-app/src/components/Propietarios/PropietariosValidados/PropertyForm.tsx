@@ -1,7 +1,7 @@
-// src/components/Propietarios/PropertyForm.jsx
+import React from 'react';
 import PropietariosLayout from './PropietariosLayout';
 
-const PropertyForm = () => {
+const PropertyForm: React.FC = () => {
   return (
     <PropietariosLayout>
       <div className="bg-white p-6 rounded-lg shadow-lg">
