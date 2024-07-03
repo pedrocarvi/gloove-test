@@ -1,9 +1,9 @@
 // src/components/Auth/Login.tsx
 import { useState, FormEvent } from "react";
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../../firebaseConfig';
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 import "./Login.css";
 import { Transition } from "@headlessui/react";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
@@ -45,22 +45,22 @@ const Login = () => {
       try {
         const userCredential = await login(email, password);
         const user = userCredential.user;
-        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           const role = userData?.role;
           const completedRegistration = userData?.completedRegistration;
 
-          if (role === 'propietario') {
+          if (role === "propietario") {
             if (completedRegistration) {
-              navigate('/dashboard-propietarios');
+              navigate("/dashboard-propietarios");
             } else {
-              navigate('/proceso-de-alta');
+              navigate("/proceso-de-alta");
             }
-          } else if (role === 'huesped') {
-            navigate('/dashboard-huespedes');
-          } else if (role === 'empleado') {
-            navigate('/dashboard-empleados');
+          } else if (role === "huesped") {
+            navigate("/dashboard-huespedes");
+          } else if (role === "empleado") {
+            navigate("/dashboard-empleados");
           }
         }
       } catch (error: any) {
@@ -89,7 +89,7 @@ const Login = () => {
           </div>
           <div className="w-full p-8 md:w-1/2 flex flex-col items-center">
             <img
-              src="/Logo-Gloove.webp"
+              src="/gloove_marca.png"
               alt="Gloove Logo"
               className="login-logo"
             />
@@ -104,7 +104,9 @@ const Login = () => {
                 <div className="relative">
                   <input
                     type="email"
-                    className={`w-full px-3 py-2 border rounded-md ${errors.email ? "border-red-500" : "border-gray-300"}`}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.email ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="hello@gloove.me"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -127,7 +129,9 @@ const Login = () => {
                 <div className="relative">
                   <input
                     type="password"
-                    className={`w-full px-3 py-2 border rounded-md ${errors.password ? "border-red-500" : "border-gray-300"}`}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.password ? "border-red-500" : "border-gray-300"
+                    }`}
                     placeholder="************"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
@@ -168,6 +172,3 @@ const Login = () => {
 };
 
 export default Login;
-
-
-

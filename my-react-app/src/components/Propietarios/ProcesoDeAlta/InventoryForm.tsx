@@ -1,60 +1,52 @@
-import React, { useState } from 'react';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebaseConfig';
-import { useAuth } from '../../../context/AuthContext';
-import './InventoryForm.css';
+import React, { useState } from "react";
 
 interface InventoryFormProps {
-  onComplete: () => void;
+  onNext: () => void;
 }
 
-const InventoryForm: React.FC<InventoryFormProps> = ({ onComplete }) => {
-  const [formData, setFormData] = useState({
-    // ... (include all inventory form fields here)
+interface InventoryFormData {
+  exampleField: string;
+  // Añadir más campos según sea necesario
+}
+
+const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
+  const [formData, setFormData] = useState<InventoryFormData>({
+    exampleField: "",
+    // Inicializar más campos según sea necesario
   });
 
-  const { user } = useAuth();
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value,
-    });
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      console.error('Error: user is undefined');
-      return;
-    }
-
-    try {
-      const docRef = doc(db, 'inventory_forms', `inventory_form_${user.uid}`);
-      await setDoc(docRef, {
-        userId: user.uid,
-        ...formData,
-      });
-
-      await updateDoc(doc(db, 'users', user.uid), {
-        processStatus: 'completed',
-      });
-
-      onComplete();
-    } catch (error) {
-      console.error('Error adding document: ', error);
-    }
+    // lógica para guardar los datos en Firestore
+    onNext();
   };
 
   return (
-    <div className="inventory-container">
-      <h2>Formulario de Inventario</h2>
-      <form onSubmit={handleSubmit}>
-        {/* Add form fields here */}
-        <button type="submit">Enviar</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700">
+          Campo de ejemplo
+        </label>
+        <input
+          type="text"
+          name="exampleField"
+          value={formData.exampleField}
+          onChange={handleChange}
+          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-primary focus:border-primary"
+        />
+      </div>
+      <button
+        type="submit"
+        className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary-dark"
+      >
+        Completar
+      </button>
+    </form>
   );
 };
 

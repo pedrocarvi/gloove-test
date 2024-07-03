@@ -1,34 +1,64 @@
-// src/components/Propietarios/PropietariosValidados/Chat.tsx
-import React from 'react';
-import PropietariosLayout from './PropietariosLayout';
+import React from "react";
 
-const Chat: React.FC = () => {
+const categories = [
+  {
+    title: "Sobre la vivienda",
+    subtitle: "Dinos qué estás buscando",
+    placeholder: "Escribe tu mensaje aquí...",
+    buttonText: "Iniciar chat",
+  },
+  {
+    title: "Reserva planificada",
+    subtitle: "Quiero reservar mi vivienda",
+    placeholder: "Escribe tu mensaje aquí...",
+    buttonText: "Iniciar chat",
+  },
+  {
+    title: "Mantenimiento",
+    subtitle: "Dinos qué ha ocurrido ¿Hay algún desperfecto en la vivienda?",
+    placeholder: "Escribe tu mensaje aquí...",
+    buttonText: "Iniciar chat",
+  },
+];
+
+const QuestionsSection = () => {
   return (
-    <PropietariosLayout>
-      <div className="bg-white p-6 rounded-lg shadow-lg">
-        <h1 className="text-2xl font-semibold mb-4">Chat</h1>
-        <p className="text-gray-700 mb-6">Este es un párrafo de descripción para la sección actual del flujo.</p>
-        <div className="grid grid-cols-3 gap-6">
-          <div className="bg-gray-200 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-2">Bloque 1</h2>
-            <div className="bg-gray-300 h-32 mb-4"></div> {/* Placeholder for Photo */}
-            <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Botón</button>
-          </div>
-          <div className="bg-gray-200 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-2">Bloque 2</h2>
-            <div className="bg-gray-300 h-32 mb-4"></div> {/* Placeholder for Photo */}
-            <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Botón</button>
-          </div>
-          <div className="bg-gray-200 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold mb-2">Bloque 3</h2>
-            <div className="bg-gray-300 h-32 mb-4"></div> {/* Placeholder for Photo */}
-            <button className="bg-blue-600 text-white py-2 px-4 rounded-lg">Botón</button>
-          </div>
+    <div className="min-h-screen bg-gray-100 py-8">
+      <div className="container mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-800">
+            Dudas y preguntas
+          </h1>
+          <p className="text-gray-600 mt-2">
+            ¡Resuelve cualquier pregunta con nuestros chats automatizados al
+            instante!
+          </p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {categories.map((category, index) => (
+            <div
+              key={index}
+              className="bg-white p-6 rounded-lg shadow-md transition-transform transform hover:scale-105"
+            >
+              <div className="text-center mb-4">
+                <h2 className="text-2xl font-bold text-gray-800">
+                  {category.title}
+                </h2>
+                <p className="text-gray-600 mt-2">{category.subtitle}</p>
+              </div>
+              <textarea
+                placeholder={category.placeholder}
+                className="w-full p-4 h-40 border rounded-md focus:outline-none focus:ring-2 focus:ring-primary-light mb-4"
+              />
+              <button className="w-full bg-primary text-white py-2 rounded-md hover:bg-primary-dark transition">
+                {category.buttonText}
+              </button>
+            </div>
+          ))}
         </div>
       </div>
-    </PropietariosLayout>
+    </div>
   );
 };
 
-export default Chat;
-
+export default QuestionsSection;

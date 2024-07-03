@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-import { Outlet } from "react-router-dom"; // Importar Outlet
-import Sidebar from "../Dashboard/Sidebar";
-import Header from "../Dashboard/Header";
+import { Outlet } from "react-router-dom";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
 
 const HuespedesLayout = () => {
   return (
@@ -17,7 +17,6 @@ const HuespedesLayout = () => {
   );
 };
 
-// Validación de las props
 HuespedesLayout.propTypes = {
   children: PropTypes.node,
 };

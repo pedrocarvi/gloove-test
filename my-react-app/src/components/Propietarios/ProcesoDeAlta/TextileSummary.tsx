@@ -1,49 +1,51 @@
-import React, { useState, useEffect } from 'react';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebaseConfig';
-import { useAuth } from '../../../context/AuthContext';
-import { jsPDF } from 'jspdf';
-import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
-import './TextileSummary.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { jsPDF } from "jspdf";
 
 interface TextileSummaryProps {
-  onComplete: () => void;
+  onNext: () => void;
 }
 
-const TextileSummary: React.FC<TextileSummaryProps> = ({ onComplete }) => {
-  const [formData, setFormData] = useState(null);
-  const [budget, setBudget] = useState(0);
-  const [summary, setSummary] = useState({});
-  const { user } = useAuth();
+const TextileSummary: React.FC<TextileSummaryProps> = ({ onNext }) => {
+  const [textileData, setTextileData] = useState<any>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // ... (fetch data and calculate budget)
-  }, [user]);
-
-  const handleAccept = async () => {
-    // ... (update user process status)
-    onComplete();
-  };
-
-  const handleChat = () => {
-    console.log("Abrir chat para preguntas sobre el presupuesto textil.");
-  };
+    const fetchData = async () => {
+      const db = getFirestore();
+      const docRef = doc(db, "textile_forms", "documentId");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setTextileData(docSnap.data());
+      }
+    };
+    fetchData();
+  }, []);
 
   const handleDownloadPDF = () => {
-    // ... (generate and download PDF)
+    const doc = new jsPDF();
+    doc.text("Resumen Textil", 10, 10);
+    // Lógica para añadir contenido al PDF
+    doc.save("resumen_textil.pdf");
   };
 
-  if (!formData) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <div className="summary-container">
-      <h2>Resumen de Textil</h2>
-      {/* Add summary content here */}
-      <button onClick={handleAccept}>Aceptar</button>
-      <button onClick={handleChat}>Preguntar sobre el presupuesto</button>
-      <button onClick={handleDownloadPDF}>Descargar PDF</button>
+    <div className="space-y-4">
+      <h2 className="text-2xl font-bold text-primary">Resumen Textil</h2>
+      <p className="text-gray-700">Contenido del resumen textil...</p>
+      <button
+        onClick={handleDownloadPDF}
+        className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary-dark"
+      >
+        Descargar PDF
+      </button>
+      <button
+        onClick={onNext}
+        className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary-dark"
+      >
+        Siguiente
+      </button>
     </div>
   );
 };

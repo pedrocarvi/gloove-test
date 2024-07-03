@@ -1,62 +1,57 @@
-import React, { useState } from 'react';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebaseConfig';
-import { useAuth } from '../../../context/AuthContext';
-import './TextileForm.css';
+import React, { useState } from "react";
 
 interface TextileFormProps {
-  onComplete: () => void;
+  onNext: () => void;
 }
 
-const TextileForm: React.FC<TextileFormProps> = ({ onComplete }) => {
+const TextileForm: React.FC<TextileFormProps> = ({ onNext }) => {
   const [formData, setFormData] = useState({
-    // ... (include all form fields here)
+    towels: 0,
+    bedSheets: 0,
+    // Otros campos necesarios
   });
-
-  const { user } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setFormData({ ...formData, [name]: Number(value) });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      console.error('Error: user is undefined');
-      return;
-    }
-
-    try {
-      const docRef = doc(db, 'textile_forms', `textile_form_${user.uid}`);
-      await setDoc(docRef, {
-        userId: user.uid,
-        ...formData,
-      });
-
-      await updateDoc(doc(db, 'users', user.uid), {
-        processStatus: 'textile_summary',
-      });
-
-      onComplete();
-    } catch (error) {
-      console.error('Error adding document: ', error);
-    }
+    // Guardar datos en Firestore
+    onNext();
   };
 
   return (
-    <div className="form-container">
-      <div className="form-card">
-        <h1>Formulario de Textiles</h1>
-        <form onSubmit={handleSubmit} className="form-content">
-          {/* Add form fields here */}
-          <button type="submit" className="form-button">Submit</button>
-        </form>
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-2xl font-bold mb-4">Textil + Presupuesto</h2>
+      <div className="flex flex-col space-y-2">
+        <label className="text-gray-700">Toallas</label>
+        <input
+          type="number"
+          name="towels"
+          value={formData.towels}
+          onChange={handleChange}
+          className="p-2 border border-gray-300 rounded-md"
+        />
       </div>
-    </div>
+      <div className="flex flex-col space-y-2">
+        <label className="text-gray-700">Sábanas</label>
+        <input
+          type="number"
+          name="bedSheets"
+          value={formData.bedSheets}
+          onChange={handleChange}
+          className="p-2 border border-gray-300 rounded-md"
+        />
+      </div>
+      <button
+        type="submit"
+        className="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition"
+      >
+        Siguiente
+      </button>
+    </form>
   );
 };
 
