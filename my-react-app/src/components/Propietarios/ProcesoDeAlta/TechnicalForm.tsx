@@ -10,7 +10,7 @@ interface TechnicalFormProps {
   onNext: () => void;
 }
 
-const TechnicalForm: React.FC<TechnicalFormProps> = ({ onNext }) => {
+const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext }) => {
   const [formData, setFormData] = useState({
     vivienda: "",
     direccion: "",
@@ -89,6 +89,6 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onNext }) => {
       </div>
     </div>
   );
-};
+});
 
 export default TechnicalForm;
