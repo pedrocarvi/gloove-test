@@ -1,12 +1,8 @@
-+--.
-  +--firestore
-      +--firestore.rules
-      +--storage.rules
-      +--.DS_Store
-      +--firestore.indexes.json
-  
-  +--public
+--public
+     +--images
+         +--casa.jpg
       +--casa.jpg
+      +--favicon.ico
       +--dormitorio.jpg
       +--vite.svg
       +--cama.jpg
@@ -15,82 +11,110 @@
       +--gloove_marca.png
       +--salon.jpg
       +--rhema-kallianpur-uocSnWMhnAs-unsplash.jpg
+  +--.vscode
+      +--settings.json
   +--src
+     +--@types
+         +--react-signature-canvas.d.ts
+         +--react-step-progress-bar.d.ts
+         +--react-slick.d.ts
+         +--slick-carousel.d.ts
      +--context
-         +--AuthContext.jsx
+         +--AuthContext.tsx
      +--components
         +--UI
             +--Input.jsx
             +--Button.jsx
             +--Card.jsx
         +--Auth
+            +--Login.tsx
             +--Login.css
-            +--Login.jsx
-            +--Register.jsx
+            +--Register.tsx
         +--Layout
-            +--CommonLayout.jsx
+            +--NavbarHome.tsx
             +--Container.jsx
+            +--CommonLayout.tsx
             +--Navbar.jsx
-            +--NavbarHome.jsx
             +--CommonLayout.css
         +--Modals
             +--ConfirmationModal.jsx
-            +--Modal.jsx
-        +--Dashboard
-            +--Header.jsx
-            +--Sidebar.jsx
-            +--Dashboard.jsx
+            +--Modal.tsx
         +--Huespedes
-            +--Header.jsx
-            +--Help.jsx
-            +--Profile.jsx
-            +--Chat.jsx
-            +--Sidebar.jsx
-            +--Dashboard.jsx
-            +--ReservationProcess.jsx
-            +--Incidents.jsx
-            +--HuespedesLayout.jsx
-            +--Properties.jsx
-            +--Home.jsx
+            +--Incidents.tsx
+            +--ReservationProcess.tsx
+            +--IncidentForm.tsx
+            +--Dashboard.tsx
+            +--ProfilePage.tsx
+            +--Home.tsx
+            +--ControlPanel.tsx
+            +--Properties.tsx
+            +--HuespedesLayout.tsx
+            +--QuestionsSection.tsx
+            +--Profile.tsx
+            +--Help.tsx
+            +--Header.tsx
+            +--Sidebar.tsx
+            +--Chat.tsx
         +--Pages
-            +--Home.jsx
+            +--Home.tsx
         +--Empleados
-            +--Dashboard.jsx
-            +--EmpleadosLayout.jsx
+            +--Dashboard.tsx
+            +--EmpleadosLayout.tsx
+            +--EmployerHeader.tsx
+            +--EmployerSidebar.tsx
         +--Propietarios
+           +--ProcesoDeAlta
+               +--TextileSummary.tsx
+               +--InventoryForm.tsx
+               +--ProgressBar.tsx
+               +--ProcesoDeAlta.tsx
+               +--DistinctDocument.tsx
+               +--TechnicalForm.tsx
+               +--Contract.css
+               +--TextileForm.tsx
+               +--Contract.tsx
+               +--PropertyForm.tsx
            +--PropietariosValidados
-               +--PropertyForm.jsx
-               +--Chat.jsx
-               +--Dashboard.jsx
-               +--PropietariosLayout.jsx
-               +--Properties.jsx
-            +--ProcesoDeAlta
+               +--OwnerSidebar.tsx
+               +--OwnerProfile.tsx
+               +--Properties.tsx
+               +--Documents.tsx
+               +--Documentacion.tsx
+               +--OwnerHeader.tsx
+               +--Chat.tsx
+               +--OwnerLayout.tsx
+               +--OwnerDashboard.tsx
+               +--PropertyForm.tsx
      +--assets
         +--styles
             +--tailwind.css
          +--react.svg
-      +--routes.jsx
-      +--firebaseConfig.js
+      +--App.tsx
+      +--main.tsx
+      +--.DS_Store
       +--App.css
       +--index.css
-      +--main.jsx
-      +--App.jsx
-   +--FirestoreSetup.mjs
+      +--firebaseConfig.ts
+      +--routes.tsx
    +--index.html
-   +--tailwind.config.js
    +--.DS_Store
    +--directory_tree.txt
    +--testEnv.js
    +--.firebaserc
    +--.eslintrc.cjs
-   +--vite.config.js
+   +--index.css
    +--generate_tree.py
    +--README.md
+   +--tailwind.config.ts
    +--.gitignore
    +--package-lock.json
    +--package.json
+   +--createUsers.js
+   +--vite-env.d.ts
    +--.env
    +--index.jsx
+   +--tsconfig.json
    +--firebase.json
    +--testFirebase.js
+   +--vite.config.ts
    +--postcss.config.js

@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+// src/components/Propietarios/ProcesoDeAlta/TechnicalForm.tsx
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
+import { useAuth } from "@/context/AuthContext";
+
 
 interface TechnicalFormProps {
   onNext: () => void;
@@ -6,63 +12,82 @@ interface TechnicalFormProps {
 
 const TechnicalForm: React.FC<TechnicalFormProps> = ({ onNext }) => {
   const [formData, setFormData] = useState({
-    propertyType: "",
-    address: "",
-    ownerName: "",
-    // Otros campos necesarios
+    vivienda: "",
+    direccion: "",
+    num_habitaciones: "",
+    num_banos: "",
+    superficie: "",
+    otros_detalles: "",
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    // Guardar datos en Firestore
-    onNext();
+    if (!user) {
+      console.error("Error: user is undefined");
+      return;
+    }
+
+    try {
+      const docRef = doc(db, "procesos_de_alta/technical_forms", user.uid);
+      await setDoc(docRef, {
+        userId: user.uid,
+        ...formData,
+      });
+
+      await updateDoc(doc(db, "users", user.uid), {
+        currentStep: 1, // assuming currentStep 1 corresponds to the next step in the process
+      });
+
+      onNext(); // Move to the next step using the onNext prop
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-2xl font-bold mb-4">Ficha Técnica</h2>
-      <div className="flex flex-col space-y-2">
-        <label className="text-gray-700">Tipo de Propiedad</label>
-        <input
-          type="text"
-          name="propertyType"
-          value={formData.propertyType}
-          onChange={handleChange}
-          className="p-2 border border-gray-300 rounded-md"
-        />
+    <div className="form-container">
+      <div className="form-card">
+        <h1 className="text-4xl font-bold mb-8 text-primary-dark text-center">Ficha Técnica</h1>
+        <form onSubmit={handleSubmit} className="form-content">
+          <div className="form-row">
+            <label>Nombre de la Vivienda</label>
+            <input type="text" name="vivienda" value={formData.vivienda} onChange={handleChange} />
+          </div>
+          <div className="form-row">
+            <label>Dirección</label>
+            <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} />
+          </div>
+          <div className="form-row">
+            <label>Número de Habitaciones</label>
+            <input type="text" name="num_habitaciones" value={formData.num_habitaciones} onChange={handleChange} />
+          </div>
+          <div className="form-row">
+            <label>Número de Baños</label>
+            <input type="text" name="num_banos" value={formData.num_banos} onChange={handleChange} />
+          </div>
+          <div className="form-row">
+            <label>Superficie (m²)</label>
+            <input type="text" name="superficie" value={formData.superficie} onChange={handleChange} />
+          </div>
+          <div className="form-row">
+            <label>Otros Detalles</label>
+            <textarea name="otros_detalles" value={formData.otros_detalles} onChange={handleChange}></textarea>
+          </div>
+          <button type="submit" className="form-button">Submit</button>
+        </form>
       </div>
-      <div className="flex flex-col space-y-2">
-        <label className="text-gray-700">Dirección</label>
-        <input
-          type="text"
-          name="address"
-          value={formData.address}
-          onChange={handleChange}
-          className="p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <div className="flex flex-col space-y-2">
-        <label className="text-gray-700">Nombre del Propietario</label>
-        <input
-          type="text"
-          name="ownerName"
-          value={formData.ownerName}
-          onChange={handleChange}
-          className="p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-      <button
-        type="submit"
-        className="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition"
-      >
-        Siguiente
-      </button>
-    </form>
+    </div>
   );
 };
 

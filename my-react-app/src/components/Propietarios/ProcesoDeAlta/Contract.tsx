@@ -1,72 +1,104 @@
-import React, { useState, useRef } from "react";
-import SignatureCanvas from "react-signature-canvas";
-import { useNavigate } from "react-router-dom";
-import { getFirestore, doc, setDoc } from "firebase/firestore";
+// src/components/Propietarios/ProcesoDeAlta/Contract.tsx
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from '@/firebaseConfig';
+import { useAuth } from '@/context/AuthContext';
+import SignatureCanvas from 'react-signature-canvas';
+import { jsPDF } from 'jspdf';
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar getDownloadURL
+
 
 interface ContractProps {
   onNext: () => void;
 }
 
 const Contract: React.FC<ContractProps> = ({ onNext }) => {
-  const [signature, setSignature] = useState<string | null>(null);
-  const sigCanvasRef = useRef<SignatureCanvas | null>(null);
+  const [formData, setFormData] = useState<any>(null);
+  const [technicalFormData, setTechnicalFormData] = useState<any>(null);
+  const [isSigned, setIsSigned] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const sigCanvas = useRef<SignatureCanvas>(null);
 
-  const handleClear = () => {
-    sigCanvasRef.current?.clear();
-    setSignature(null);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        // Fetch technical form data
+        const technicalFormRef = doc(db, 'procesos_de_alta/technical_forms', user.uid);
+        const technicalFormSnap = await getDoc(technicalFormRef);
+        if (technicalFormSnap.exists()) {
+          setTechnicalFormData(technicalFormSnap.data());
+        }
+      }
+    };
 
-  const handleSave = () => {
-    if (sigCanvasRef.current) {
-      setSignature(
-        sigCanvasRef.current.getTrimmedCanvas().toDataURL("image/png")
-      );
+    fetchData();
+  }, [user]);
+
+  const handleSign = () => {
+    if (sigCanvas.current) {
+      const dataURL = sigCanvas.current.getTrimmedCanvas().toDataURL('image/png');
+      setFormData({ ...formData, signature: dataURL });
+      setIsSigned(true);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (signature) {
-      const db = getFirestore();
-      const userDoc = doc(db, "contracts", "contractId"); // Ajusta el ID del documento según sea necesario
-      await setDoc(userDoc, { signature });
-      onNext();
-    } else {
-      alert("Por favor, firma el contrato antes de continuar.");
+  const generatePDFContent = (pdf: jsPDF) => {
+    if (technicalFormData) {
+      pdf.text('Contrato', 10, 10);
+      pdf.text(`Nombre: ${technicalFormData.nombre}`, 10, 20);
+      pdf.text(`Dirección: ${technicalFormData.direccion}`, 10, 30);
+      pdf.text(`Ciudad: ${technicalFormData.ciudad}`, 10, 40);
+      pdf.text(`País: ${technicalFormData.pais}`, 10, 50);
+      pdf.text(`Teléfono: ${technicalFormData.telefono}`, 10, 60);
+      pdf.text(`Email: ${technicalFormData.email}`, 10, 70);
+      // Add more fields as necessary
+      pdf.addImage(formData.signature, 'PNG', 10, 80, 50, 50);
     }
   };
+
+  const handleSubmit = async () => {
+    if (!user) {
+      console.error('User is not authenticated');
+      return;
+    }
+
+    const pdf = new jsPDF();
+    generatePDFContent(pdf);
+    const pdfData = pdf.output('datauristring');
+
+    const storage = getStorage();
+    const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`);
+    await uploadString(pdfRef, pdfData, 'data_url');
+
+    const pdfUrl = await getDownloadURL(pdfRef); // Corregir el uso de getDownloadURL
+
+    const docRef = doc(db, 'contracts', `contract_${user.uid}`);
+    await setDoc(docRef, { ...formData, pdfUrl });
+
+    await updateDoc(doc(db, 'users', user.uid), {
+      processStatus: 'inventory_form',
+      currentStep: 4, // Assuming next step is 4
+    });
+
+    onNext(); // Mover al siguiente paso usando el prop onNext
+  };
+
+  if (!technicalFormData) {
+    return <div>Loading...</div>;
+  }
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-2xl font-bold text-primary">Contrato</h2>
-      <p className="text-gray-700">Contenido del contrato...</p>
-      <div>
-        <SignatureCanvas
-          ref={sigCanvasRef}
-          canvasProps={{ width: 500, height: 200, className: "border" }}
-        />
+    <div className="contract-container">
+      <h2 className="text-4xl font-bold mb-8 text-primary-dark text-center">Contrato</h2>
+      <p>{/* Aquí va el contenido del contrato */}</p>
+      {isSigned && <img src={formData?.signature} alt="Signature" />}
+      <SignatureCanvas ref={sigCanvas} canvasProps={{ className: 'signature-canvas' }} />
+      <div className="button-group">
+        <button onClick={handleSign} className="form-button">Firmar</button>
+        {isSigned && <button onClick={handleSubmit} className="form-button">Enviar Contrato</button>}
       </div>
-      <div className="flex space-x-4">
-        <button
-          onClick={handleClear}
-          className="bg-red-500 text-white py-2 px-4 rounded-md transition hover:bg-red-600"
-        >
-          Borrar
-        </button>
-        <button
-          onClick={handleSave}
-          className="bg-blue-500 text-white py-2 px-4 rounded-md transition hover:bg-blue-600"
-        >
-          Guardar
-        </button>
-      </div>
-      <button
-        onClick={handleSubmit}
-        className="bg-primary text-white py-2 px-4 rounded-md transition hover:bg-primary-dark mt-4"
-      >
-        Firmar y Siguiente
-      </button>
     </div>
   );
 };

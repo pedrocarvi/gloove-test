@@ -15,11 +15,11 @@ const CommonLayout: React.FC<CommonLayoutProps> = ({ role }) => {
           <ul>
             {role === 'Huésped' && (
               <>
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/reservation">Proceso de Reserva</a></li>
+                <li><a href="/dashboard-huespedes">Dashboard</a></li>
+                <li><a href="/reservation-process">Proceso de Reserva</a></li>
                 <li><a href="/chat">Chat</a></li>
                 <li><a href="/open-property">Abrir Vivienda</a></li>
-                <li><a href="/incidents">Incidencias</a></li>
+                <li><a href="/incidencias">Incidencias</a></li>
                 <li><a href="/profile">Mi Perfil</a></li>
                 <li><a href="/settings">Configuraciones</a></li>
                 <li><a href="/help">Help</a></li>
@@ -27,7 +27,7 @@ const CommonLayout: React.FC<CommonLayoutProps> = ({ role }) => {
             )}
             {role === 'Propietario' && (
               <>
-                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/dashboard-propietarios">Dashboard</a></li>
                 <li><a href="/property-form">Alta de Vivienda</a></li>
                 <li><a href="/properties">Mis Viviendas</a></li>
                 <li><a href="/chat">Chat</a></li>
@@ -40,7 +40,7 @@ const CommonLayout: React.FC<CommonLayoutProps> = ({ role }) => {
             )}
             {role === 'Empleado' && (
               <>
-                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/dashboard-empleados">Dashboard</a></li>
                 <li><a href="/owners">Propietarios</a></li>
                 <li><a href="/guests">Huéspedes</a></li>
                 <li><a href="/notifications">Notificaciones</a></li>
@@ -72,4 +72,3 @@ const CommonLayout: React.FC<CommonLayoutProps> = ({ role }) => {
 };
 
 export default CommonLayout;
-

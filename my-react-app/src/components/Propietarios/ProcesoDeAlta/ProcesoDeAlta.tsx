@@ -19,7 +19,7 @@ const ProcesoDeAlta: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const navigate = useNavigate();
 
-  const handleNextStep = () => {
+  const handleNextStep = async () => {
     if (currentStep < steps.length - 1) {
       setCurrentStep(currentStep + 1);
     } else {

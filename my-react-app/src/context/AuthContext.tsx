@@ -1,18 +1,6 @@
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { auth, db } from "../firebaseConfig";
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-  User as FirebaseUser,
-  UserCredential,
-} from "firebase/auth";
+import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User as FirebaseUser, UserCredential } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 interface User extends FirebaseUser {

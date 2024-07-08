@@ -1,4 +1,3 @@
-// src/AppRoutes.tsx
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
@@ -36,11 +35,11 @@ const AppRoutes: React.FC = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/" element={<Home />} />
 
-      {user && user.role === "propietario" && !user.completedRegistration && (
+      {user && user.role === "propietario" && (
         <Route path="/proceso-de-alta" element={<ProcesoDeAlta />} />
       )}
 
-      {user && user.role === "propietario" && user.completedRegistration && (
+      {user && user.role === "propietario" && (
         <Route path="/" element={<OwnerLayout />}>
           <Route path="/dashboard-propietarios" element={<OwnerDashboard />} />
           <Route path="/property-form" element={<PropertyForm />} />
