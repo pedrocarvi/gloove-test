@@ -40,7 +40,7 @@ const AppRoutes: React.FC = () => {
         <Route path="/proceso-de-alta" element={<ProcesoDeAlta />} />
       )}
 
-      {user && user.role === "propietario" && user.completedRegistration && (
+      {user && user.role === "propietario" && (
         <Route path="/" element={<OwnerLayout />}>
           <Route path="/dashboard-propietarios" element={<OwnerDashboard />} />
           <Route path="/property-form" element={<PropertyForm />} />
