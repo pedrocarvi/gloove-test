@@ -1,10 +1,7 @@
-// src/components/Propietarios/ProcesoDeAlta/TechnicalForm.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
-
 
 interface TechnicalFormProps {
   onNext: () => void;
@@ -21,7 +18,6 @@ const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext }) => {
   });
 
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -39,14 +35,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext }) => {
     }
 
     try {
-      const docRef = doc(db, "procesos_de_alta/technical_forms", user.uid);
+      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/technical_form`);
       await setDoc(docRef, {
         userId: user.uid,
         ...formData,
       });
 
       await updateDoc(doc(db, "users", user.uid), {
-        currentStep: 1, // assuming currentStep 1 corresponds to the next step in the process
+        currentStep: 1,
+        processStatus: "textil",
       });
 
       onNext(); // Move to the next step using the onNext prop

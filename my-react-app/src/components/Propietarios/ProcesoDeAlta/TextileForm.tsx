@@ -1,10 +1,7 @@
-// src/components/Propietarios/ProcesoDeAlta/TextileForm.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
-
 
 interface TextileFormProps {
   onNext: () => void;
@@ -43,7 +40,6 @@ const TextileForm: React.FC<TextileFormProps> = ({ onNext }) => {
   });
 
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -61,14 +57,15 @@ const TextileForm: React.FC<TextileFormProps> = ({ onNext }) => {
     }
 
     try {
-      const docRef = doc(db, 'procesos_de_alta/textil_presupuesto', user.uid);
+      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/textil_presupuesto`);
       await setDoc(docRef, {
         userId: user.uid,
         ...formData,
       });
 
       await updateDoc(doc(db, 'users', user.uid), {
-        currentStep: 2 // assuming currentStep 2 corresponds to the next step in the process
+        currentStep: 2,
+        processStatus: 'textile_summary', // Actualiza a textile_summary
       });
 
       onNext(); // Mover al siguiente paso usando el prop onNext

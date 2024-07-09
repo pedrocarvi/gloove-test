@@ -1,13 +1,11 @@
-// src/components/Propietarios/ProcesoDeAlta/Contract.tsx
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
 import { useAuth } from '@/context/AuthContext';
 import SignatureCanvas from 'react-signature-canvas';
 import { jsPDF } from 'jspdf';
-import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage'; // Asegúrate de importar getDownloadURL
-
+import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
+import { useNavigate } from 'react-router-dom';
 
 interface ContractProps {
   onNext: () => void;
@@ -17,15 +15,14 @@ const Contract: React.FC<ContractProps> = ({ onNext }) => {
   const [formData, setFormData] = useState<any>(null);
   const [technicalFormData, setTechnicalFormData] = useState<any>(null);
   const [isSigned, setIsSigned] = useState(false);
-  const navigate = useNavigate();
   const { user } = useAuth();
   const sigCanvas = useRef<SignatureCanvas>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        // Fetch technical form data
-        const technicalFormRef = doc(db, 'procesos_de_alta/technical_forms', user.uid);
+        const technicalFormRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/technical_form`);
         const technicalFormSnap = await getDoc(technicalFormRef);
         if (technicalFormSnap.exists()) {
           setTechnicalFormData(technicalFormSnap.data());
@@ -47,14 +44,10 @@ const Contract: React.FC<ContractProps> = ({ onNext }) => {
   const generatePDFContent = (pdf: jsPDF) => {
     if (technicalFormData) {
       pdf.text('Contrato', 10, 10);
-      pdf.text(`Nombre: ${technicalFormData.nombre}`, 10, 20);
+      pdf.text(`Nombre: ${technicalFormData.vivienda}`, 10, 20);
       pdf.text(`Dirección: ${technicalFormData.direccion}`, 10, 30);
-      pdf.text(`Ciudad: ${technicalFormData.ciudad}`, 10, 40);
-      pdf.text(`País: ${technicalFormData.pais}`, 10, 50);
-      pdf.text(`Teléfono: ${technicalFormData.telefono}`, 10, 60);
-      pdf.text(`Email: ${technicalFormData.email}`, 10, 70);
-      // Add more fields as necessary
-      pdf.addImage(formData.signature, 'PNG', 10, 80, 50, 50);
+      // Añadir más campos según sea necesario
+      pdf.addImage(formData.signature, 'PNG', 10, 40, 50, 50);
     }
   };
 
@@ -72,17 +65,18 @@ const Contract: React.FC<ContractProps> = ({ onNext }) => {
     const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`);
     await uploadString(pdfRef, pdfData, 'data_url');
 
-    const pdfUrl = await getDownloadURL(pdfRef); // Corregir el uso de getDownloadURL
+    const pdfUrl = await getDownloadURL(pdfRef);
 
-    const docRef = doc(db, 'contracts', `contract_${user.uid}`);
+    const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/contract`);
     await setDoc(docRef, { ...formData, pdfUrl });
 
     await updateDoc(doc(db, 'users', user.uid), {
       processStatus: 'inventory_form',
-      currentStep: 4, // Assuming next step is 4
+      currentStep: 5,
     });
 
-    onNext(); // Mover al siguiente paso usando el prop onNext
+    onNext();
+    navigate("/inventory_form"); // Move to the next step
   };
 
   if (!technicalFormData) {
@@ -104,3 +98,4 @@ const Contract: React.FC<ContractProps> = ({ onNext }) => {
 };
 
 export default Contract;
+

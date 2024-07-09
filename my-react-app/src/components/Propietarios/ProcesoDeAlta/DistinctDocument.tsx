@@ -1,11 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
 import { useAuth } from '@/context/AuthContext';
 import Webcam from 'react-webcam';
 import { getStorage, ref, uploadString } from 'firebase/storage';
-
+import { useNavigate } from 'react-router-dom';
 
 interface ImageState {
   dni: string;
@@ -31,8 +30,8 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onNext }) => {
     referenciaCatastral: useRef<Webcam>(null),
     vut: useRef<Webcam>(null)
   };
-  const navigate = useNavigate();
   const { user } = useAuth();
+  const navigate = useNavigate();
 
   const handleCapture = (type: keyof ImageState) => {
     const imageSrc = webcamRefs[type].current?.getScreenshot();
@@ -65,13 +64,14 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onNext }) => {
       await uploadFile(images.referenciaCatastral, `DocumentacionPropietarios/RefCatastral/refCatastral_${user.uid}.jpg`);
     }
 
-    await setDoc(doc(db, 'distinct_documents', user.uid), images);
+    await setDoc(doc(db, `propietarios/${user.uid}/proceso_de_alta/distinct_documents`), images);
     await updateDoc(doc(db, 'users', user.uid), {
       processStatus: 'contract',
-      currentStep: 5 // Asumiendo que el siguiente paso es el 5
+      currentStep: 4,
     });
 
     onNext();
+    navigate("/contract"); // Move to the next step
   };
 
   return (
@@ -112,5 +112,3 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onNext }) => {
 };
 
 export default DistinctDocument;
-
-

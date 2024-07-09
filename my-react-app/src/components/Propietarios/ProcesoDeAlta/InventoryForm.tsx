@@ -1,10 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '@/firebaseConfig';
 import { useAuth } from '@/context/AuthContext';
 
-// Definición de interfaces
 interface Propiedad {
   numero_habitaciones: string;
   numero_banos: string;
@@ -76,7 +74,6 @@ interface FormData {
   extras: Extras;
 }
 
-// Componente InventoryForm
 interface InventoryFormProps {
   onNext: () => void;
 }
@@ -142,7 +139,6 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
   });
 
   const { user } = useAuth();
-  const navigate = useNavigate();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
@@ -167,14 +163,15 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
     }
 
     try {
-      const docRef = doc(db, 'procesos_de_alta/inventario', user.uid);
+      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/inventario`);
       await setDoc(docRef, {
         userId: user.uid,
         ...formData,
       });
 
       await updateDoc(doc(db, 'users', user.uid), {
-        currentStep: 6, // assuming currentStep 6 corresponds to the next step in the process
+        currentStep: 5,
+        processStatus: 'completed',
       });
 
       onNext(); // Mover al siguiente paso usando el prop onNext
@@ -282,8 +279,6 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
             </label>
           </div>
 
-          {/* Add more sections as needed, following the pattern above */}
-
           <button
             type="submit"
             className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
@@ -297,3 +292,6 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
 };
 
 export default InventoryForm;
+
+
+

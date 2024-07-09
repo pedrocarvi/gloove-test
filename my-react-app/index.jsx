@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './src/App';
+import './assets/styles/tailwind.css';  // Ajusta la ruta según la estructura de tu proyecto
+import App from './App';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
