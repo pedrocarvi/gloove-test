@@ -1,20 +1,36 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent } from "react";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 
 interface TechnicalFormProps {
   onNext: () => void;
+  onPrev: () => void;
 }
 
-const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext }) => {
+const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext, onPrev }) => {
   const [formData, setFormData] = useState({
-    vivienda: "",
-    direccion: "",
-    num_habitaciones: "",
-    num_banos: "",
-    superficie: "",
-    otros_detalles: "",
+    fecha: '',
+    agente: '',
+    agencia: '',
+    comisionista: '',
+    fechaFirmaContrato: '',
+    titular: '',
+    propietario: '',
+    email: '',
+    telefono: '',
+    horarioContacto: '',
+    dniPasaporte: '',
+    vivienda: '',
+    ciudad: '',
+    provincia: '',
+    codigoPostal: '',
+    direccionExacta: '',
+    tramitarLicencia: '',
+    numVUT: '',
+    numCuenta: '',
+    numCatastro: '',
+    nombreComercial: '',
   });
 
   const { user } = useAuth();
@@ -27,8 +43,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext }) => {
     });
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
+  const handleNext = async () => {
     if (!user) {
       console.error("Error: user is undefined");
       return;
@@ -56,36 +71,28 @@ const TechnicalForm: React.FC<TechnicalFormProps> = React.memo(({ onNext }) => {
     <div className="form-container">
       <div className="form-card">
         <h1 className="text-4xl font-bold mb-8 text-primary-dark text-center">Ficha Técnica</h1>
-        <form onSubmit={handleSubmit} className="form-content">
-          <div className="form-row">
-            <label>Nombre de la Vivienda</label>
-            <input type="text" name="vivienda" value={formData.vivienda} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Dirección</label>
-            <input type="text" name="direccion" value={formData.direccion} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Número de Habitaciones</label>
-            <input type="text" name="num_habitaciones" value={formData.num_habitaciones} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Número de Baños</label>
-            <input type="text" name="num_banos" value={formData.num_banos} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Superficie (m²)</label>
-            <input type="text" name="superficie" value={formData.superficie} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Otros Detalles</label>
-            <textarea name="otros_detalles" value={formData.otros_detalles} onChange={handleChange}></textarea>
-          </div>
-          <button type="submit" className="form-button">Submit</button>
+        <form className="form-content">
+          {Object.keys(formData).map((key) => (
+            <div className="form-row" key={key}>
+              <label>{key.charAt(0).toUpperCase() + key.slice(1)}</label>
+              <input
+                type="text"
+                name={key}
+                value={(formData as any)[key]} // Use `as any` to avoid TypeScript error
+                onChange={handleChange}
+              />
+            </div>
+          ))}
         </form>
+        <div className="button-group">
+          <button type="button" className="form-button" onClick={onPrev}>Anterior</button>
+          <button type="button" className="form-button" onClick={handleNext}>Siguiente</button>
+        </div>
       </div>
     </div>
   );
 });
 
 export default TechnicalForm;
+
+

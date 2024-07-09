@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import ProgressBar from "./ProgressBar";
 import TechnicalForm from "./TechnicalForm";
 import TextileForm from "./TextileForm";
@@ -18,22 +18,21 @@ const steps = [
 ];
 
 const ProcesoDeAlta: React.FC = () => {
-  const { step } = useParams();
+  const [currentStep, setCurrentStep] = useState(0);
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState<number>(parseInt(step || '0', 10));
-
-  useEffect(() => {
-    console.log('ProcesoDeAlta mounted, currentStep:', currentStep);
-  }, [currentStep]);
 
   const handleNextStep = async () => {
     if (currentStep < steps.length - 1) {
-      console.log('Moving to next step');
       setCurrentStep(currentStep + 1);
-      navigate(`/proceso-de-alta/${currentStep + 1}`);
     } else {
-      console.log('Completing the registration process');
+      // Completar el proceso de alta
       navigate("/dashboard-propietarios");
+    }
+  };
+
+  const handlePrevStep = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1);
     }
   };
 
@@ -44,30 +43,12 @@ const ProcesoDeAlta: React.FC = () => {
       </h1>
       <ProgressBar steps={steps} currentStep={currentStep} />
       <div className="mt-8 bg-white p-6 rounded-lg shadow-lg">
-        {currentStep === 0 && <TechnicalForm onNext={handleNextStep} />}
-        {currentStep === 1 && <TextileForm onNext={handleNextStep} />}
-        {currentStep === 2 && <TextileSummary onNext={handleNextStep} />}
-        {currentStep === 3 && <DistinctDocument onNext={handleNextStep} />}
-        {currentStep === 4 && <Contract onNext={handleNextStep} />}
-        {currentStep === 5 && <InventoryForm onNext={handleNextStep} />}
-        <div className="flex justify-between mt-4">
-          <button
-            disabled={currentStep === 0}
-            onClick={() => {
-              setCurrentStep(currentStep - 1);
-              navigate(`/proceso-de-alta/${currentStep - 1}`);
-            }}
-            className="bg-gray-200 text-gray-700 py-2 px-4 rounded-md hover:bg-gray-300 transition disabled:opacity-50"
-          >
-            Anterior
-          </button>
-          <button
-            onClick={handleNextStep}
-            className="bg-primary text-white py-2 px-4 rounded-md hover:bg-primary-dark transition"
-          >
-            {currentStep === steps.length - 1 ? "Finalizar" : "Siguiente"}
-          </button>
-        </div>
+        {currentStep === 0 && <TechnicalForm onNext={handleNextStep} onPrev={handlePrevStep} />}
+        {currentStep === 1 && <TextileForm onNext={handleNextStep} onPrev={handlePrevStep} />}
+        {currentStep === 2 && <TextileSummary onNext={handleNextStep} onPrev={handlePrevStep} />}
+        {currentStep === 3 && <DistinctDocument onNext={handleNextStep} onPrev={handlePrevStep} />}
+        {currentStep === 4 && <Contract onNext={handleNextStep} onPrev={handlePrevStep} />}
+        {currentStep === 5 && <InventoryForm onNext={handleNextStep} onPrev={handlePrevStep} />}
       </div>
     </div>
   );
