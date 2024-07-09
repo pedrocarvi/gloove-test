@@ -10,7 +10,7 @@ interface ProgressBarProps {
 const ProgressBar: React.FC<ProgressBarProps> = React.memo(
   ({ steps, currentStep }) => {
     const progressWidth = useMemo(
-      () => `${(currentStep / steps.length) * 100}%`,
+      () => `${(currentStep / (steps.length - 1)) * 100}%`,
       [currentStep, steps.length]
     );
 

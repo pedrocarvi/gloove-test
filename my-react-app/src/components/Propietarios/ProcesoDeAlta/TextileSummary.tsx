@@ -1,4 +1,3 @@
-// src/components/Propietarios/ProcesoDeAlta/TextileSummary.tsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
@@ -7,8 +6,11 @@ import { useAuth } from '@/context/AuthContext';
 import { jsPDF } from 'jspdf';
 import { getStorage, ref, uploadString, getDownloadURL } from 'firebase/storage';
 
+interface TextileSummaryProps {
+  onNext: () => void;
+}
 
-const TextileSummary: React.FC = () => {
+const TextileSummary: React.FC<TextileSummaryProps> = ({ onNext }) => {
   const [formData, setFormData] = useState<any>(null);
   const [budget, setBudget] = useState<number>(0);
   const [summary, setSummary] = useState<Record<string, number>>({});
@@ -18,7 +20,7 @@ const TextileSummary: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        const docRef = doc(db, 'procesos_de_alta/textil_presupuesto', user.uid);
+        const docRef = doc(db, 'propietarios', user.uid, 'proceso_de_alta', 'textil_presupuesto');
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setFormData(docSnap.data());
@@ -90,7 +92,7 @@ const TextileSummary: React.FC = () => {
     const pdfUrl = await generateAndUploadPDF(newSummary, total, user.uid);
 
     // Actualizar Firestore con la URL del PDF
-    const docRef = doc(db, 'procesos_de_alta/textile_summaries', user.uid);
+    const docRef = doc(db, 'propietarios', user.uid, 'proceso_de_alta', 'textile_summaries');
     await setDoc(docRef, {
       userId: user.uid,
       pdfUrl,
@@ -160,6 +162,7 @@ const TextileSummary: React.FC = () => {
     await updateDoc(userDocRef, {
       currentStep: 3, // Asumiendo que el siguiente paso es el 3
     });
+    onNext();
     navigate('/distinct_document');
   };
 

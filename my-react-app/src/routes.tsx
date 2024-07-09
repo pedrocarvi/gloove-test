@@ -36,7 +36,7 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<Home />} />
 
       {user && user.role === "propietario" && (
-        <Route path="/proceso-de-alta" element={<ProcesoDeAlta />} />
+        <Route path="/proceso-de-alta/:step" element={<ProcesoDeAlta />} />
       )}
 
       {user && user.role === "propietario" && (
@@ -74,3 +74,9 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
+
+
+
+
+
+

@@ -42,27 +42,43 @@ const Login = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
+        console.log('Attempting to log in with email:', email);
         const userCredential = await login(email, password);
         const user = userCredential.user;
+        console.log('User authenticated:', user.uid);
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
+          console.log('User document found:', userData);
           const role = userData?.role;
           const completedRegistration = userData?.completedRegistration;
+          const currentStep = userData?.currentStep;
+
+          console.log('User role:', role);
+          console.log('User completedRegistration:', completedRegistration);
+          console.log('User currentStep:', currentStep);
 
           if (role === "propietario") {
             if (completedRegistration) {
+              console.log('Redirecting to /dashboard-propietarios');
               navigate("/dashboard-propietarios");
             } else {
-              navigate("/proceso-de-alta");
+              console.log(`Redirecting to /proceso-de-alta/${currentStep}`);
+              navigate(`/proceso-de-alta/${currentStep}`);
             }
           } else if (role === "huesped") {
+            console.log('Redirecting to /dashboard-huespedes');
             navigate("/dashboard-huespedes");
           } else if (role === "empleado") {
+            console.log('Redirecting to /dashboard-empleados');
             navigate("/dashboard-empleados");
           }
+        } else {
+          console.error('User document does not exist');
+          setErrors({ email: "", password: "User data not found" });
         }
       } catch (error: any) {
+        console.error('Error during login:', error);
         setErrors({ email: "", password: error.message });
       }
     }
@@ -171,3 +187,5 @@ const Login = () => {
 };
 
 export default Login;
+
+
