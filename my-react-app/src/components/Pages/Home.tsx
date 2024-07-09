@@ -1,9 +1,11 @@
-import React from 'react';
+// src/components/Pages/Home.tsx
+import React from "react";
 import { Parallax, ParallaxLayer } from "@react-spring/parallax";
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import NavbarHome from "../Layout/NavbarHome";
 import { CheckIcon } from "@heroicons/react/24/outline";
+import Chatbot from "../UI/Chatbot";
 
 const Home: React.FC = () => {
   const { ref: section1Ref, inView: section1InView } = useInView({
@@ -34,7 +36,7 @@ const Home: React.FC = () => {
   return (
     <div>
       <NavbarHome />
-      <Parallax pages={5} className="h-screen">
+      <Parallax pages={6} className="h-screen">
         <ParallaxLayer
           offset={0}
           speed={0.5}
@@ -190,6 +192,14 @@ const Home: React.FC = () => {
               </button>
             </div>
           </motion.div>
+        </ParallaxLayer>
+
+        <ParallaxLayer
+          offset={6}
+          speed={0.5}
+          className="flex items-center justify-center bg-white"
+        >
+          <Chatbot /> {/* Aquí se muestra el Chatbot */}
         </ParallaxLayer>
       </Parallax>
     </div>
