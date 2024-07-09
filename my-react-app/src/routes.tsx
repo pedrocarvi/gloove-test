@@ -21,7 +21,7 @@ import IncidentForm from "./components/Huespedes/IncidentForm";
 import ProfilePage from "./components/Huespedes/ProfilePage";
 
 import EmpleadosLayout from "./components/Empleados/EmpleadosLayout";
-import EmpleadosDashboard from "./components/Empleados/Dashboard";
+import EmpleadosDashboard from "./components/Empleados/EmployeeDashboard";
 import Documentacion from "./components/Propietarios/PropietariosValidados/Documentacion";
 import Documents from "./components/Propietarios/PropietariosValidados/Documents";
 import OwnerProfile from "./components/Propietarios/PropietariosValidados/OwnerProfile";
@@ -74,9 +74,3 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
-
-
-
-
-
-

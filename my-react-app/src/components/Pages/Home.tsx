@@ -92,6 +92,15 @@ const Home: React.FC = () => {
         </ParallaxLayer>
 
         <ParallaxLayer
+          offset={1.5}
+          speed={0.5}
+          className="flex items-center justify-center bg-white"
+        >
+          <Chatbot />{" "}
+          {/* Aquí se muestra el Chatbot en una posición más visible */}
+        </ParallaxLayer>
+
+        <ParallaxLayer
           offset={2}
           speed={0.5}
           className="flex items-center justify-center bg-teal-700"
@@ -192,14 +201,6 @@ const Home: React.FC = () => {
               </button>
             </div>
           </motion.div>
-        </ParallaxLayer>
-
-        <ParallaxLayer
-          offset={6}
-          speed={0.5}
-          className="flex items-center justify-center bg-white"
-        >
-          <Chatbot /> {/* Aquí se muestra el Chatbot */}
         </ParallaxLayer>
       </Parallax>
     </div>
