@@ -13,6 +13,8 @@ interface FormData {
   provincia: string;
   direccion: string;
   cPostal: string;
+  DNI: string;
+  numCatastro: string;
   licenciaTuristica: boolean;
   numeroVUT: string;
   comPropietarios: boolean;
@@ -88,6 +90,8 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     provincia: initialValues.provincia || "",
     direccion: initialValues.direccion || "",
     cPostal: initialValues.cPostal || "",
+    DNI: initialValues.DNI || "",
+    numCatastro: initialValues.numCatastro || "",
     licenciaTuristica: initialValues.licenciaTuristica || false,
     numeroVUT: initialValues.numeroVUT || "",
     comPropietarios: initialValues.comPropietarios || false,
@@ -153,57 +157,59 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     doc.text(`Provincia: ${formData.provincia}`, 10, 40);
     doc.text(`Dirección: ${formData.direccion}`, 10, 50);
     doc.text(`Código Postal: ${formData.cPostal}`, 10, 60);
+    doc.text(`DNI/PASAPORTE: ${formData.DNI}`, 10, 65); // Nuevo campo
+    doc.text(`Num Catastro: ${formData.numCatastro}`, 10, 70); // Nuevo campo
     doc.text(
       `Licencia Turística: ${formData.licenciaTuristica ? "Sí" : "No"}`,
       10,
-      70
+      80
     );
-    doc.text(`Número VUT: ${formData.numeroVUT}`, 10, 80);
+    doc.text(`Número VUT: ${formData.numeroVUT}`, 10, 90);
     doc.text(
       `Comunidad de Propietarios: ${formData.comPropietarios ? "Sí" : "No"}`,
       10,
-      90
+      100
     );
-    doc.text(`Tipo de Vivienda: ${formData.tipoVivienda}`, 10, 100);
-    doc.text(`Exterior: ${formData.exterior ? "Sí" : "No"}`, 10, 110);
-    doc.text(`Interior: ${formData.interior ? "Sí" : "No"}`, 10, 120);
-    doc.text(`Portero: ${formData.portero ? "Sí" : "No"}`, 10, 130);
+    doc.text(`Tipo de Vivienda: ${formData.tipoVivienda}`, 10, 110);
+    doc.text(`Exterior: ${formData.exterior ? "Sí" : "No"}`, 10, 120);
+    doc.text(`Interior: ${formData.interior ? "Sí" : "No"}`, 10, 130);
+    doc.text(`Portero: ${formData.portero ? "Sí" : "No"}`, 10, 140);
     doc.text(
       `Portero Automático: ${formData.porteroAutomatico ? "Sí" : "No"}`,
       10,
-      140
+      150
     );
-    doc.text(`Ascensor: ${formData.ascensor ? "Sí" : "No"}`, 10, 150);
-    doc.text(`Garaje: ${formData.garaje ? "Sí" : "No"}`, 10, 160);
+    doc.text(`Ascensor: ${formData.ascensor ? "Sí" : "No"}`, 10, 160);
+    doc.text(`Garaje: ${formData.garaje ? "Sí" : "No"}`, 10, 170);
     doc.text(
       `Garaje Concertado: ${formData.garajeConcertado ? "Sí" : "No"}`,
       10,
-      170
+      180
     );
     doc.text(
       `Fácil Aparcamiento: ${formData.facilAparcamiento ? "Sí" : "No"}`,
       10,
-      180
+      190
     );
-    doc.text(`Vistas: ${formData.vistas}`, 10, 190);
-    doc.text(`Piscina: ${formData.piscina ? "Sí" : "No"}`, 10, 200);
-    doc.text(`Jardín: ${formData.jardin ? "Sí" : "No"}`, 10, 210);
-    doc.text(`Observaciones: ${formData.observaciones}`, 10, 220);
-    doc.text(`Zonas Comunes: ${formData.zonasComunes}`, 10, 230);
-    doc.text(`Zonas Turísticas: ${formData.zonasTuristicas}`, 10, 240);
-    doc.text(`Accesibilidad: ${formData.accesibilidad}`, 10, 250);
-    doc.text(`Habitaciones: ${formData.habitaciones}`, 10, 260);
-    doc.text(`Baños: ${formData.banos}`, 10, 270);
-    doc.text(`Aseos: ${formData.aseos}`, 10, 280);
-    doc.text(`Ducha: ${formData.duchas}`, 10, 290);
-    doc.text(`Bañera: ${formData.baneras}`, 10, 300);
-    doc.text(`Trastero: ${formData.trastero ? "Sí" : "No"}`, 10, 310);
-    doc.text(`Mascotas: ${formData.mascotas ? "Sí" : "No"}`, 10, 320);
-    doc.text(`Cocina: ${formData.cocina}`, 10, 330);
-    doc.text(`Capacidad Máxima: ${formData.capacidadMaxima}`, 10, 340);
+    doc.text(`Vistas: ${formData.vistas}`, 10, 200);
+    doc.text(`Piscina: ${formData.piscina ? "Sí" : "No"}`, 10, 210);
+    doc.text(`Jardín: ${formData.jardin ? "Sí" : "No"}`, 10, 220);
+    doc.text(`Observaciones: ${formData.observaciones}`, 10, 230);
+    doc.text(`Zonas Comunes: ${formData.zonasComunes}`, 10, 240);
+    doc.text(`Zonas Turísticas: ${formData.zonasTuristicas}`, 10, 250);
+    doc.text(`Accesibilidad: ${formData.accesibilidad}`, 10, 260);
+    doc.text(`Habitaciones: ${formData.habitaciones}`, 10, 270);
+    doc.text(`Baños: ${formData.banos}`, 10, 280);
+    doc.text(`Aseos: ${formData.aseos}`, 10, 290);
+    doc.text(`Ducha: ${formData.duchas}`, 10, 300);
+    doc.text(`Bañera: ${formData.baneras}`, 10, 310);
+    doc.text(`Trastero: ${formData.trastero ? "Sí" : "No"}`, 10, 320);
+    doc.text(`Mascotas: ${formData.mascotas ? "Sí" : "No"}`, 10, 330);
+    doc.text(`Cocina: ${formData.cocina}`, 10, 340);
+    doc.text(`Capacidad Máxima: ${formData.capacidadMaxima}`, 10, 350);
 
     formData.camas.forEach((cama, index) => {
-      const offsetY = 350 + index * 100;
+      const offsetY = 360 + index * 100;
       doc.text(`Cama ${index + 1}`, 10, offsetY);
       doc.text(`  Tipo: ${cama.tipo}`, 10, offsetY + 10);
       doc.text(
@@ -318,6 +324,33 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 type="email"
                 name="email"
                 value={formData.email}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                DNI/PASAPORTE
+              </label>
+              <input
+                type="text"
+                name="DNI"
+                value={formData.DNI}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700">
+                Num Catastro
+              </label>
+              <input
+                type="text"
+                name="numCatastro"
+                value={formData.numCatastro}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
@@ -939,3 +972,4 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
 };
 
 export default TechnicalForm;
+

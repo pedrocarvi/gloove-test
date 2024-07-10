@@ -73,6 +73,6 @@ async function createUser(email, password, role) {
 }
 
 // Example usage
-createUser('propietario6@example.com', 'password123', 'propietario');
-createUser('empleado6@example.com', 'password123', 'empleado');
-createUser('huesped6@example.com', 'password123', 'huesped');
+createUser('propietario7@example.com', 'password123', 'propietario');
+createUser('empleado7@example.com', 'password123', 'empleado');
+createUser('huesped7@example.com', 'password123', 'huesped');

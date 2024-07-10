@@ -99,6 +99,17 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
     onAccept();
   };
 
+  const pdfUrl = "https://firebasestorage.googleapis.com/v0/b/software-gloove.appspot.com/o/Documentacion%20obligatoria%2FDocumentacio%CC%81n%20necesaria%20para%20cumplimentacio%CC%81n%20de%20contrato.pdf?alt=media&token=1b8a312e-f7cc-4c02-ba0c-f536a871745c";
+
+  const handleDownloadPdf = () => {
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = 'Documentación_necesaria.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="flex items-center justify-center bg-gray-100 py-8">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg">
@@ -190,8 +201,33 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
           </button>
         </div>
       </div>
+
+      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mt-8">
+        <h2 className="text-2xl font-bold mb-4 text-center text-gray-800">
+          Documentación Necesaria
+        </h2>
+        <div className="mb-4">
+          <p className="text-gray-600 mb-2">
+            Aquí puedes visualizar y descargar la documentación necesaria para cumplimentar el contrato.
+          </p>
+          <div className="aspect-w-16 aspect-h-9">
+            <iframe
+              src={`${pdfUrl}#view=FitH`}
+              className="w-full h-96 border border-gray-300 rounded-md"
+              title="Documentación necesaria"
+            />
+          </div>
+        </div>
+        <button
+          onClick={handleDownloadPdf}
+          className="w-full py-2 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+        >
+          Descargar PDF
+        </button>
+      </div>
     </div>
   );
 };
 
 export default DistinctDocument;
+
