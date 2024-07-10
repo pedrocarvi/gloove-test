@@ -1,7 +1,8 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { doc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '@/firebaseConfig';
-import { useAuth } from '@/context/AuthContext';
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { doc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
+import { useAuth } from "@/context/AuthContext";
+import Swal from "sweetalert2";
 
 interface Propiedad {
   numero_habitaciones: string;
@@ -75,14 +76,20 @@ interface FormData {
 }
 
 interface InventoryFormProps {
-  onNext: () => void;
+  onAccept: () => void;
+  initialValues?: FormData;
+  setFormValues: (step: number, values: any) => void;
 }
 
-const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
-  const [formData, setFormData] = useState<FormData>({
+const InventoryForm: React.FC<InventoryFormProps> = ({
+  onAccept,
+  initialValues = {} as FormData,
+  setFormValues,
+}) => {
+  const defaultFormData: FormData = {
     propiedad: {
-      numero_habitaciones: '',
-      numero_banos: '',
+      numero_habitaciones: "",
+      numero_banos: "",
       aire_acondicionado: false,
       calefaccion: false,
       piscina: false,
@@ -98,25 +105,25 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
       zonaInfantil: false,
       spa: false,
       animales: false,
-      pesoLimiteAnimalesKg: '',
+      pesoLimiteAnimalesKg: "",
       seAceptanAnimalesRazaPeligrosa: false,
     },
     piscina: {
-      tipoPiscina: '',
-      fechaApertura: '',
-      fechaCierre: '',
-      dimensiones: '',
-      profundidadMaxima: '',
-      profundidadMinima: '',
+      tipoPiscina: "",
+      fechaApertura: "",
+      fechaCierre: "",
+      dimensiones: "",
+      profundidadMaxima: "",
+      profundidadMinima: "",
       piscinaClimatizada: false,
-      fechaAperturaClimatizada: '',
-      fechaCierreClimatizada: '',
-      dimensionesClimatizada: '',
-      profundidadMaximaClimatizada: '',
-      profundidadMinimaClimatizada: '',
+      fechaAperturaClimatizada: "",
+      fechaCierreClimatizada: "",
+      dimensionesClimatizada: "",
+      profundidadMaximaClimatizada: "",
+      profundidadMinimaClimatizada: "",
     },
     restricciones: {
-      noGruposJovenesMenosDe: '',
+      noGruposJovenesMenosDe: "",
       fumarPermitido: false,
     },
     vistas: {
@@ -136,15 +143,27 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
       mascota: false,
       sillaBebe: false,
     },
-  });
+  };
+
+  const [formData, setFormData] = useState<FormData>(
+    initialValues ? { ...defaultFormData, ...initialValues } : defaultFormData
+  );
 
   const { user } = useAuth();
+  const [errors, setErrors] = useState({
+    numero_habitaciones: false,
+    numero_banos: false,
+  });
+
+  const handleBlur = () => {
+    setFormValues(5, formData); // Guarda el estado del formulario al perder el foco
+  };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, checked, type } = e.target;
-    const newValue = type === 'checkbox' ? checked : value;
+    const newValue = type === "checkbox" ? checked : value;
 
-    const keys = name.split('.');
+    const keys = name.split(".");
 
     setFormData((prevFormData) => {
       const updatedData: any = { ...prevFormData };
@@ -153,62 +172,132 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
       }
       return updatedData;
     });
+
+    if (errors[keys[1] as keyof typeof errors]) {
+      setErrors({ ...errors, [keys[1]]: false });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      numero_habitaciones: formData.propiedad.numero_habitaciones === "",
+      numero_banos: formData.propiedad.numero_banos === "",
+    };
+    setErrors(newErrors);
+    return !Object.values(newErrors).some(Boolean);
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!validateForm()) {
+      const missingFields = Object.keys(errors)
+        .filter(
+          (key) =>
+            formData.propiedad[key as keyof typeof formData.propiedad] === ""
+        )
+        .map((key) => key.replace(/_/g, " "))
+        .join(", ");
+
+      Swal.fire({
+        icon: "error",
+        title: "Faltan campos obligatorios",
+        html: `<p>Por favor, completa todos los campos obligatorios:</p><p style="color:red;">${missingFields}</p>`,
+      });
+      return;
+    }
     if (!user) {
-      console.error('User is not authenticated');
+      console.error("Error: user is undefined");
       return;
     }
 
     try {
-      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/inventario`);
+      const docRef = doc(
+        db,
+        `propietarios/${user.uid}/proceso_de_alta/inventario`
+      );
       await setDoc(docRef, {
         userId: user.uid,
         ...formData,
       });
 
-      await updateDoc(doc(db, 'users', user.uid), {
+      await updateDoc(doc(db, "users", user.uid), {
         currentStep: 5,
-        processStatus: 'completed',
+        processStatus: "completed",
       });
 
-      onNext(); // Mover al siguiente paso usando el prop onNext
+      onAccept(); // Indicar que el formulario ha sido aceptado
+      Swal.fire({
+        icon: "success",
+        title: "Formulario aceptado",
+        text: "Puedes proceder al siguiente paso.",
+      });
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error("Error adding document: ", error);
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold mb-6">Formulario de Inventario</h1>
-        <form onSubmit={handleSubmit} className="space-y-6">
+    <div className="flex items-center justify-center bg-gray-100 py-8">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-2xl">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Formulario de Inventario
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="numero_habitaciones"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Número de Habitaciones
+              </label>
+              <input
+                type="number"
+                id="numero_habitaciones"
+                name="propiedad.numero_habitaciones"
+                value={formData.propiedad.numero_habitaciones}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`mt-1 block w-full px-3 py-2 border ${
+                  errors.numero_habitaciones
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary`}
+                placeholder="Número de Habitaciones"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="numero_banos"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Número de Baños
+              </label>
+              <input
+                type="number"
+                id="numero_banos"
+                name="propiedad.numero_banos"
+                value={formData.propiedad.numero_banos}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`mt-1 block w-full px-3 py-2 border ${
+                  errors.numero_banos ? "border-red-500" : "border-gray-300"
+                } rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary`}
+                placeholder="Número de Baños"
+              />
+            </div>
+          </div>
           <div className="space-y-4">
-            <h4 className="text-xl font-semibold mb-2">Propiedad</h4>
-            <input
-              type="number"
-              name="propiedad.numero_habitaciones"
-              value={formData.propiedad.numero_habitaciones}
-              onChange={handleChange}
-              placeholder="Número de Habitaciones"
-              className="w-full p-2 border border-gray-300 rounded"
-            />
-            <input
-              type="number"
-              name="propiedad.numero_banos"
-              value={formData.propiedad.numero_banos}
-              onChange={handleChange}
-              placeholder="Número de Baños"
-              className="w-full p-2 border border-gray-300 rounded"
-            />
+            <h4 className="text-xl font-semibold mb-2">
+              Características de la Propiedad
+            </h4>
             <label className="block">
               <input
                 type="checkbox"
                 name="propiedad.aire_acondicionado"
                 checked={formData.propiedad.aire_acondicionado}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Aire Acondicionado
@@ -219,6 +308,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
                 name="propiedad.calefaccion"
                 checked={formData.propiedad.calefaccion}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Calefacción
@@ -229,20 +319,23 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
                 name="propiedad.piscina"
                 checked={formData.propiedad.piscina}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Piscina
             </label>
           </div>
-
           <div className="space-y-4">
-            <h4 className="text-xl font-semibold mb-2">Características Adicionales</h4>
+            <h4 className="text-xl font-semibold mb-2">
+              Características Adicionales
+            </h4>
             <label className="block">
               <input
                 type="checkbox"
                 name="caracteristicasAdicionales.terraza"
                 checked={formData.caracteristicasAdicionales.terraza}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Terraza
@@ -253,6 +346,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
                 name="caracteristicasAdicionales.alarma"
                 checked={formData.caracteristicasAdicionales.alarma}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Alarma
@@ -263,6 +357,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
                 name="caracteristicasAdicionales.gimnasio"
                 checked={formData.caracteristicasAdicionales.gimnasio}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Gimnasio
@@ -273,18 +368,20 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
                 name="caracteristicasAdicionales.squash"
                 checked={formData.caracteristicasAdicionales.squash}
                 onChange={handleChange}
+                onBlur={handleBlur}
                 className="mr-2"
               />
               Squash
             </label>
           </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-          >
-            Guardar y Continuar
-          </button>
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+            >
+              Guardar y Continuar
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -292,6 +389,3 @@ const InventoryForm: React.FC<InventoryFormProps> = ({ onNext }) => {
 };
 
 export default InventoryForm;
-
-
-

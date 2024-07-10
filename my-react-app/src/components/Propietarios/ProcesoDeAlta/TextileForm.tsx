@@ -2,196 +2,184 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
+import Swal from "sweetalert2";
 
 interface TextileFormProps {
-  onNext: () => void;
+  onAccept: () => void;
 }
 
-const TextileForm: React.FC<TextileFormProps> = ({ onNext }) => {
-  const [formData, setFormData] = useState({
-    toallaDucha: '',
-    toallaLavabo: '',
-    alfombrin: '',
-    sabanaEncimera90: '',
-    sabanaEncimera105: '',
-    sabanaEncimera150: '',
-    sabanaEncimera180: '',
-    fundaAlmohada75: '',
-    fundaAlmohada90: '',
-    rellenoAlmohada75: '',
-    rellenoAlmohada90: '',
-    fundaNordica90: '',
-    fundaNordica105: '',
-    fundaNordica135: '',
-    fundaNordica150: '',
-    fundaNordica180: '',
-    fundaNordica200: '',
-    rellenoNordico90: '',
-    rellenoNordico105: '',
-    rellenoNordico135: '',
-    rellenoNordico150: '',
-    rellenoNordico180: '',
-    rellenoNordico200: '',
-    protectorColchon180: '',
-    protectorColchon150: '',
-    protectorColchon135: '',
-    protectorColchon105: '',
-    protectorColchon90: '',
+interface TextileItem {
+  medida: string;
+  cantidad: string;
+}
+
+interface TextileFormData {
+  toalla: TextileItem[];
+  alfombrin: TextileItem[];
+  sabanaEncimera: TextileItem[];
+  fundaAlmohada: TextileItem[];
+  rellenoAlmohada: TextileItem[];
+  fundaNordica: TextileItem[];
+  rellenoNordico: TextileItem[];
+  protectorColchon: TextileItem[];
+}
+
+type Category = keyof TextileFormData;
+
+const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
+  const initialProductState = { medida: "", cantidad: "" };
+
+  const [formData, setFormData] = useState<TextileFormData>({
+    toalla: [initialProductState],
+    alfombrin: [initialProductState],
+    sabanaEncimera: [initialProductState],
+    fundaAlmohada: [initialProductState],
+    rellenoAlmohada: [initialProductState],
+    fundaNordica: [initialProductState],
+    rellenoNordico: [initialProductState],
+    protectorColchon: [initialProductState],
   });
 
   const { user } = useAuth();
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
+    category: Category,
+    index: number
+  ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
+    setFormData((prevData) => {
+      const updatedCategory = [...prevData[category]];
+      updatedCategory[index] = { ...updatedCategory[index], [name]: value };
+      return { ...prevData, [category]: updatedCategory };
     });
+  };
+
+  const handleAdd = (category: Category) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      [category]: [...prevData[category], initialProductState],
+    }));
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!user) {
-      console.error('Error: user is undefined');
+      console.error("Error: user is undefined");
       return;
     }
 
     try {
-      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/textil_presupuesto`);
+      const docRef = doc(
+        db,
+        `propietarios/${user.uid}/proceso_de_alta/textil_presupuesto`
+      );
       await setDoc(docRef, {
         userId: user.uid,
         ...formData,
       });
 
-      await updateDoc(doc(db, 'users', user.uid), {
+      await updateDoc(doc(db, "users", user.uid), {
         currentStep: 2,
-        processStatus: 'textile_summary', // Actualiza a textile_summary
+        processStatus: "textile_summary",
       });
 
-      onNext(); // Mover al siguiente paso usando el prop onNext
+      Swal.fire({
+        icon: "success",
+        title: "Formulario aceptado",
+        text: "Puedes proceder al siguiente paso.",
+      });
+      onAccept();
     } catch (error) {
-      console.error('Error adding document: ', error);
+      console.error("Error adding document: ", error);
     }
   };
 
   return (
-    <div className="form-container">
-      <div className="form-card">
-        <h1 className="text-4xl font-bold mb-8 text-primary-dark text-center">Formulario de Textiles</h1>
-        <form onSubmit={handleSubmit} className="form-content">
-          <div className="form-row">
-            <label>Toalla Ducha 100x150</label>
-            <input type="text" name="toallaDucha" value={formData.toallaDucha} onChange={handleChange} />
+    <div className="flex items-center justify-center bg-gray-100 py-8">
+      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-3xl">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
+          Formulario de Textiles
+        </h1>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {[
+            { name: "toalla", label: "Toalla", options: ["50x100", "100x150"] },
+            { name: "alfombrin", label: "Alfombrín", options: ["50x65"] },
+            {
+              name: "sabanaEncimera",
+              label: "Sábana Encimera",
+              options: ["90", "105", "150", "180"],
+            },
+            {
+              name: "fundaAlmohada",
+              label: "Funda Almohada",
+              options: ["75", "90"],
+            },
+            {
+              name: "rellenoAlmohada",
+              label: "Relleno Almohada",
+              options: ["75", "90"],
+            },
+            {
+              name: "fundaNordica",
+              label: "Funda Nórdica",
+              options: ["90", "105", "135", "150", "180", "200"],
+            },
+            {
+              name: "rellenoNordico",
+              label: "Relleno Nórdico",
+              options: ["90", "105", "135", "150", "180", "200"],
+            },
+            {
+              name: "protectorColchon",
+              label: "Protector Colchón",
+              options: ["90", "105", "135", "150", "180"],
+            },
+          ].map(({ name, label, options }) => (
+            <div key={name} className="mb-4">
+              <h3 className="text-lg font-semibold mb-2">{label}</h3>
+              {formData[name as Category].map((item, index) => (
+                <div key={index} className="flex items-center space-x-2 mb-2">
+                  <select
+                    name="medida"
+                    value={item.medida}
+                    onChange={(e) => handleChange(e, name as Category, index)}
+                    className="mt-1 block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  >
+                    <option value="">Seleccione medida</option>
+                    {options.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="number"
+                    name="cantidad"
+                    value={item.cantidad}
+                    onChange={(e) => handleChange(e, name as Category, index)}
+                    placeholder="Cantidad"
+                    className="mt-1 block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => handleAdd(name as Category)}
+                className="py-1 px-2 bg-primary text-white rounded-md"
+              >
+                Añadir {label}
+              </button>
+            </div>
+          ))}
+          <div className="mt-6">
+            <button
+              type="submit"
+              className="w-full py-2 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+            >
+              Enviar Formulario
+            </button>
           </div>
-          <div className="form-row">
-            <label>Toalla Lavabo 50x100</label>
-            <input type="text" name="toallaLavabo" value={formData.toallaLavabo} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Alfombrín 50x65</label>
-            <input type="text" name="alfombrin" value={formData.alfombrin} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Sábana Encimera/Bajera cama 90x200</label>
-            <input type="text" name="sabanaEncimera90" value={formData.sabanaEncimera90} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Sábana Encimera/Bajera cama 1,05 - 180x290</label>
-            <input type="text" name="sabanaEncimera105" value={formData.sabanaEncimera105} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Sábana Encimera/Bajera cama 1,50 - 200x290</label>
-            <input type="text" name="sabanaEncimera150" value={formData.sabanaEncimera150} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Sábana Encimera/Bajera cama 1,80 - 200x290</label>
-            <input type="text" name="sabanaEncimera180" value={formData.sabanaEncimera180} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Almohada 75</label>
-            <input type="text" name="fundaAlmohada75" value={formData.fundaAlmohada75} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Almohada 90</label>
-            <input type="text" name="fundaAlmohada90" value={formData.fundaAlmohada90} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Almohada 75</label>
-            <input type="text" name="rellenoAlmohada75" value={formData.rellenoAlmohada75} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Almohada 90</label>
-            <input type="text" name="rellenoAlmohada90" value={formData.rellenoAlmohada90} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Nórdica 90</label>
-            <input type="text" name="fundaNordica90" value={formData.fundaNordica90} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Nórdica 105</label>
-            <input type="text" name="fundaNordica105" value={formData.fundaNordica105} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Nórdica 135</label>
-            <input type="text" name="fundaNordica135" value={formData.fundaNordica135} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Nórdica 150</label>
-            <input type="text" name="fundaNordica150" value={formData.fundaNordica150} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Nórdica 180</label>
-            <input type="text" name="fundaNordica180" value={formData.fundaNordica180} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Funda Nórdica 200</label>
-            <input type="text" name="fundaNordica200" value={formData.fundaNordica200} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Nórdico 90</label>
-            <input type="text" name="rellenoNordico90" value={formData.rellenoNordico90} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Nórdico 105</label>
-            <input type="text" name="rellenoNordico105" value={formData.rellenoNordico105} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Nórdico 135</label>
-            <input type="text" name="rellenoNordico135" value={formData.rellenoNordico135} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Nórdico 150</label>
-            <input type="text" name="rellenoNordico150" value={formData.rellenoNordico150} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Nórdico 180</label>
-            <input type="text" name="rellenoNordico180" value={formData.rellenoNordico180} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Relleno Nórdico 200</label>
-            <input type="text" name="rellenoNordico200" value={formData.rellenoNordico200} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Protector Colchón 180</label>
-            <input type="text" name="protectorColchon180" value={formData.protectorColchon180} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Protector Colchón 150</label>
-            <input type="text" name="protectorColchon150" value={formData.protectorColchon150} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Protector Colchón 135</label>
-            <input type="text" name="protectorColchon135" value={formData.protectorColchon135} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Protector Colchón 105</label>
-            <input type="text" name="protectorColchon105" value={formData.protectorColchon105} onChange={handleChange} />
-          </div>
-          <div className="form-row">
-            <label>Protector Colchón 90</label>
-            <input type="text" name="protectorColchon90" value={formData.protectorColchon90} onChange={handleChange} />
-          </div>
-          <button type="submit" className="form-button">Submit</button>
         </form>
       </div>
     </div>

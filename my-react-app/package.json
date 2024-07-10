@@ -23,6 +23,7 @@
     "firebase": "^10.12.3",
     "firebase-admin": "^12.2.0",
     "framer-motion": "^11.2.12",
+    "html2canvas": "^1.4.1",
     "jspdf": "^2.5.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.4",
@@ -38,6 +39,7 @@
     "recharts": "^2.12.7",
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.11",
+    "sweetalert2": "^11.12.2",
     "swiper": "^11.1.4",
     "typescript": "^5.5.2"
   },
