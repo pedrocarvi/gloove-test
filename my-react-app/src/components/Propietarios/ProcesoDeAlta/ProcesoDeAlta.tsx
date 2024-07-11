@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { doc, updateDoc } from "firebase/firestore"; // Importa doc y updateDoc
+import { useAuth } from "@/context/AuthContext"; // Importa useAuth
+import { db } from "@/firebaseConfig"; // Importa db
+
 import ProgressBar from "./ProgressBar";
 import TechnicalForm from "./TechnicalForm";
 import TextileForm from "./TextileForm";
@@ -20,6 +24,7 @@ const steps = [
 const ProcesoDeAlta: React.FC = () => {
   const { step } = useParams();
   const navigate = useNavigate();
+  const { user } = useAuth(); // Usa useAuth para obtener el usuario autenticado
   const [currentStep, setCurrentStep] = useState<number>(
     parseInt(step ?? "0", 10)
   );
@@ -38,7 +43,15 @@ const ProcesoDeAlta: React.FC = () => {
       navigate(`/proceso-de-alta/${currentStep + 1}`);
     } else {
       console.log("Completing the registration process");
-      navigate("/dashboard-propietarios");
+      try {
+        if (user) {
+          const userRef = doc(db, "users", user.uid);
+          await updateDoc(userRef, { completedRegistration: true });
+        }
+        navigate("/dashboard-propietarios");
+      } catch (error) {
+        console.error("Error updating completed registration status:", error);
+      }
     }
   };
 

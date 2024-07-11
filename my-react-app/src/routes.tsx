@@ -25,6 +25,7 @@ import EmpleadosDashboard from "./components/Empleados/EmployeeDashboard";
 import Documentacion from "./components/Propietarios/PropietariosValidados/Documentacion";
 import Documents from "./components/Propietarios/PropietariosValidados/Documents";
 import OwnerProfile from "./components/Propietarios/PropietariosValidados/OwnerProfile";
+import { Navigate } from "react-router-dom";
 
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
@@ -36,19 +37,21 @@ const AppRoutes: React.FC = () => {
       <Route path="/" element={<Home />} />
 
       {user && user.role === "propietario" && (
-        <Route path="/proceso-de-alta/:step" element={<ProcesoDeAlta />} />
-      )}
-
-      {user && user.role === "propietario" && (
-        <Route path="/" element={<OwnerLayout />}>
-          <Route path="/dashboard-propietarios" element={<OwnerDashboard />} />
-          <Route path="/property-form" element={<PropertyForm />} />
-          <Route path="/properties" element={<Properties />} />
-          <Route path="/chat" element={<Chat />} />
-          <Route path="/documents" element={<Documents />} />
-          <Route path="/documentacion" element={<Documentacion />} />
-          <Route path="/OwnerProfile" element={<OwnerProfile />} />
-        </Route>
+        <>
+          <Route path="/proceso-de-alta/:step" element={<ProcesoDeAlta />} />
+          <Route path="/" element={<OwnerLayout />}>
+            <Route
+              path="/dashboard-propietarios"
+              element={<OwnerDashboard />}
+            />
+            <Route path="/property-form" element={<PropertyForm />} />
+            <Route path="/properties" element={<Properties />} />
+            <Route path="/chat" element={<Chat />} />
+            <Route path="/documents" element={<Documents />} />
+            <Route path="/documentacion" element={<Documentacion />} />
+            <Route path="/OwnerProfile" element={<OwnerProfile />} />
+          </Route>
+        </>
       )}
 
       {user && user.role === "huesped" && (

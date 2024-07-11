@@ -1,16 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { db } from "@/firebaseConfig";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+
+interface ProfileData {
+  name: string;
+  email: string;
+  bio: string;
+}
 
 const OwnerProfile: React.FC = () => {
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john.doe@example.com");
-  const [bio, setBio] = useState(
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-  );
+  const [profileData, setProfileData] = useState<ProfileData>({
+    name: "",
+    email: "",
+    bio: "",
+  });
 
-  const handleSave = () => {
-    // Aquí puedes agregar la lógica para guardar los cambios
-    setIsEditing(false);
+  useEffect(() => {
+    const fetchProfileData = async () => {
+      if (user) {
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data() as ProfileData;
+          setProfileData(data);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchProfileData();
+  }, [user]);
+
+  const handleSave = async () => {
+    if (user) {
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        ...profileData,
+      } as Partial<ProfileData>);
+      setIsEditing(false);
+    }
   };
 
   return (
@@ -27,11 +60,13 @@ const OwnerProfile: React.FC = () => {
             <input
               type="text"
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={profileData.name}
+              onChange={(e) =>
+                setProfileData({ ...profileData, name: e.target.value })
+              }
             />
           ) : (
-            <p className="text-gray-900">{name}</p>
+            <p className="text-gray-900">{profileData.name}</p>
           )}
         </div>
         <div>
@@ -42,11 +77,13 @@ const OwnerProfile: React.FC = () => {
             <input
               type="email"
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={profileData.email}
+              onChange={(e) =>
+                setProfileData({ ...profileData, email: e.target.value })
+              }
             />
           ) : (
-            <p className="text-gray-900">{email}</p>
+            <p className="text-gray-900">{profileData.email}</p>
           )}
         </div>
         <div>
@@ -56,11 +93,13 @@ const OwnerProfile: React.FC = () => {
           {isEditing ? (
             <textarea
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
+              value={profileData.bio}
+              onChange={(e) =>
+                setProfileData({ ...profileData, bio: e.target.value })
+              }
             ></textarea>
           ) : (
-            <p className="text-gray-900">{bio}</p>
+            <p className="text-gray-900">{profileData.bio}</p>
           )}
         </div>
         <div className="flex justify-end space-x-4">

@@ -13,20 +13,26 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext"; // Asumiendo que useAuth tiene el método logout
 
 const OwnerSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const { logout } = useAuth(); // Obtén el método logout del contexto de autenticación
 
   const toggleLogoutModal = () => {
     setIsLogoutModalOpen(!isLogoutModalOpen);
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLogoutModalOpen(false);
+    await logout(); // Cierra sesión usando el método del contexto de autenticación
     navigate("/login");
-    // Aquí puedes agregar cualquier lógica adicional para el cierre de sesión
+  };
+
+  const handleAltaVivienda = () => {
+    navigate("/proceso-de-alta/0");
   };
 
   const menuItems = [
@@ -37,8 +43,9 @@ const OwnerSidebar = () => {
     },
     {
       name: "Alta de vivienda",
-      path: "/Documentacion",
+      path: "/proceso-de-alta/0",
       icon: <DocumentPlusIcon className="h-6 w-6" />,
+      action: handleAltaVivienda,
     },
     {
       name: "Mis viviendas",
@@ -52,7 +59,7 @@ const OwnerSidebar = () => {
     },
     {
       name: "Mi documentación",
-      path: "/Documents",
+      path: "/documents",
       icon: <DocumentTextIcon className="h-6 w-6" />,
     },
     {

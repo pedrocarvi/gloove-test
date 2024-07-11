@@ -1,6 +1,18 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 import { auth, db } from "../firebaseConfig";
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User as FirebaseUser, UserCredential } from "firebase/auth";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+  User as FirebaseUser,
+  UserCredential,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
 interface User extends FirebaseUser {
@@ -37,11 +49,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          console.log('User is authenticated:', user.uid);
+          console.log("User is authenticated:", user.uid);
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log('User data found in Firestore:', userData);
+            console.log("User data found in Firestore:", userData);
             setUser({
               ...user,
               role: userData?.role,
@@ -49,7 +61,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               completedRegistration: userData?.completedRegistration,
             } as User);
           } else {
-            console.log('User document not found in Firestore');
+            console.log("User document not found in Firestore");
             setUser(user);
           }
         } catch (error) {
@@ -57,7 +69,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           setUser(null);
         }
       } else {
-        console.log('No user is authenticated');
+        console.log("No user is authenticated");
         setUser(null);
       }
       setLoading(false);
@@ -85,4 +97,3 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     </AuthContext.Provider>
   );
 };
-

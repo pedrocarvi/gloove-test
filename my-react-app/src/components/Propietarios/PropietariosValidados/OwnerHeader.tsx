@@ -1,12 +1,20 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { BellIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { motion } from "framer-motion";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { logout } = useAuth(); // Obtener el método logout del contexto de autenticación
+  const navigate = useNavigate();
 
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   return (
@@ -20,7 +28,9 @@ const Header = () => {
           className="relative text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-opacity-75"
         >
           <BellIcon className="h-6 w-6" />
-          <span className="absolute top-0 right-0 inline-block w-2 h-2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"></span>
+          <span className="absolute top-0 right-0 inline-block w-2 h-2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full">
+            0
+          </span>
         </button>
         <button
           aria-label="Perfil de Usuario"
@@ -33,17 +43,8 @@ const Header = () => {
       </div>
 
       {isModalOpen && (
-        <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-        >
-          <motion.div
-            className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full"
-            initial={{ y: "-100vh" }}
-            animate={{ y: 0 }}
-            transition={{ duration: 0.5, type: "spring", stiffness: 120 }}
-          >
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white rounded-lg p-6 shadow-lg max-w-md w-full">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-gray-700">
                 Editar Perfil
@@ -64,6 +65,7 @@ const Header = () => {
                   type="text"
                   placeholder="Tu Nombre"
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
+                  disabled
                 />
               </div>
               <div className="mb-4">
@@ -74,56 +76,21 @@ const Header = () => {
                   type="email"
                   placeholder="Tu Correo Electrónico"
                   className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Contraseña
-                </label>
-                <input
-                  type="password"
-                  placeholder="Nueva Contraseña"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Teléfono
-                </label>
-                <input
-                  type="tel"
-                  placeholder="Tu Número de Teléfono"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  Dirección
-                </label>
-                <input
-                  type="text"
-                  placeholder="Tu Dirección"
-                  className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
+                  disabled
                 />
               </div>
               <div className="flex justify-end">
                 <button
                   type="button"
-                  onClick={toggleModal}
-                  className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md mr-2"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
+                  onClick={handleLogout}
                   className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark"
                 >
-                  Guardar
+                  Cerrar Sesión
                 </button>
               </div>
             </form>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
     </header>
   );
