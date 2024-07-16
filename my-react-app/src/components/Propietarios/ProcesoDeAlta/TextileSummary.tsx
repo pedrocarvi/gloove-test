@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 
 interface TextileSummaryProps {
   onAccept: () => void;
+
   initialValues?: any;
 }
 

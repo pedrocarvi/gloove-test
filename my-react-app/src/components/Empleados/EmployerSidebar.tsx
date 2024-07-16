@@ -1,19 +1,26 @@
+// src/components/Empleados/EmployerSidebar.tsx
+
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
   UserIcon,
-  BellIcon as NotificationsIcon,
   CogIcon,
   ChatBubbleLeftRightIcon as MessagesIcon,
   ArrowRightOnRectangleIcon as LogoutIcon,
   QuestionMarkCircleIcon as HelpIcon,
-  BriefcaseIcon as EmployeesIcon,
   ClipboardIcon as TasksIcon,
+  UserGroupIcon,
+  MagnifyingGlassIcon as SearchIcon,
+  SunIcon,
+  Cog6ToothIcon,
+  PencilSquareIcon as InventoryIcon, // Icono para Inventario
+  TrashIcon as CleaningIcon, // Icono para Limpieza
+  WrenchScrewdriverIcon as MaintenanceIcon, // Icono para Mantenimiento
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 
-const EmployerSidebar = () => {
+const EmployerSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
@@ -25,7 +32,6 @@ const EmployerSidebar = () => {
   const handleLogout = () => {
     setIsLogoutModalOpen(false);
     navigate("/login");
-    // Aquí puedes agregar cualquier lógica adicional para el cierre de sesión
   };
 
   const menuItems = [
@@ -35,25 +41,51 @@ const EmployerSidebar = () => {
       icon: <HomeIcon className="h-6 w-6" />,
     },
     {
-      name: "Empleados",
-      path: "/employees",
-      icon: <EmployeesIcon className="h-6 w-6" />,
+      name: "Propietarios Activación",
+      path: "/propietarios-activacion",
+      icon: <UserGroupIcon className="h-6 w-6" />,
     },
     {
-      name: "Tareas",
-      path: "/tasks",
-      icon: <TasksIcon className="h-6 w-6" />,
+      name: "Propietarios Validados",
+      path: "/propietarios-validados",
+      icon: <UserIcon className="h-6 w-6" />,
     },
+    {
+      name: "Huespedes",
+      path: "/huespedes",
+      icon: <UserGroupIcon className="h-6 w-6" />,
+    },
+    { name: "Tareas", path: "/tasks", icon: <TasksIcon className="h-6 w-6" /> },
     {
       name: "Mensajes",
       path: "/messages",
       icon: <MessagesIcon className="h-6 w-6" />,
     },
     {
-      name: "Notificaciones",
-      path: "/notifications",
-      icon: <NotificationsIcon className="h-6 w-6" />,
+      name: "Buscador",
+      path: "/buscador",
+      icon: <SearchIcon className="h-6 w-6" />,
     },
+    {
+      name: "Glovito",
+      path: "/glovito",
+      icon: <SunIcon className="h-6 w-6" />,
+    },
+    {
+      name: "Inventario",
+      path: "/inventario",
+      icon: <InventoryIcon className="h-6 w-6" />,
+    }, // Nueva ruta para Inventario
+    {
+      name: "Limpieza",
+      path: "/limpieza",
+      icon: <CleaningIcon className="h-6 w-6" />,
+    }, // Nueva ruta para Limpieza
+    {
+      name: "Mantenimiento",
+      path: "/mantenimiento",
+      icon: <MaintenanceIcon className="h-6 w-6" />,
+    }, // Nueva ruta para Mantenimiento
     {
       name: "Mi Perfil",
       path: "/profile",
@@ -62,13 +94,9 @@ const EmployerSidebar = () => {
     {
       name: "Configuraciones",
       path: "/settings",
-      icon: <CogIcon className="h-6 w-6" />,
+      icon: <Cog6ToothIcon className="h-6 w-6" />,
     },
-    {
-      name: "Ayuda",
-      path: "/help",
-      icon: <HelpIcon className="h-6 w-6" />,
-    },
+    { name: "Ayuda", path: "/help", icon: <HelpIcon className="h-6 w-6" /> },
     {
       name: "Cerrar Sesión",
       path: "#",
