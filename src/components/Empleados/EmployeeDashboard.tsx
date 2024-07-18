@@ -1,133 +1,74 @@
 // src/components/Empleados/EmployeeDashboard.tsx
 import React, { useEffect, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-import {
-  FiCheckCircle,
-  FiAlertCircle,
-  FiUser,
-  FiMessageSquare,
-  FiClock,
-} from "react-icons/fi";
-import {
-  getTasks,
-  getPerformanceData,
-  getAttendanceData,
-} from "../../services/employeeService";
-
-// Define los tipos aquí
-type Task = {
-  name: string;
-  value: number;
-};
-
-type Performance = {
-  name: string;
-  tasks: number;
-};
-
-type Attendance = {
-  name: string;
-  hours: number;
-};
-
-const COLORS = ["#0088FE", "#00C49F"];
+  getAllEmployees,
+  updateEmployeeStatus,
+} from "@/services/employeeService";
 
 const EmployeeDashboard: React.FC = () => {
-  const [taskData, setTaskData] = useState<Task[]>([]);
-  const [performanceData, setPerformanceData] = useState<Performance[]>([]);
-  const [attendanceData, setAttendanceData] = useState<Attendance[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const tasks = await getTasks();
-      setTaskData(tasks as Task[]);
-
-      const performance = await getPerformanceData();
-      setPerformanceData(performance as Performance[]);
-
-      const attendance = await getAttendanceData();
-      setAttendanceData(attendance as Attendance[]);
+    const fetchEmployees = async () => {
+      const employeesData = await getAllEmployees();
+      setEmployees(employeesData);
     };
-
-    fetchData();
+    fetchEmployees();
   }, []);
+
+  const handleStatusUpdate = async (id: string, status: string) => {
+    await updateEmployeeStatus(id, status);
+    const updatedEmployees = employees.map((employee) =>
+      employee.id === id ? { ...employee, status } : employee
+    );
+    setEmployees(updatedEmployees);
+  };
 
   return (
     <div className="min-h-screen bg-gray-100">
       <main className="px-6 pb-6">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Resumen General</h2>
-            <div className="flex justify-between items-center mb-4">
-              <FiCheckCircle className="text-green-500 h-10 w-10" />
-              <div>
-                <p className="text-2xl font-bold">30</p>
-                <p>Tareas Completadas</p>
-              </div>
-              <FiAlertCircle className="text-red-500 h-10 w-10" />
-              <div>
-                <p className="text-2xl font-bold">10</p>
-                <p>Tareas Pendientes</p>
-              </div>
-            </div>
-            <ResponsiveContainer width="100%" height={200}>
-              <PieChart>
-                <Pie data={taskData} dataKey="value" outerRadius={80} label>
-                  {taskData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Rendimiento Semanal</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={performanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="tasks" fill="#8884d8" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-
-          <div className="bg-white p-6 rounded-lg shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Horas Trabajadas</h2>
-            <ResponsiveContainer width="100%" height={200}>
-              <LineChart data={attendanceData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type="monotone" dataKey="hours" stroke="#82ca9d" />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-
-        {/* Other sections of the dashboard */}
+        <h2 className="text-2xl font-bold mb-4">Dashboard de Empleados</h2>
+        <table className="min-w-full leading-normal">
+          <thead>
+            <tr>
+              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Nombre
+              </th>
+              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Estado
+              </th>
+              <th className="px-5 py-3 border-b-2 border-gray-200 bg-gray-100 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                Acción
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {employees.map((employee) => (
+              <tr key={employee.id}>
+                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                  {employee.nombre}
+                </td>
+                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                  {employee.status}
+                </td>
+                <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
+                  <button
+                    onClick={() => handleStatusUpdate(employee.id, "active")}
+                    className="bg-green-500 text-white px-3 py-1 rounded-md"
+                  >
+                    Activar
+                  </button>
+                  <button
+                    onClick={() => handleStatusUpdate(employee.id, "inactive")}
+                    className="bg-red-500 text-white px-3 py-1 rounded-md ml-2"
+                  >
+                    Desactivar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </main>
     </div>
   );

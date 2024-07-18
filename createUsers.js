@@ -9,16 +9,12 @@ const serviceAccount = {
   type: process.env.VITE_SERVICE_ACCOUNT_TYPE,
   project_id: process.env.VITE_SERVICE_ACCOUNT_PROJECT_ID,
   private_key_id: process.env.VITE_SERVICE_ACCOUNT_PRIVATE_KEY_ID,
-  private_key: process.env.VITE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(
-    /\\n/g,
-    "\n"
-  ),
+  private_key: process.env.VITE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n"),
   client_email: process.env.VITE_SERVICE_ACCOUNT_CLIENT_EMAIL,
   client_id: process.env.VITE_SERVICE_ACCOUNT_CLIENT_ID,
   auth_uri: process.env.VITE_SERVICE_ACCOUNT_AUTH_URI,
   token_uri: process.env.VITE_SERVICE_ACCOUNT_TOKEN_URI,
-  auth_provider_x509_cert_url:
-    process.env.VITE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL,
+  auth_provider_x509_cert_url: process.env.VITE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL,
   client_x509_cert_url: process.env.VITE_SERVICE_ACCOUNT_CLIENT_X509_CERT_URL,
 };
 
@@ -29,7 +25,7 @@ initializeApp({
 const db = getFirestore();
 const auth = getAuth();
 
-async function createUser(email, password, role) {
+async function createUser(email, password, role, name) {
   try {
     const userRecord = await auth.createUser({
       email,
@@ -40,6 +36,7 @@ async function createUser(email, password, role) {
     await userRef.set({
       email,
       role,
+      name,
       createdAt: new Date(),
       updatedAt: new Date(),
       completedRegistration: role === "propietario" ? false : true,
@@ -50,7 +47,7 @@ async function createUser(email, password, role) {
     if (role === "propietario") {
       const propietarioRef = db.collection("propietarios").doc(userRecord.uid);
       await propietarioRef.set({
-        name: "",
+        name,
         email,
       });
 
@@ -70,16 +67,13 @@ async function createUser(email, password, role) {
       }
     }
 
-    console.log(
-      "User created and initial structure set in Firestore:",
-      userRecord.uid
-    );
+    console.log("User created and initial structure set in Firestore:", userRecord.uid);
   } catch (error) {
     console.error("Error creating new user:", error);
   }
 }
 
-// Example usage
-createUser("propietario7@example.com", "password123", "propietario");
-createUser("empleado7@example.com", "password123", "empleado");
-createUser("huesped7@example.com", "password123", "huesped");
+// Ejemplo de uso
+createUser("propietario15@example.com", "password123", "propietario", "Mateo Garcia");
+createUser("empleado15@example.com", "password123", "empleado", "Juan Perez");
+createUser("huesped15@example.com", "password123", "huesped", "Ana Lopez");

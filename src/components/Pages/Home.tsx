@@ -7,6 +7,8 @@ import NavbarHome from "../Layout/NavbarHome";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Chatbot from "../UI/Chatbot";
 
+
+
 const Home: React.FC = () => {
   const { ref: section1Ref, inView: section1InView } = useInView({
     triggerOnce: true,

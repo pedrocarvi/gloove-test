@@ -3,8 +3,8 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import { generateCorporatePDF } from "@/utils/pdfGenerator";
 
 interface FormData {
   propietario: string;
@@ -145,121 +145,6 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     setFormData({ ...formData, camas: updatedCamas });
   };
 
-  const generatePDF = () => {
-    const doc = new jsPDF();
-
-    doc.setFontSize(10);
-
-    // Aquí se pueden añadir más campos al PDF
-    doc.text(`Propietario: ${formData.propietario}`, 10, 10);
-    doc.text(`e-Mail: ${formData.email}`, 10, 20);
-    doc.text(`Ciudad: ${formData.ciudad}`, 10, 30);
-    doc.text(`Provincia: ${formData.provincia}`, 10, 40);
-    doc.text(`Dirección: ${formData.direccion}`, 10, 50);
-    doc.text(`Código Postal: ${formData.cPostal}`, 10, 60);
-    doc.text(`DNI/PASAPORTE: ${formData.DNI}`, 10, 65); // Nuevo campo
-    doc.text(`Num Catastro: ${formData.numCatastro}`, 10, 70); // Nuevo campo
-    doc.text(
-      `Licencia Turística: ${formData.licenciaTuristica ? "Sí" : "No"}`,
-      10,
-      80
-    );
-    doc.text(`Número VUT: ${formData.numeroVUT}`, 10, 90);
-    doc.text(
-      `Comunidad de Propietarios: ${formData.comPropietarios ? "Sí" : "No"}`,
-      10,
-      100
-    );
-    doc.text(`Tipo de Vivienda: ${formData.tipoVivienda}`, 10, 110);
-    doc.text(`Exterior: ${formData.exterior ? "Sí" : "No"}`, 10, 120);
-    doc.text(`Interior: ${formData.interior ? "Sí" : "No"}`, 10, 130);
-    doc.text(`Portero: ${formData.portero ? "Sí" : "No"}`, 10, 140);
-    doc.text(
-      `Portero Automático: ${formData.porteroAutomatico ? "Sí" : "No"}`,
-      10,
-      150
-    );
-    doc.text(`Ascensor: ${formData.ascensor ? "Sí" : "No"}`, 10, 160);
-    doc.text(`Garaje: ${formData.garaje ? "Sí" : "No"}`, 10, 170);
-    doc.text(
-      `Garaje Concertado: ${formData.garajeConcertado ? "Sí" : "No"}`,
-      10,
-      180
-    );
-    doc.text(
-      `Fácil Aparcamiento: ${formData.facilAparcamiento ? "Sí" : "No"}`,
-      10,
-      190
-    );
-    doc.text(`Vistas: ${formData.vistas}`, 10, 200);
-    doc.text(`Piscina: ${formData.piscina ? "Sí" : "No"}`, 10, 210);
-    doc.text(`Jardín: ${formData.jardin ? "Sí" : "No"}`, 10, 220);
-    doc.text(`Observaciones: ${formData.observaciones}`, 10, 230);
-    doc.text(`Zonas Comunes: ${formData.zonasComunes}`, 10, 240);
-    doc.text(`Zonas Turísticas: ${formData.zonasTuristicas}`, 10, 250);
-    doc.text(`Accesibilidad: ${formData.accesibilidad}`, 10, 260);
-    doc.text(`Habitaciones: ${formData.habitaciones}`, 10, 270);
-    doc.text(`Baños: ${formData.banos}`, 10, 280);
-    doc.text(`Aseos: ${formData.aseos}`, 10, 290);
-    doc.text(`Ducha: ${formData.duchas}`, 10, 300);
-    doc.text(`Bañera: ${formData.baneras}`, 10, 310);
-    doc.text(`Trastero: ${formData.trastero ? "Sí" : "No"}`, 10, 320);
-    doc.text(`Mascotas: ${formData.mascotas ? "Sí" : "No"}`, 10, 330);
-    doc.text(`Cocina: ${formData.cocina}`, 10, 340);
-    doc.text(`Capacidad Máxima: ${formData.capacidadMaxima}`, 10, 350);
-
-    formData.camas.forEach((cama, index) => {
-      const offsetY = 360 + index * 100;
-      doc.text(`Cama ${index + 1}`, 10, offsetY);
-      doc.text(`  Tipo: ${cama.tipo}`, 10, offsetY + 10);
-      doc.text(
-        `  Aire Acondicionado: ${cama.aireAcondicionado ? "Sí" : "No"}`,
-        10,
-        offsetY + 20
-      );
-      doc.text(
-        `  Calefacción: ${cama.calefaccion ? "Sí" : "No"}`,
-        10,
-        offsetY + 30
-      );
-      doc.text(
-        `  Ventilador: ${cama.ventilador ? "Sí" : "No"}`,
-        10,
-        offsetY + 40
-      );
-      doc.text(
-        `  Electrodomésticos: ${cama.electrodomesticos}`,
-        10,
-        offsetY + 50
-      );
-      doc.text(`  Agua Caliente: ${cama.aguaCaliente}`, 10, offsetY + 60);
-      doc.text(
-        `  Estado de la Pintura: ${cama.estadoPintura}`,
-        10,
-        offsetY + 70
-      );
-      doc.text(`  Año de la Reforma: ${cama.reformaAno}`, 10, offsetY + 80);
-      doc.text(
-        `  Estado del Mobiliario: ${cama.estadoMobiliario}`,
-        10,
-        offsetY + 90
-      );
-      doc.text(
-        `  Persianas: ${cama.persianas ? "Sí" : "No"}`,
-        10,
-        offsetY + 100
-      );
-      doc.text(`  TV: ${cama.tv ? "Sí" : "No"}`, 10, offsetY + 110);
-      doc.text(
-        `  Mosquiteras: ${cama.mosquiteras ? "Sí" : "No"}`,
-        10,
-        offsetY + 120
-      );
-    });
-
-    doc.save("Ficha_Tecnica_Alojamiento_Turistico.pdf");
-  };
-
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!user) {
@@ -268,12 +153,21 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     }
 
     try {
-      const docRef = doc(
-        db,
-        `propietarios/${user.uid}/proceso_de_alta/technical_form`
-      );
+      const pdfDoc = await generateCorporatePDF("Ficha Técnica del Alojamiento Turístico", formData);
+      const pdfData = pdfDoc.output("datauristring");
+
+      // Subir el PDF a Firebase Storage
+      const storage = getStorage();
+      const pdfRef = ref(storage, `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${user.uid}.pdf`);
+      await uploadString(pdfRef, pdfData, "data_url");
+
+      const pdfUrl = await getDownloadURL(pdfRef);
+
+      // Guardar la referencia del PDF en Firestore
+      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/technical_form`);
       await setDoc(docRef, {
         userId: user.uid,
+        pdfUrl,
         ...formData,
       });
 
@@ -282,16 +176,25 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
         processStatus: "textil",
       });
 
+      // Descargar el PDF
+      const link = document.createElement('a');
+      link.href = pdfData;
+      link.download = `Ficha_Tecnica_${user.uid}.pdf`;
+      link.click();
+
       onAccept();
       Swal.fire({
         icon: "success",
-        title: "Formulario aceptado",
+        title: "Ficha técnica guardada y descargada",
         text: "Puedes proceder al siguiente paso.",
-      }).then(() => {
-        generatePDF(); // Generar y descargar el PDF
       });
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error al generar o guardar la ficha técnica:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al generar o guardar la ficha técnica. Por favor, inténtalo de nuevo.",
+      });
     }
   };
 

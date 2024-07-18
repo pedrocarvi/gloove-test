@@ -62,6 +62,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             } as User);
           } else {
             console.log("User document not found in Firestore");
+            // Aquí podrías crear el documento del usuario si no existe
             setUser(user);
           }
         } catch (error) {

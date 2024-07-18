@@ -4,24 +4,16 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import { jsPDF } from "jspdf";
-import {
-  getStorage,
-  ref,
-  uploadString,
-  getDownloadURL,
-} from "firebase/storage";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
+import { generateCorporatePDF } from "@/utils/pdfGenerator";
 
 interface TextileSummaryProps {
   onAccept: () => void;
-
   initialValues?: any;
 }
 
-const TextileSummary: React.FC<TextileSummaryProps> = ({
-  onAccept,
-  initialValues = {},
-}) => {
+const TextileSummary: React.FC<TextileSummaryProps> = ({ onAccept, initialValues = {} }) => {
   const [formData, setFormData] = useState<any>(initialValues);
   const [budget, setBudget] = useState<number>(0);
   const [summary, setSummary] = useState<Record<string, number>>({});
@@ -32,13 +24,7 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        const docRef = doc(
-          db,
-          "propietarios",
-          user.uid,
-          "proceso_de_alta",
-          "textil_presupuesto"
-        );
+        const docRef = doc(db, "propietarios", user.uid, "proceso_de_alta", "textil_presupuesto");
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           const data = docSnap.data();
@@ -58,13 +44,6 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
     }
 
     const userData = await getUserData(user.uid);
-
-    const sabanas_por_cama = 6;
-    const fundas_edredon_por_cama = 2;
-    const alfombrines_por_ducha = 3;
-    const toallas_grandes_por_persona = 3;
-    const toallas_pequenas_por_persona = 3;
-    const fundas_almohada_por_cama = 3;
     const num_viviendas = parseInt(userData.num_viviendas || 1);
 
     const calculateTotal = (category: any[] | undefined, factor: number) => {
@@ -74,35 +53,20 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
       );
     };
 
-    const total_sabanas = calculateTotal(data.sabanaEncimera, sabanas_por_cama);
-    const total_fundas_edredon = calculateTotal(
-      data.fundaNordica,
-      fundas_edredon_por_cama
-    );
-    const total_alfombrines = calculateTotal(
-      data.alfombrin,
-      alfombrines_por_ducha
-    );
-    const total_toallas_grandes = calculateTotal(
-      data.toalla,
-      toallas_grandes_por_persona
-    );
-    const total_toallas_pequenas = calculateTotal(
-      data.toalla,
-      toallas_pequenas_por_persona
-    );
-    const total_fundas_almohada = calculateTotal(
-      data.fundaAlmohada,
-      fundas_almohada_por_cama
-    );
+    const total_sabanas = calculateTotal(data.sabanaEncimera, 6) * num_viviendas;
+    const total_fundas_edredon = calculateTotal(data.fundaNordica, 2) * num_viviendas;
+    const total_alfombrines = calculateTotal(data.alfombrin, 3) * num_viviendas;
+    const total_toallas_grandes = calculateTotal(data.toalla, 3) * num_viviendas;
+    const total_toallas_pequenas = calculateTotal(data.toalla, 3) * num_viviendas;
+    const total_fundas_almohada = calculateTotal(data.fundaAlmohada, 3) * num_viviendas;
 
     const newSummary = {
-      total_sabanas: total_sabanas * num_viviendas,
-      total_fundas_edredon: total_fundas_edredon * num_viviendas,
-      total_alfombrines: total_alfombrines * num_viviendas,
-      total_toallas_grandes: total_toallas_grandes * num_viviendas,
-      total_toallas_pequenas: total_toallas_pequenas * num_viviendas,
-      total_fundas_almohada: total_fundas_almohada * num_viviendas,
+      total_sabanas,
+      total_fundas_edredon,
+      total_alfombrines,
+      total_toallas_grandes,
+      total_toallas_pequenas,
+      total_fundas_almohada
     };
 
     setSummary(newSummary);
@@ -114,17 +78,11 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
     const pdfUrl = await generateAndUploadPDF(newSummary, total, user.uid);
 
     // Actualizar Firestore con la URL del PDF
-    const docRef = doc(
-      db,
-      "propietarios",
-      user.uid,
-      "proceso_de_alta",
-      "textile_summaries"
-    );
+    const docRef = doc(db, "propietarios", user.uid, "proceso_de_alta", "textile_summaries");
     await setDoc(docRef, {
       userId: user.uid,
       pdfUrl,
-      ...newSummary,
+      ...newSummary
     });
 
     // Actualizar el currentStep del usuario en la colección 'users'
@@ -136,12 +94,12 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
 
   const calculateTotalCost = (summary: Record<string, number>) => {
     const prices = {
-      total_sabanas: 10,
-      total_fundas_edredon: 20,
-      total_alfombrines: 5,
-      total_toallas_grandes: 15,
-      total_toallas_pequenas: 10,
-      total_fundas_almohada: 7,
+      total_sabanas: 5.66,
+      total_fundas_edredon: 15.07,
+      total_alfombrines: 2.95,
+      total_toallas_grandes: 9.41,
+      total_toallas_pequenas: 3.38,
+      total_fundas_almohada: 1.46,
     };
 
     return (
@@ -165,24 +123,18 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
     budget: number,
     userId: string
   ) => {
-    const doc = new jsPDF();
-    doc.text("Presupuesto de Textil", 10, 10);
-
-    let y = 20;
-    Object.keys(summary).forEach((key) => {
-      doc.text(`${key.replace(/_/g, " ")}: ${summary[key]}`, 10, y);
-      y += 10;
-    });
-
-    doc.text(`Total: $${budget}`, 10, y);
-
+    const doc = await generateCorporatePDF("Resumen de Textil", { ...summary, Total: budget });
     const pdfData = doc.output("datauristring");
+
     const storage = getStorage();
-    const pdfRef = ref(
-      storage,
-      `Presupuesto Textil/textile_summary_${userId}.pdf`
-    );
+    const pdfRef = ref(storage, `Presupuesto Textil/textile_summary_${userId}.pdf`);
     await uploadString(pdfRef, pdfData, "data_url");
+
+    const link = document.createElement('a');
+    link.href = pdfData;
+    link.download = `Resumen_Textil_${userId}.pdf`;
+    link.click();
+
     return await getDownloadURL(pdfRef);
   };
 
@@ -253,12 +205,12 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
                   $
                   {
                     {
-                      total_sabanas: 10,
-                      total_fundas_edredon: 20,
-                      total_alfombrines: 5,
-                      total_toallas_grandes: 15,
-                      total_toallas_pequenas: 10,
-                      total_fundas_almohada: 7,
+                      total_sabanas: 5.66,
+                      total_fundas_edredon: 15.07,
+                      total_alfombrines: 2.95,
+                      total_toallas_grandes: 9.41,
+                      total_toallas_pequenas: 3.38,
+                      total_fundas_almohada: 1.46,
                     }[key]
                   }
                 </td>
@@ -266,12 +218,12 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
                   $
                   {
                     {
-                      total_sabanas: 10 * summary[key],
-                      total_fundas_edredon: 20 * summary[key],
-                      total_alfombrines: 5 * summary[key],
-                      total_toallas_grandes: 15 * summary[key],
-                      total_toallas_pequenas: 10 * summary[key],
-                      total_fundas_almohada: 7 * summary[key],
+                      total_sabanas: 5.66 * summary[key],
+                      total_fundas_edredon: 15.07 * summary[key],
+                      total_alfombrines: 2.95 * summary[key],
+                      total_toallas_grandes: 9.41 * summary[key],
+                      total_toallas_pequenas: 3.38 * summary[key],
+                      total_fundas_almohada: 1.46 * summary[key],
                     }[key]
                   }
                 </td>

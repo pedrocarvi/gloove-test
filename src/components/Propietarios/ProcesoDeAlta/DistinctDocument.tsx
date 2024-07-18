@@ -27,44 +27,46 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const generateUniqueId = () => {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+  };
+
+  const uploadFile = async (file: string, documentType: string) => {
+    const fileName = `${documentType}_${generateUniqueId()}.jpg`;
+    const path = `DocumentacionPropietarios/${documentType}/${fileName}`;
+    const storage = getStorage();
+    const storageRef = ref(storage, path);
+    console.log("Subiendo archivo a:", path);
+    await uploadString(storageRef, file, "data_url");
+    return path;
+  };
+
   const handleUpload = async () => {
     if (!user) {
-      console.error("User is not authenticated");
+      console.error("Usuario no autenticado");
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No estás autenticado. Por favor, inicia sesión nuevamente.",
+      });
       return;
     }
 
+    console.log("ID de usuario autenticado:", user.uid);
     setLoading(true);
 
-    const storage = getStorage();
-
-    const uploadFile = async (file: string, path: string) => {
-      const storageRef = ref(storage, path);
-      await uploadString(storageRef, file, "data_url");
-    };
-
     try {
-      if (images.dni) {
-        await uploadFile(
-          images.dni,
-          `DocumentacionPropietarios/DNI/dni_${user.uid}.jpg`
-        );
-      }
-      if (images.vut) {
-        await uploadFile(
-          images.vut,
-          `DocumentacionPropietarios/VUT/vut_${user.uid}.jpg`
-        );
-      }
-      if (images.referenciaCatastral) {
-        await uploadFile(
-          images.referenciaCatastral,
-          `DocumentacionPropietarios/RefCatastral/refCatastral_${user.uid}.jpg`
-        );
-      }
+      const uploadedPaths = {
+        dni: images.dni ? await uploadFile(images.dni, "dNI") : "",
+        vut: images.vut ? await uploadFile(images.vut, "vUT") : "",
+        referenciaCatastral: images.referenciaCatastral ? await uploadFile(images.referenciaCatastral, "refCatastral") : "",
+      };
+
+      console.log("Documentos subidos exitosamente.");
 
       await setDoc(
         doc(db, `propietarios/${user.uid}/proceso_de_alta/distinct_documents`),
-        images
+        uploadedPaths
       );
       await updateDoc(doc(db, "users", user.uid), {
         processStatus: "contract",
@@ -78,7 +80,7 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
       });
       onAccept();
     } catch (error) {
-      console.error("Error uploading documents: ", error);
+      console.error("Error al subir documentos:", error);
       Swal.fire({
         icon: "error",
         title: "Error",

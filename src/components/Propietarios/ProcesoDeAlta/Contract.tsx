@@ -3,9 +3,9 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import SignatureCanvas from "react-signature-canvas";
-import { jsPDF } from "jspdf";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
+import { generateContractPDF } from "@/utils/pdfGenerator";
 
 interface ContractProps {
   onAccept: () => void;
@@ -206,47 +206,53 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
     }
   };
 
-  const generatePDFContent = (pdf: jsPDF) => {
-    if (technicalFormData) {
-      pdf.text("Contrato", 10, 10);
-      pdf.text(`Nombre: ${technicalFormData.propietario}`, 10, 20);
-      pdf.text(`Dirección: ${technicalFormData.direccion}`, 10, 30);
-      // Añadir más campos según sea necesario
-      pdf.text(contractText, 10, 40);
-      pdf.addImage(formData.signature, "PNG", 10, 240, 50, 50);
-    }
-  };
-
   const handleSubmit = async () => {
     if (!user) {
       console.error("User is not authenticated");
       return;
     }
 
-    const pdf = new jsPDF();
-    generatePDFContent(pdf);
-    const pdfData = pdf.output("datauristring");
+    try {
+      // Generar el PDF del contrato
+      const pdfDoc = await generateContractPDF(formData, contractText);
+      const pdfData = pdfDoc.output("datauristring");
 
-    const storage = getStorage();
-    const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`);
-    await uploadString(pdfRef, pdfData, "data_url");
+      // Subir el PDF a Firebase Storage
+      const storage = getStorage();
+      const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`);
+      await uploadString(pdfRef, pdfData, "data_url");
 
-    const pdfUrl = await getDownloadURL(pdfRef);
+      const pdfUrl = await getDownloadURL(pdfRef);
 
-    const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/contract`);
-    await setDoc(docRef, { ...formData, pdfUrl });
+      // Guardar la referencia del PDF en Firestore
+      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/contract`);
+      await setDoc(docRef, { ...formData, pdfUrl });
 
-    await updateDoc(doc(db, "users", user.uid), {
-      processStatus: "inventory_form",
-      currentStep: 5,
-    });
+      await updateDoc(doc(db, "users", user.uid), {
+        processStatus: "inventory_form",
+        currentStep: 5,
+      });
 
-    Swal.fire({
-      icon: "success",
-      title: "Contrato enviado",
-      text: "Puedes proceder al siguiente paso.",
-    });
-    onAccept();
+      // Descargar el PDF
+      const link = document.createElement('a');
+      link.href = pdfData;
+      link.download = `Contrato_${user.uid}.pdf`;
+      link.click();
+
+      Swal.fire({
+        icon: "success",
+        title: "Contrato enviado y descargado",
+        text: "El contrato ha sido guardado y descargado. Puedes proceder al siguiente paso.",
+      });
+      onAccept();
+    } catch (error) {
+      console.error("Error al generar o guardar el contrato:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al generar o guardar el contrato. Por favor, inténtalo de nuevo.",
+      });
+    }
   };
 
   if (!technicalFormData) {

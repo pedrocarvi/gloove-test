@@ -1,5 +1,3 @@
-// src/routes.tsx
-
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
@@ -21,8 +19,8 @@ import IncidentForm from "./components/Huespedes/IncidentForm";
 import ProfilePage from "./components/Huespedes/ProfilePage";
 import EmpleadosLayout from "./components/Empleados/EmpleadosLayout";
 import EmployeeDashboard from "./components/Empleados/EmployeeDashboard";
-import ProcesoAlta from "./components/Empleados/ControlPropietarios/ProcesoAlta";
-import PropietariosValidados from "./components/Empleados/ControlPropietarios/PropietariosValidados";
+import ProcesoAlta from "./components/Empleados/ProcesoAlta";
+import PropietariosValidados from "./components/Empleados/PropietariosValidados";
 import NuevoPropietarioForm from "./components/Empleados/ControlPropietarios/NuevoPropietarioForm";
 import SearchPage from "./components/Empleados/ControlPropietarios/SearchPage";
 import InventoryPage from "./components/Empleados/InventoryPage";
@@ -88,4 +86,3 @@ const AppRoutes: React.FC = () => {
 };
 
 export default AppRoutes;
-//hola

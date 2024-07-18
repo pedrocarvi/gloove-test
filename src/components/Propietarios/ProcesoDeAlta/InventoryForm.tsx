@@ -3,6 +3,8 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import { generateCorporatePDF } from "@/utils/pdfGenerator";
 
 interface Distribucion {
   superficieVivienda: number;
@@ -235,9 +237,21 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     }
 
     try {
+      const pdfDoc = await generateCorporatePDF("Inventario", formData);
+      const pdfData = pdfDoc.output("datauristring");
+
+      // Subir el PDF a Firebase Storage
+      const storage = getStorage();
+      const pdfRef = ref(storage, `DocumentacionPropietarios/Inventario/inventario_${user.uid}.pdf`);
+      await uploadString(pdfRef, pdfData, "data_url");
+
+      const pdfUrl = await getDownloadURL(pdfRef);
+
+      // Guardar la referencia del PDF en Firestore
       const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/inventario`);
       await setDoc(docRef, {
         userId: user.uid,
+        pdfUrl,
         ...formData,
       });
 
@@ -246,14 +260,25 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         processStatus: "completed",
       });
 
-      onAccept();
+      // Descargar el PDF
+      const link = document.createElement('a');
+      link.href = pdfData;
+      link.download = `Inventario_${user.uid}.pdf`;
+      link.click();
+
       Swal.fire({
         icon: "success",
-        title: "Formulario aceptado",
-        text: "Puedes proceder al siguiente paso.",
+        title: "Inventario guardado y descargado",
+        text: "Has completado el proceso de alta.",
       });
+      onAccept();
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.error("Error al generar o guardar el inventario:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al generar o guardar el inventario. Por favor, inténtalo de nuevo.",
+      });
     }
   };
 
