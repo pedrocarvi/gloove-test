@@ -14,14 +14,12 @@ export interface Propietario {
   id: string;
   name: string;
   email: string;
-  fichaTecnica: string | "pendiente";
-  formularioTextil: string | "pendiente";
-  presupuestoTextil: string | "pendiente";
-  presupuestoTextilActioned: boolean;
-  distintoDocument: string | "pendiente";
-  contrato: string | "pendiente";
-  contratoActioned: boolean;
-  inventario: string | "pendiente";
+  fichaTecnica: string;
+  formularioTextil: string;
+  presupuestoTextil: string;
+  distintoDocument: string;
+  contrato: string;
+  inventario: string;
   chat: number;
   documentos?: boolean;
   completedRegistration: boolean;
@@ -32,11 +30,13 @@ export interface Propietario {
 
 const failedDocumentsCache: { [key: string]: boolean } = {};
 
-const fetchDocumentURL = async (propietarioId: string, docPath: string) => {
+const fetchDocumentURL = async (
+  propietarioId: string,
+  docPath: string
+): Promise<string> => {
   const cacheKey = `${propietarioId}/${docPath}`;
 
   if (failedDocumentsCache[cacheKey]) {
-    console.log(`Document ${docPath} for propietario ${propietarioId} not found.`);
     return "pendiente";
   }
 
@@ -52,7 +52,6 @@ const fetchDocumentURL = async (propietarioId: string, docPath: string) => {
         `Document ${docPath} for propietario ${propietarioId} not found.`
       );
       failedDocumentsCache[cacheKey] = true;
-      console.log(`Document ${docPath} for propietario ${propietarioId} not found.`);
       return "pendiente";
     } else {
       console.error(
@@ -64,7 +63,7 @@ const fetchDocumentURL = async (propietarioId: string, docPath: string) => {
   }
 };
 
-const updatePropietarioDocuments = async (propietario: Propietario) => {
+export const updatePropietarioDocuments = async (propietario: Propietario) => {
   propietario.fichaTecnica = await fetchDocumentURL(
     propietario.id,
     "FichaTecnica/technical_form.pdf"
