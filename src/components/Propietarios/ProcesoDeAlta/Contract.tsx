@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import SignatureCanvas from "react-signature-canvas";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
-import { generateContractPDF } from "@/utils/pdfGenerator";
+import { generateContractPDF } from "@/utils/contractPdfGenerator";
 
 interface ContractProps {
   onAccept: () => void;
@@ -213,8 +213,20 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
     }
 
     try {
+      const contractData = {
+        propietario: technicalFormData.propietario,
+        dni: technicalFormData.DNI,
+        domicilio: `${technicalFormData.direccion}, ${technicalFormData.cPostal}, ${technicalFormData.ciudad}, ${technicalFormData.provincia}`,
+        ciudad: technicalFormData.ciudad,
+        direccion: technicalFormData.direccion,
+        numCatastro: technicalFormData.numCatastro,
+        numeroVUT: technicalFormData.numeroVUT,
+        email: technicalFormData.email,
+        signature: formData.signature
+      };
+
       // Generar el PDF del contrato
-      const pdfDoc = await generateContractPDF(formData, contractText);
+      const pdfDoc = await generateContractPDF(contractData, contractText);
       const pdfData = pdfDoc.output("datauristring");
 
       // Subir el PDF a Firebase Storage
@@ -233,16 +245,10 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
         currentStep: 5,
       });
 
-      // Descargar el PDF
-      const link = document.createElement('a');
-      link.href = pdfData;
-      link.download = `Contrato_${user.uid}.pdf`;
-      link.click();
-
       Swal.fire({
         icon: "success",
-        title: "Contrato enviado y descargado",
-        text: "El contrato ha sido guardado y descargado. Puedes proceder al siguiente paso.",
+        title: "Contrato guardado",
+        text: "El contrato ha sido guardado. Puedes proceder al siguiente paso.",
       });
       onAccept();
     } catch (error) {

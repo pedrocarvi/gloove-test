@@ -123,6 +123,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     camas: initialValues.camas || defaultCamas,
   });
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
 
   const handleChange = (
@@ -153,17 +154,17 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     }
 
     try {
+      setIsSubmitting(true);
+
       const pdfDoc = await generateCorporatePDF("Ficha Técnica del Alojamiento Turístico", formData);
       const pdfData = pdfDoc.output("datauristring");
 
-      // Subir el PDF a Firebase Storage
       const storage = getStorage();
       const pdfRef = ref(storage, `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${user.uid}.pdf`);
       await uploadString(pdfRef, pdfData, "data_url");
 
       const pdfUrl = await getDownloadURL(pdfRef);
 
-      // Guardar la referencia del PDF en Firestore
       const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/technical_form`);
       await setDoc(docRef, {
         userId: user.uid,
@@ -176,16 +177,10 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
         processStatus: "textil",
       });
 
-      // Descargar el PDF
-      const link = document.createElement('a');
-      link.href = pdfData;
-      link.download = `Ficha_Tecnica_${user.uid}.pdf`;
-      link.click();
-
       onAccept();
       Swal.fire({
         icon: "success",
-        title: "Ficha técnica guardada y descargada",
+        title: "Ficha técnica guardada",
         text: "Puedes proceder al siguiente paso.",
       });
     } catch (error) {
@@ -195,6 +190,8 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
         title: "Error",
         text: "Hubo un problema al generar o guardar la ficha técnica. Por favor, inténtalo de nuevo.",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -863,9 +860,12 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           <div className="mt-4">
             <button
               type="submit"
-              className="w-full py-2 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50"
+              disabled={isSubmitting}
+              className={`w-full py-2 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 ${
+                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
             >
-              Aceptar
+              {isSubmitting ? 'Guardando...' : 'Aceptar'}
             </button>
           </div>
         </form>
@@ -875,4 +875,3 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
 };
 
 export default TechnicalForm;
-

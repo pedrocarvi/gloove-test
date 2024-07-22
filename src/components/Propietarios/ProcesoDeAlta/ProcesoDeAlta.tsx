@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { doc, updateDoc } from "firebase/firestore"; // Importa doc y updateDoc
-import { useAuth } from "@/context/AuthContext"; // Importa useAuth
-import { db } from "@/firebaseConfig"; // Importa db
+import { doc, updateDoc } from "firebase/firestore";
+import { useAuth } from "@/context/AuthContext";
+import { db } from "@/firebaseConfig";
 
 import ProgressBar from "./ProgressBar";
 import TechnicalForm from "./TechnicalForm";
@@ -24,7 +24,7 @@ const steps = [
 const ProcesoDeAlta: React.FC = () => {
   const { step } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth(); // Usa useAuth para obtener el usuario autenticado
+  const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState<number>(
     parseInt(step ?? "0", 10)
   );
@@ -33,12 +33,13 @@ const ProcesoDeAlta: React.FC = () => {
 
   useEffect(() => {
     console.log("ProcesoDeAlta mounted, currentStep:", currentStep);
+    console.log("User in ProcesoDeAlta:", user);
     setIsAccepted(false); // Reset acceptance state on step change
   }, [currentStep]);
 
   const handleNextStep = async () => {
     if (currentStep < steps.length - 1) {
-      console.log("Moving to next step");
+      console.log("Moving to next step:", currentStep + 1);
       setCurrentStep(currentStep + 1);
       navigate(`/proceso-de-alta/${currentStep + 1}`);
     } else {
@@ -60,6 +61,7 @@ const ProcesoDeAlta: React.FC = () => {
       ...prevValues,
       [step]: values,
     }));
+    console.log("Form values updated:", formValues);
   };
 
   return (
@@ -104,7 +106,7 @@ const ProcesoDeAlta: React.FC = () => {
                 setIsAccepted(true);
               }}
               initialValues={formValues[5] ?? {}}
-              setFormValues={handleSaveFormValues} // Pasar la función aquí
+              setFormValues={handleSaveFormValues}
             />
           )}
         </div>

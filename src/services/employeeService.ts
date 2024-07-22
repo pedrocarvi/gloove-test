@@ -1,13 +1,17 @@
-// src/services/employeeService.ts
-import { db } from '@/firebaseConfig';
-import { collection, getDocs, updateDoc, doc, DocumentData } from 'firebase/firestore';
+import { db } from "@/firebaseConfig";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
-export const getAllEmployees = async (): Promise<DocumentData[]> => {
-  const employeesSnapshot = await getDocs(collection(db, 'empleados'));
-  return employeesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+export const getAllEmployees = async () => {
+  const employeesCollection = collection(db, "employees");
+  const employeesSnapshot = await getDocs(employeesCollection);
+  const employeesList = employeesSnapshot.docs.map((doc) => ({
+    id: doc.id,
+    ...doc.data(),
+  }));
+  return employeesList;
 };
 
 export const updateEmployeeStatus = async (id: string, status: string) => {
-  const employeeRef = doc(db, 'empleados', id);
-  await updateDoc(employeeRef, { status });
+  const employeeDoc = doc(db, "employees", id);
+  await updateDoc(employeeDoc, { status });
 };

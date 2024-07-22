@@ -1,172 +1,182 @@
 import { jsPDF } from "jspdf";
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, getDownloadURL } from "firebase/storage";
 
-// Función base para crear un PDF corporativo
-async function createBasePDF(title: string) {
-  const doc = new jsPDF();
-  const pageWidth = doc.internal.pageSize.width;
-
-  // Añadir logo
-  const storage = getStorage();
-  const logoRef = ref(storage, 'glooveLogo.png'); // Ruta del logo en la raíz
-  const logoUrl = await getDownloadURL(logoRef);
-  doc.addImage(logoUrl, 'PNG', 10, 10, 30, 30);
-
-  // Añadir título
-  doc.setFontSize(20);
-  doc.text(title, pageWidth / 2, 50, { align: 'center' });
-
-  // Añadir pie de página
-  doc.setFontSize(10);
-  doc.text('GLOOVE TU ALOJAMIENTO TURÍSTICO S.L.', 10, doc.internal.pageSize.height - 20);
-  doc.text('CIF: B-54796925', 10, doc.internal.pageSize.height - 15);
-  doc.text(`Fecha: ${new Date().toLocaleDateString()}`, pageWidth - 10, doc.internal.pageSize.height - 10, { align: 'right' });
-
-  return doc;
+interface FormData {
+  propietario: string;
+  email: string;
+  DNI: string;
+  numCatastro: string;
+  ciudad: string;
+  provincia: string;
+  cPostal: string;
+  direccion: string;
+  tipoVivienda: string;
+  interior: boolean;
+  exterior: boolean;
+  ascensor: boolean;
+  portero: boolean;
+  porteroAutomatico: boolean;
+  garaje: boolean;
+  garajeConcertado: boolean;
+  facilAparcamiento: boolean;
+  piscina: boolean;
+  jardin: boolean;
+  vistas: string;
+  habitaciones: number;
+  banos: number;
+  aseos: number;
+  duchas: number;
+  baneras: number;
+  trastero: boolean;
+  mascotas: boolean;
+  cocina: string;
+  capacidadMaxima: number;
+  observaciones: string;
+  camas: Array<{
+    tipo: string;
+    aireAcondicionado: boolean;
+    calefaccion: boolean;
+    ventilador: boolean;
+    tv: boolean;
+    mosquiteras: boolean;
+    electrodomesticos: string;
+    aguaCaliente: string;
+    estadoPintura: string;
+    reformaAno: string;
+    estadoMobiliario: string;
+  }>;
 }
 
-// Función para generar el PDF corporativo con datos del formulario
-export const generateCorporatePDF = async (title: string, formData: any) => {
-  const pdf = await createBasePDF(title);
+export const generateCorporatePDF = async (title: string, formData: FormData): Promise<jsPDF> => {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.width;
+  const pageHeight = doc.internal.pageSize.height;
+  const margin = 15;
 
-  pdf.setFontSize(10);
+  // Funciones auxiliares
+  const addText = (text: string, x: number, y: number, options: any = {}): void => {
+    doc.text(text, x, y, options);
+  };
 
-  // Añadir los datos del formulario al PDF
-  const addData = (data: any, prefix: string = "", indent: number = 0) => {
-    const keys = Object.keys(data);
-    keys.forEach((key, index) => {
-      if (typeof data[key] === "object" && !Array.isArray(data[key])) {
-        pdf.text(`${" ".repeat(indent)}${prefix}${key}:`, 10, 60 + (index * 10));
-        addData(data[key], `${prefix}${key}.`, indent + 2);
-      } else {
-        pdf.text(`${" ".repeat(indent)}${prefix}${key}: ${data[key]}`, 10, 60 + (index * 10));
-      }
+  const addCell = (text: string, x: number, y: number, width: number, height: number, isHeader: boolean = false): void => {
+    if (isHeader) {
+      doc.setFillColor(230, 243, 245);
+    } else {
+      doc.setFillColor(255, 255, 255);
+    }
+    doc.rect(x, y, width, height, 'F');
+    doc.setTextColor(isHeader ? '#156b7a' : '#000000');
+    doc.text(text, x + 2, y + 5);
+  };
+
+  const addRow = (data: string[], x: number, y: number, widths: number[], height: number): void => {
+    data.forEach((text, index) => {
+      addCell(text, x, y, widths[index], height, index === 0);
+      x += widths[index];
     });
   };
 
-  addData(formData);
+  // Función para añadir encabezado
+  const addHeader = (pageNumber: number): void => {
+    // Añadir logo
+    doc.addImage(logoUrl, 'PNG', margin, margin, 40, 20);
 
-  return pdf;
-};
+    // Añadir título
+    doc.setFontSize(18);
+    doc.setTextColor('#156b7a');
+    addText(title, pageWidth / 2, 40, { align: 'center' });
 
-// Función para generar el contrato
-export const generateContractPDF = async (formData: any, contractText: string) => {
-  const pdf = await createBasePDF('Contrato de Gestión');
+    // Añadir número de página
+    doc.setFontSize(10);
+    doc.setTextColor('#000000');
+    addText(`Página ${pageNumber}`, pageWidth - margin, 10, { align: 'right' });
+  };
 
-  // Agregar el texto del contrato
-  pdf.text("Contrato", 10, 70);
-  pdf.text(contractText, 10, 80);
+  // Función para añadir pie de página
+  const addFooter = (): void => {
+    doc.setFontSize(10);
+    doc.setTextColor('#156b7a');
+    addText('GLOOVE TU ALOJAMIENTO TURÍSTICO S.L.', margin, pageHeight - 10);
+    addText('CIF: B-54796925', pageWidth - margin, pageHeight - 10, { align: 'right' });
+  };
 
-  // Agregar la firma si existe
-  if (formData.signature) {
-    pdf.addImage(formData.signature, "PNG", 10, 240, 50, 50);
+  // Obtener logo
+  const storage = getStorage();
+  const logoRef = ref(storage, 'glooveLogo.png');
+  const logoUrl = await getDownloadURL(logoRef);
+
+  // Iniciar primera página
+  let pageNumber = 1;
+  addHeader(pageNumber);
+  addFooter();
+
+  // Información del propietario
+  doc.setFontSize(12);
+  let yPos = 50;
+  addRow(['PROPIETARIO:', formData.propietario, 'e-MAIL:', formData.email], margin, yPos, [30, 60, 30, 60], 10);
+  yPos += 10;
+  addRow(['DNI/PASAPORTE:', formData.DNI, 'Num Catastro:', formData.numCatastro], margin, yPos, [40, 50, 40, 50], 10);
+  yPos += 10;
+  addRow(['Ciudad:', formData.ciudad, 'Provincia:', formData.provincia, 'C. Postal:', formData.cPostal], margin, yPos, [30, 30, 30, 30, 30, 30], 10);
+  yPos += 10;
+  addRow(['Dirección Exacta:', formData.direccion], margin, yPos, [40, 140], 10);
+
+  // Características del alojamiento
+  yPos += 20;
+  doc.setFillColor('#156b7a');
+  doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
+  doc.setTextColor('#FFFFFF');
+  addText('CARACTERÍSTICAS DEL ALOJAMIENTO', pageWidth / 2, yPos + 7, { align: 'center' });
+  
+  yPos += 15;
+  const characteristicsData = [
+    ['Tipo Vivienda:', formData.tipoVivienda, 'Interior:', formData.interior ? 'Sí' : 'No', 'Exterior:', formData.exterior ? 'Sí' : 'No', 'Ascensor:', formData.ascensor ? 'Sí' : 'No'],
+    ['Portero:', formData.portero ? 'Sí' : 'No', 'Portero Automático:', formData.porteroAutomatico ? 'Sí' : 'No', 'Garaje:', formData.garaje ? 'Sí' : 'No', 'Garaje Concertado:', formData.garajeConcertado ? 'Sí' : 'No'],
+    ['Fácil Aparcamiento:', formData.facilAparcamiento ? 'Sí' : 'No', 'Piscina:', formData.piscina ? 'Sí' : 'No', 'Jardín:', formData.jardin ? 'Sí' : 'No', 'Vistas a:', formData.vistas],
+    ['Habitaciones:', formData.habitaciones.toString(), 'Baños:', formData.banos.toString(), 'Aseos:', formData.aseos.toString(), 'Ducha:', formData.duchas.toString()],
+    ['Bañera:', formData.baneras.toString(), 'Trastero:', formData.trastero ? 'Sí' : 'No', 'Mascotas:', formData.mascotas ? 'Sí' : 'No', 'Cocina Tipo:', formData.cocina],
+    ['Capacidad Máxima:', formData.capacidadMaxima.toString()]
+  ];
+
+  characteristicsData.forEach(row => {
+    addRow(row, margin, yPos, [30, 20, 30, 20, 30, 20, 30, 20], 10);
+    yPos += 10;
+  });
+
+  // Características y amueblamiento (ejemplo para una cama)
+  yPos += 10;
+  doc.setFillColor('#156b7a');
+  doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
+  doc.setTextColor('#FFFFFF');
+  addText('CARACTERÍSTICAS Y AMUEBLAMIENTO', pageWidth / 2, yPos + 7, { align: 'center' });
+
+  yPos += 15;
+  if (formData.camas && formData.camas.length > 0) {
+    const cama = formData.camas[0];
+    const camaData = [
+      ['Tipo:', cama.tipo, 'Aire Acondicionado:', cama.aireAcondicionado ? 'Sí' : 'No', 'Calefacción:', cama.calefaccion ? 'Sí' : 'No'],
+      ['Ventilador:', cama.ventilador ? 'Sí' : 'No', 'TV:', cama.tv ? 'Sí' : 'No', 'Mosquiteras:', cama.mosquiteras ? 'Sí' : 'No'],
+      ['Electrodomésticos:', cama.electrodomesticos],
+      ['Agua Caliente:', cama.aguaCaliente],
+      ['Estado Pintura:', cama.estadoPintura, 'Reforma Año:', cama.reformaAno, 'Estado Mobiliario:', cama.estadoMobiliario]
+    ];
+
+    camaData.forEach(row => {
+      addRow(row, margin, yPos, row.length === 2 ? [40, 140] : [30, 20, 30, 20, 30, 50], 10);
+      yPos += 10;
+    });
   }
 
-  return pdf;
-};
+  // Observaciones
+  yPos += 10;
+  doc.setFillColor('#156b7a');
+  doc.rect(margin, yPos, pageWidth - 2 * margin, 10, 'F');
+  doc.setTextColor('#FFFFFF');
+  addText('OBSERVACIONES', pageWidth / 2, yPos + 7, { align: 'center' });
 
-// Función para generar la ficha técnica
-export const generateTechnicalSheetPDF = async (technicalData: any) => {
-  const pdf = await createBasePDF('Ficha Técnica del Alojamiento Turístico');
+  yPos += 15;
+  doc.setTextColor('#000000');
+  doc.text(formData.observaciones, margin, yPos, { maxWidth: pageWidth - 2 * margin });
 
-  // Añadir contenido específico de la ficha técnica
-  let yPosition = 70;
-  pdf.setFontSize(12);
-  pdf.text(`Ciudad: ${technicalData.ciudad}`, 10, yPosition);
-  yPosition += 10;
-  pdf.text(`Dirección Exacta: ${technicalData.direccionExacta}`, 10, yPosition);
-  // ... Añadir más campos de la ficha técnica
-
-  return pdf;
-};
-
-// Función para generar el inventario
-export const generateInventoryPDF = async (inventoryData: any) => {
-  const pdf = await createBasePDF('Inventario');
-
-  // Añadir contenido específico del inventario
-  let yPosition = 70;
-  pdf.setFontSize(12);
-  pdf.text('Habitación 1', 10, yPosition);
-  yPosition += 10;
-  // ... Añadir items del inventario
-
-  return pdf;
-};
-
-// Función para generar el presupuesto textil
-export const generateTextileBudgetPDF = async (budgetData: any) => {
-  const pdf = await createBasePDF('Presupuesto Textil');
-
-  // Añadir contenido específico del presupuesto
-  let yPosition = 70;
-  pdf.setFontSize(12);
-  pdf.text('Concepto', 10, yPosition);
-  pdf.text('Cantidad', 80, yPosition);
-  pdf.text('PVP', 120, yPosition);
-  pdf.text('Total', 160, yPosition);
-
-  // Añadir items del presupuesto
-  budgetData.items.forEach((item: any, index: number) => {
-    yPosition += 10;
-    pdf.text(item.concept, 10, yPosition);
-    pdf.text(item.quantity.toString(), 80, yPosition);
-    pdf.text(item.pvp.toFixed(2), 120, yPosition);
-    pdf.text((item.quantity * item.pvp).toFixed(2), 160, yPosition);
-  });
-
-  return pdf;
-};
-
-// Función para generar la factura textil
-export const generateTextileInvoicePDF = async (invoiceData: any) => {
-  const pdf = await createBasePDF('Factura Textil');
-
-  // Añadir contenido específico de la factura
-  let yPosition = 70;
-  pdf.setFontSize(12);
-  pdf.text(`Cliente: ${invoiceData.cliente}`, 10, yPosition);
-  yPosition += 10;
-  pdf.text(`Dirección: ${invoiceData.direccion}`, 10, yPosition);
-  // ... Añadir más detalles de la factura
-
-  return pdf;
-};
-
-// Función para generar el resumen textil
-export const generateTextileSummaryPDF = async (summary: any, userId: string) => {
-  const pdf = await createBasePDF("Resumen de Textil");
-
-  pdf.setFontSize(12);
-  pdf.text("Resumen de Pedido de Textil", 20, 30);
-
-  let yPosition = 50;
-  Object.entries(summary).forEach(([key, value]) => {
-    pdf.text(`${key.replace(/_/g, " ")}: ${value}`, 20, yPosition);
-    yPosition += 10;
-  });
-
-  // Guardar y descargar el PDF...
-  const pdfData = pdf.output("datauristring");
-  const storage = getStorage();
-  const pdfRef = ref(storage, `Presupuesto Textil/textile_summary_${userId}.pdf`);
-  await uploadString(pdfRef, pdfData, "data_url");
-
-  return pdfData;
-};
-
-// Función para generar y subir el PDF y devolver la URL
-export const generateAndUploadPDF = async (
-  summary: Record<string, number>,
-  budget: number,
-  userId: string
-) => {
-  const pdf = await generateCorporatePDF("Resumen de Textil", { ...summary, Total: budget });
-  const pdfData = pdf.output("datauristring");
-
-  const storage = getStorage();
-  const pdfRef = ref(storage, `Presupuesto Textil/textile_summary_${userId}.pdf`);
-  await uploadString(pdfRef, pdfData, "data_url");
-
-  return await getDownloadURL(pdfRef);
+  return doc;
 };

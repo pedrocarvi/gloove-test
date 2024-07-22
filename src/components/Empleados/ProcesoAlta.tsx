@@ -1,54 +1,85 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  ArrowDown,
-  Check,
-  X,
-  Download,
+  CheckCircle,
+  XCircle,
   MessageCircle,
+  ArrowDown,
+  Download,
   Send,
 } from "lucide-react";
 import {
   getPropietariosEnProceso,
   enviarInvitacion,
   actualizarEstadoPropietario,
+  Propietario,
 } from "../../services/propietarioService";
 
-const ProcesoAlta = () => {
+const ProcesoAlta: React.FC = () => {
   const [newOwnerEmail, setNewOwnerEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [propietarios, setPropietarios] = useState([]);
+  const [propietarios, setPropietarios] = useState<Propietario[]>([]);
   const itemsPerPage = 10;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPropietarios = async () => {
-      const data = await getPropietariosEnProceso();
-      setPropietarios(data);
+      try {
+        const data = await getPropietariosEnProceso();
+        setPropietarios(data);
+      } catch (error) {
+        console.error("Error fetching propietarios en proceso:", error);
+      }
     };
     fetchPropietarios();
   }, []);
 
   const handleAddNewOwner = async (e: React.FormEvent) => {
     e.preventDefault();
-    await enviarInvitacion(newOwnerEmail);
-    setNewOwnerEmail("");
+    try {
+      await enviarInvitacion(newOwnerEmail);
+      setNewOwnerEmail("");
+    } catch (error) {
+      console.error("Error sending invitation:", error);
+    }
   };
 
   const handleAction = async (id: string, action: string) => {
-    await actualizarEstadoPropietario(id, action);
-    const data = await getPropietariosEnProceso();
-    setPropietarios(data);
+    try {
+      await actualizarEstadoPropietario(id, action);
+      const data = await getPropietariosEnProceso();
+      setPropietarios(data);
+    } catch (error) {
+      console.error(
+        `Error updating state for propietario with ID ${id}:`,
+        error
+      );
+    }
   };
 
-  const renderActionButton = (status: any, id: string, action: string) => {
-    if (status === true) {
+  const renderStatusIcon = (step: number, currentStep: number) => {
+    return step <= currentStep ? (
+      <CheckCircle className="text-green-500" size={20} />
+    ) : (
+      <XCircle className="text-red-500" size={20} />
+    );
+  };
+
+  const renderActionButton = (
+    status: boolean | "pendiente" | string,
+    id: string,
+    action: string,
+    url?: string
+  ) => {
+    if (typeof status === "string" && status !== "pendiente") {
       return (
-        <button
-          onClick={() => handleAction(id, action)}
-          className="bg-blue-500 text-white p-1 rounded"
-        >
+        <a href={url} target="_blank" rel="noopener noreferrer">
           <Download size={16} />
-        </button>
+        </a>
       );
+    }
+    if (status === true) {
+      return <CheckCircle className="text-green-500" size={16} />;
     } else if (status === "pendiente") {
       return (
         <div className="flex space-x-1">
@@ -56,7 +87,7 @@ const ProcesoAlta = () => {
             onClick={() => handleAction(id, action)}
             className="bg-green-500 text-white p-1 rounded"
           >
-            <Check size={16} />
+            <CheckCircle size={16} />
           </button>
           <button
             onClick={() => handleAction(id, action)}
@@ -67,31 +98,39 @@ const ProcesoAlta = () => {
         </div>
       );
     }
-    return null;
+    return <XCircle className="text-red-500" size={16} />;
+  };
+
+  const handleNavigate = (path: string, id: string, action: string) => {
+    handleAction(id, action);
+    navigate(path);
   };
 
   return (
-    <div className="p-4 max-w-6xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">
+    <div className="p-4 max-w-6xl mx-auto bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold mb-6 text-center">
         Dashboard de Empleados - Proceso de Alta
       </h1>
-      <form onSubmit={handleAddNewOwner} className="mb-4">
+      <form onSubmit={handleAddNewOwner} className="mb-6 flex justify-center">
         <input
           type="email"
           value={newOwnerEmail}
           onChange={(e) => setNewOwnerEmail(e.target.value)}
           placeholder="Correo del nuevo propietario"
-          className="border p-2 mr-2"
+          className="border p-2 rounded-l-lg w-80"
         />
-        <button type="submit" className="bg-green-500 text-white p-2 rounded">
+        <button
+          type="submit"
+          className="bg-green-500 text-white p-2 rounded-r-lg"
+        >
           Enviar Invitación
         </button>
       </form>
-      <div className="mb-4 flex space-x-2">
-        <select className="border p-2">
+      <div className="mb-6 flex justify-center space-x-4">
+        <select className="border p-2 rounded-lg bg-white">
           <option>Filtrar por región</option>
         </select>
-        <select className="border p-2">
+        <select className="border p-2 rounded-lg bg-white">
           <option>Ordenar por</option>
           <option>Alfabético</option>
           <option>Más antiguos</option>
@@ -99,17 +138,37 @@ const ProcesoAlta = () => {
         </select>
       </div>
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white">
-          <thead className="bg-gray-100">
+        <table className="min-w-full bg-white shadow-lg rounded-lg">
+          <thead className="bg-gray-200">
             <tr>
-              <th className="p-3 text-left">Nombre</th>
-              <th className="p-3 text-center">Ficha Técnica</th>
-              <th className="p-3 text-center">Formulario Textil</th>
-              <th className="p-3 text-center">Presupuesto Textil</th>
-              <th className="p-3 text-center">Distinto Document</th>
-              <th className="p-3 text-center">Contrato</th>
-              <th className="p-3 text-center">Inventario</th>
-              <th className="p-3 text-center">Chat</th>
+              <th className="p-4 text-left font-medium text-gray-700">
+                Nombre
+              </th>
+              <th className="p-4 text-left font-medium text-gray-700">Email</th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Ficha Técnica
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Formulario Textil
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Presupuesto Textil
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Distinto Document
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Contrato
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Inventario
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Chat
+              </th>
+              <th className="p-4 text-center font-medium text-gray-700">
+                Estado
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -120,108 +179,71 @@ const ProcesoAlta = () => {
               )
               .map((propietario) => (
                 <tr key={propietario.id} className="border-b">
-                  <td className="p-3">
+                  <td className="p-4 flex items-center space-x-2">
                     {propietario.presupuestoTextil === "pendiente" ||
                     propietario.contrato === "pendiente" ? (
-                      <span className="mr-2 text-yellow-500">
-                        <ArrowDown size={16} />
-                      </span>
+                      <ArrowDown className="text-yellow-500" size={16} />
                     ) : null}
-                    {propietario.nombre}
+                    <span>{propietario.name}</span>
                   </td>
-                  <td className="p-3 text-center">
-                    {propietario.fichaTecnica ? (
-                      <Check className="inline text-green-500" />
-                    ) : (
-                      <X className="inline text-red-500" />
-                    )}
-                    {propietario.fichaTecnica &&
-                      renderActionButton(
-                        propietario.fichaTecnica,
-                        propietario.id,
-                        "fichaTecnica"
-                      )}
+                  <td className="p-4 text-left">{propietario.email}</td>
+                  <td className="p-4 text-center">
+                    {renderStatusIcon(1, propietario.currentStep)}
                   </td>
-                  <td className="p-3 text-center">
-                    {propietario.formularioTextil ? (
-                      <Check className="inline text-green-500" />
-                    ) : (
-                      <X className="inline text-red-500" />
-                    )}
-                    {propietario.formularioTextil &&
-                      renderActionButton(
-                        propietario.formularioTextil,
-                        propietario.id,
-                        "formularioTextil"
-                      )}
+                  <td className="p-4 text-center">
+                    {renderStatusIcon(2, propietario.currentStep)}
                   </td>
                   <td
-                    className={`p-3 text-center ${
-                      propietario.presupuestoTextil === "pendiente"
+                    className={`p-4 text-center ${
+                      propietario.presupuestoTextil === "pendiente" && !propietario.presupuestoTextilActioned
                         ? "bg-yellow-100"
                         : ""
                     }`}
                   >
-                    {propietario.presupuestoTextil === true ? (
-                      <Check className="inline text-green-500" />
-                    ) : propietario.presupuestoTextil === "pendiente" ? (
-                      <span className="text-yellow-500">Pendiente</span>
-                    ) : (
-                      <X className="inline text-red-500" />
-                    )}
                     {renderActionButton(
                       propietario.presupuestoTextil,
                       propietario.id,
-                      "presupuesto"
+                      "presupuestoTextilActioned",
+                      typeof propietario.presupuestoTextil === "string"
+                        ? propietario.presupuestoTextil
+                        : undefined
                     )}
+                    <button
+                      onClick={() => handleNavigate(`/presupuesto-textil/${propietario.id}`, propietario.id, "presupuestoTextilActioned")}
+                      className="ml-2 bg-blue-500 text-white p-1 rounded"
+                    >
+                      Ir a Presupuesto
+                    </button>
                   </td>
-                  <td className="p-3 text-center">
-                    {propietario.distintoDocument ? (
-                      <Check className="inline text-green-500" />
-                    ) : (
-                      <X className="inline text-red-500" />
-                    )}
-                    {propietario.distintoDocument &&
-                      renderActionButton(
-                        propietario.distintoDocument,
-                        propietario.id,
-                        "distintoDocument"
-                      )}
+                  <td className="p-4 text-center">
+                    {renderStatusIcon(4, propietario.currentStep)}
                   </td>
                   <td
-                    className={`p-3 text-center ${
-                      propietario.contrato === "pendiente"
+                    className={`p-4 text-center ${
+                      propietario.contrato === "pendiente" && !propietario.contratoActioned
                         ? "bg-yellow-100"
                         : ""
                     }`}
                   >
-                    {propietario.contrato === true ? (
-                      <Check className="inline text-green-500" />
-                    ) : propietario.contrato === "pendiente" ? (
-                      <span className="text-yellow-500">Pendiente</span>
-                    ) : (
-                      <X className="inline text-red-500" />
-                    )}
                     {renderActionButton(
                       propietario.contrato,
                       propietario.id,
-                      "contrato"
+                      "contratoActioned",
+                      typeof propietario.contrato === "string"
+                        ? propietario.contrato
+                        : undefined
                     )}
+                    <button
+                      onClick={() => handleNavigate(`/contrato/${propietario.id}`, propietario.id, "contratoActioned")}
+                      className="ml-2 bg-blue-500 text-white p-1 rounded"
+                    >
+                      Ir a Contrato
+                    </button>
                   </td>
-                  <td className="p-3 text-center">
-                    {propietario.inventario ? (
-                      <Check className="inline text-green-500" />
-                    ) : (
-                      <X className="inline text-red-500" />
-                    )}
-                    {propietario.inventario &&
-                      renderActionButton(
-                        propietario.inventario,
-                        propietario.id,
-                        "inventario"
-                      )}
+                  <td className="p-4 text-center">
+                    {renderStatusIcon(6, propietario.currentStep)}
                   </td>
-                  <td className="p-3 text-center">
+                  <td className="p-4 text-center">
                     <button className="bg-blue-500 text-white p-2 rounded relative">
                       <MessageCircle size={16} />
                       {propietario.chat > 0 && (
@@ -231,22 +253,28 @@ const ProcesoAlta = () => {
                       )}
                     </button>
                   </td>
+                  <td className="p-4 text-center">
+                    {renderStatusIcon(
+                      propietario.completedRegistration ? 7 : 0,
+                      7
+                    )}
+                  </td>
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
-      <div className="mt-4 flex justify-center">
+      <div className="mt-6 flex justify-center">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-          className="mx-1 p-2 border rounded"
+          className="mx-2 p-2 border rounded bg-gray-200"
         >
           Anterior
         </button>
-        <span className="mx-1 p-2">Página {currentPage}</span>
+        <span className="mx-2 p-2">Página {currentPage}</span>
         <button
           onClick={() => setCurrentPage((prev) => prev + 1)}
-          className="mx-1 p-2 border rounded"
+          className="mx-2 p-2 border rounded bg-gray-200"
         >
           Siguiente
         </button>

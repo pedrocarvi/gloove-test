@@ -4,7 +4,7 @@ import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-import { generateCorporatePDF } from "@/utils/pdfGenerator";
+import { generateInventoryPDF } from "@/utils/inventoryPdfGenerator";
 
 interface Distribucion {
   superficieVivienda: number;
@@ -237,7 +237,7 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
     }
 
     try {
-      const pdfDoc = await generateCorporatePDF("Inventario", formData);
+      const pdfDoc = await generateInventoryPDF(formData);
       const pdfData = pdfDoc.output("datauristring");
 
       // Subir el PDF a Firebase Storage
@@ -260,15 +260,9 @@ const InventoryForm: React.FC<InventoryFormProps> = ({
         processStatus: "completed",
       });
 
-      // Descargar el PDF
-      const link = document.createElement('a');
-      link.href = pdfData;
-      link.download = `Inventario_${user.uid}.pdf`;
-      link.click();
-
       Swal.fire({
         icon: "success",
-        title: "Inventario guardado y descargado",
+        title: "Inventario guardado",
         text: "Has completado el proceso de alta.",
       });
       onAccept();

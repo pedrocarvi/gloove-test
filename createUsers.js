@@ -9,12 +9,16 @@ const serviceAccount = {
   type: process.env.VITE_SERVICE_ACCOUNT_TYPE,
   project_id: process.env.VITE_SERVICE_ACCOUNT_PROJECT_ID,
   private_key_id: process.env.VITE_SERVICE_ACCOUNT_PRIVATE_KEY_ID,
-  private_key: process.env.VITE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(/\\n/g, "\n"),
+  private_key: process.env.VITE_SERVICE_ACCOUNT_PRIVATE_KEY.replace(
+    /\\n/g,
+    "\n"
+  ),
   client_email: process.env.VITE_SERVICE_ACCOUNT_CLIENT_EMAIL,
   client_id: process.env.VITE_SERVICE_ACCOUNT_CLIENT_ID,
   auth_uri: process.env.VITE_SERVICE_ACCOUNT_AUTH_URI,
   token_uri: process.env.VITE_SERVICE_ACCOUNT_TOKEN_URI,
-  auth_provider_x509_cert_url: process.env.VITE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL,
+  auth_provider_x509_cert_url:
+    process.env.VITE_SERVICE_ACCOUNT_AUTH_PROVIDER_X509_CERT_URL,
   client_x509_cert_url: process.env.VITE_SERVICE_ACCOUNT_CLIENT_X509_CERT_URL,
 };
 
@@ -67,13 +71,21 @@ async function createUser(email, password, role, name) {
       }
     }
 
-    console.log("User created and initial structure set in Firestore:", userRecord.uid);
+    console.log(
+      "User created and initial structure set in Firestore:",
+      userRecord.uid
+    );
   } catch (error) {
     console.error("Error creating new user:", error);
   }
 }
 
 // Ejemplo de uso
-createUser("propietario15@example.com", "password123", "propietario", "Mateo Garcia");
-createUser("empleado15@example.com", "password123", "empleado", "Juan Perez");
-createUser("huesped15@example.com", "password123", "huesped", "Ana Lopez");
+createUser(
+  "propietario28@example.com",
+  "password123",
+  "propietario",
+  "Valentino Garcia"
+);
+createUser("empleado28@example.com", "password123", "empleado", "Juan Perez");
+createUser("huesped28@example.com", "password123", "huesped", "Ana Lopez");

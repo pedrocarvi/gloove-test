@@ -36,13 +36,13 @@ const EmployerSidebar: React.FC = () => {
 
   const menuItems = [
     {
-      name: "Dashboard",
-      path: "/dashboard",
+      name: "Dashboard-empleados",
+      path: "/dashboard-empleados",
       icon: <HomeIcon className="h-6 w-6" />,
     },
     {
       name: "Propietarios Activación",
-      path: "/propietarios-activacion",
+      path: "/proceso-alta",
       icon: <UserGroupIcon className="h-6 w-6" />,
     },
     {

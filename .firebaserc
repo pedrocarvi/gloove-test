@@ -1,9 +1,5 @@
 {
   "projects": {
-    "default": "software-gloove",
-    "Thebest": "software-gloove"
-  },
-  "targets": {},
-  "etags": {},
-  "dataconnectEmulatorConfig": {}
+    "default": "software-gloove"
+  }
 }

@@ -3,8 +3,6 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-import { generateCorporatePDF } from "@/utils/pdfGenerator";
 
 interface TextileFormProps {
   onAccept: () => void;
@@ -72,47 +70,31 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
     }
 
     try {
-      const pdfDoc = await generateCorporatePDF("Presupuesto Textil", formData);
-      const pdfData = pdfDoc.output("datauristring");
-
-      // Subir el PDF a Firebase Storage
-      const storage = getStorage();
-      const pdfRef = ref(storage, `DocumentacionPropietarios/PresupuestoTextil/presupuesto_textil_${user.uid}.pdf`);
-      await uploadString(pdfRef, pdfData, "data_url");
-
-      const pdfUrl = await getDownloadURL(pdfRef);
-
-      // Guardar la referencia del PDF en Firestore
+      // Guardar los datos del formulario en Firestore
       const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/textil_presupuesto`);
       await setDoc(docRef, {
         userId: user.uid,
-        pdfUrl,
         ...formData,
       });
 
+      // Actualizar el estado del proceso
       await updateDoc(doc(db, "users", user.uid), {
         currentStep: 2,
         processStatus: "textile_summary",
       });
 
-      // Descargar el PDF
-      const link = document.createElement('a');
-      link.href = pdfData;
-      link.download = `Presupuesto_Textil_${user.uid}.pdf`;
-      link.click();
-
       Swal.fire({
         icon: "success",
-        title: "Presupuesto textil guardado y descargado",
+        title: "Datos textiles guardados",
         text: "Puedes proceder al siguiente paso.",
       });
       onAccept();
     } catch (error) {
-      console.error("Error al generar o guardar el presupuesto textil:", error);
+      console.error("Error al guardar los datos textiles:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Hubo un problema al generar o guardar el presupuesto textil. Por favor, inténtalo de nuevo.",
+        text: "Hubo un problema al guardar los datos textiles. Por favor, inténtalo de nuevo.",
       });
     }
   };
