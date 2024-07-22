@@ -6,12 +6,15 @@ import SignatureCanvas from "react-signature-canvas";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import Swal from "sweetalert2";
 import { generateContractPDF } from "@/utils/contractPdfGenerator";
+import { sendEmail } from "@/utils/emailService";
 
 const Contrato: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [formData, setFormData] = useState<any>(null);
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isSigned, setIsSigned] = useState(false);
+  const [emails, setEmails] = useState<string[]>([""]);
+  const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
   const navigate = useNavigate();
   const sigCanvas = useRef<SignatureCanvas>(null);
 
@@ -62,10 +65,10 @@ const Contrato: React.FC = () => {
     }
 
     try {
-      const contractData = { ...formData };
+      const contractData = { ...formData, signature: formData.signature };
 
       // Generar el PDF del contrato
-      const pdfDoc = await generateContractPDF(contractData, contractData.contractText);
+      const pdfDoc = await generateContractPDF(contractData, contractData.contractText, formData.signature);
       const pdfData = pdfDoc.output("datauristring");
 
       // Subir el PDF a Firebase Storage
@@ -104,6 +107,47 @@ const Contrato: React.FC = () => {
     }
   };
 
+  const handleAddEmail = () => {
+    setEmails([...emails, ""]);
+  };
+
+  const handleEmailChange = (index: number, value: string) => {
+    const newEmails = [...emails];
+    newEmails[index] = value;
+    setEmails(newEmails);
+  };
+
+  const handleDocumentSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    setSelectedDocuments(selectedOptions);
+  };
+
+  const handleSendEmail = async () => {
+    const validEmails = emails.filter(email => email.trim() !== "");
+    const documents = [pdfUrl].filter((url): url is string => url !== null);
+
+    try {
+      await sendEmail({
+        to: validEmails,
+        subject: "Contrato de Gestión",
+        body: "Adjunto encontrará el contrato de gestión.",
+        attachments: documents,
+      });
+      Swal.fire({
+        icon: "success",
+        title: "Correo enviado",
+        text: "El contrato ha sido enviado exitosamente.",
+      });
+    } catch (error) {
+      console.error("Error enviando correo:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "No se pudo enviar el correo. Por favor, inténtalo de nuevo.",
+      });
+    }
+  };
+
   const handleBackClick = () => {
     navigate(-1);
   };
@@ -120,7 +164,7 @@ const Contrato: React.FC = () => {
       ) : (
         <p>Cargando...</p>
       )}
-      <div className="mt-4 flex space-x-2 justify-center">
+      <div className="mt-4">
         {!isSigned && (
           <SignatureCanvas
             ref={sigCanvas}
@@ -136,16 +180,38 @@ const Contrato: React.FC = () => {
           Firmar
         </button>
         <button
-          onClick={handleSubmit}
-          className="bg-blue-500 text-white py-2 px-4 rounded-md"
-        >
-          Enviar Contrato
-        </button>
-        <button
           onClick={handleBackClick}
-          className="bg-gray-500 text-white py-2 px-4 rounded-md"
+          className="bg-gray-500 text-white py-2 px-4 rounded-md ml-4"
         >
           Volver
+        </button>
+      </div>
+      <div className="mt-8">
+        <h2 className="text-2xl font-bold mb-4">Enviar contrato por correo</h2>
+        {emails.map((email, index) => (
+          <div key={index} className="flex mb-2">
+            <input
+              type="text"
+              value={email}
+              onChange={(e) => handleEmailChange(index, e.target.value)}
+              placeholder="Correo electrónico"
+              className="flex-grow p-2 border rounded"
+            />
+            {index === emails.length - 1 && (
+              <button
+                onClick={handleAddEmail}
+                className="ml-2 bg-green-500 text-white py-2 px-4 rounded-md"
+              >
+                +
+              </button>
+            )}
+          </div>
+        ))}
+        <button
+          onClick={handleSendEmail}
+          className="bg-green-500 text-white py-2 px-4 rounded-md"
+        >
+          Enviar Contrato
         </button>
       </div>
     </div>
@@ -153,3 +219,5 @@ const Contrato: React.FC = () => {
 };
 
 export default Contrato;
+
+

@@ -13,7 +13,7 @@ interface ContractData {
   signature: string;
 }
 
-export const generateContractPDF = async (contractData: ContractData, contractText: string): Promise<jsPDF> => {
+export const generateContractPDF = async (contractData: ContractData, contractText: string, employeeSignature: string): Promise<jsPDF> => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
@@ -81,6 +81,7 @@ export const generateContractPDF = async (contractData: ContractData, contractTe
 
   yPosition += 10;
   doc.addImage(contractData.signature, 'PNG', margin, yPosition, 70, 30);
+  doc.addImage(employeeSignature, 'PNG', pageWidth / 2 + margin, yPosition, 70, 30);
   
   // Añadir espacio para la firma de GLOOVE
   doc.setFont('helvetica', 'normal');
