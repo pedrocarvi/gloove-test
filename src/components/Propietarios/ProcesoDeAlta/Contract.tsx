@@ -225,8 +225,11 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
         signature: formData.signature
       };
 
+      // Firma de empleado predeterminada (puedes ajustarla según sea necesario)
+      const employeeSignature = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAADQmU3KAAAA...";
+
       // Generar el PDF del contrato
-      const pdfDoc = await generateContractPDF(contractData, contractText);
+      const pdfDoc = await generateContractPDF(contractData, contractText, employeeSignature);
       const pdfData = pdfDoc.output("datauristring");
 
       // Subir el PDF a Firebase Storage

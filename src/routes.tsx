@@ -8,7 +8,7 @@ import OwnerLayout from "./components/Propietarios/PropietariosValidados/OwnerLa
 import OwnerDashboard from "./components/Propietarios/PropietariosValidados/OwnerDashboard";
 import PropertyForm from "./components/Propietarios/PropietariosValidados/PropertyForm";
 import Properties from "./components/Propietarios/PropietariosValidados/Properties";
-import Chat from "./components/Propietarios/PropietariosValidados/Chat";
+import ChatProp from "./components/Propietarios/PropietariosValidados/ChatProp";
 import ProcesoDeAlta from "./components/Propietarios/ProcesoDeAlta/ProcesoDeAlta";
 import HuespedesLayout from "./components/Huespedes/HuespedesLayout";
 import HuespedesDashboard from "./components/Huespedes/Dashboard";
@@ -21,17 +21,18 @@ import EmpleadosLayout from "./components/Empleados/EmpleadosLayout";
 import EmployeeDashboard from "./components/Empleados/EmployeeDashboard";
 import ProcesoAlta from "./components/Empleados/ProcesoAlta";
 import PropietariosValidados from "./components/Empleados/PropietariosValidados";
+import ChatEmpleado from "./components/Empleados/ControlPropietarios/Chat";
+import Documents from "./components/Propietarios/PropietariosValidados/Documents";
+import Documentacion from "./components/Propietarios/PropietariosValidados/Documentacion";
+import OwnerProfile from "./components/Propietarios/PropietariosValidados/OwnerProfile";
+import UnderConstruction from "./components/UnderConstruction";
+import PresupuestoTextil from "./components/Empleados/PresupuestoTextil";
+import Contrato from "./components/Empleados/Contrato";
 import NuevoPropietarioForm from "./components/Empleados/ControlPropietarios/NuevoPropietarioForm";
 import SearchPage from "./components/Empleados/ControlPropietarios/SearchPage";
 import InventoryPage from "./components/Empleados/InventoryPage";
 import CleaningPage from "./components/Empleados/CleaningPage";
 import MaintenancePage from "./components/Empleados/MaintenancePage";
-import Documentacion from "./components/Propietarios/PropietariosValidados/Documentacion";
-import Documents from "./components/Propietarios/PropietariosValidados/Documents";
-import OwnerProfile from "./components/Propietarios/PropietariosValidados/OwnerProfile";
-import UnderConstruction from "./components/UnderConstruction";
-import PresupuestoTextil from "./components/Empleados/PresupuestoTextil";
-import Contrato from "./components/Empleados/Contrato";
 
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
@@ -52,7 +53,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/dashboard-propietarios" element={<OwnerDashboard />} />
           <Route path="/property-form" element={<PropertyForm />} />
           <Route path="/properties" element={<Properties />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat" element={<ChatProp />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/documentacion" element={<Documentacion />} />
           <Route path="/OwnerProfile" element={<OwnerProfile />} />
@@ -85,6 +86,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/mantenimiento" element={<MaintenancePage />} />
           <Route path="/presupuesto-textil/:id" element={<PresupuestoTextil />} />
           <Route path="/contrato/:id" element={<Contrato />} />
+          <Route path="/chat" element={<ChatEmpleado />} />
           <Route path="/huespedes" element={<UnderConstruction />} />
           <Route path="/tasks" element={<UnderConstruction />} />
           <Route path="/messages" element={<UnderConstruction />} />

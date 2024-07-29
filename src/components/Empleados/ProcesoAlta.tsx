@@ -10,10 +10,10 @@ import {
 } from "lucide-react";
 import {
   getPropietariosEnProceso,
-  enviarInvitacion,
   actualizarEstadoPropietario,
   Propietario,
 } from "../../services/propietarioService";
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const ProcesoAlta: React.FC = () => {
   const [newOwnerEmail, setNewOwnerEmail] = useState("");
@@ -21,6 +21,7 @@ const ProcesoAlta: React.FC = () => {
   const [propietarios, setPropietarios] = useState<Propietario[]>([]);
   const itemsPerPage = 10;
   const navigate = useNavigate();
+  const functions = getFunctions();
 
   useEffect(() => {
     const fetchPropietarios = async () => {
@@ -37,7 +38,8 @@ const ProcesoAlta: React.FC = () => {
   const handleAddNewOwner = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await enviarInvitacion(newOwnerEmail);
+      const sendInvitation = httpsCallable(functions, 'sendInvitation');
+      await sendInvitation({ email: newOwnerEmail });
       setNewOwnerEmail("");
     } catch (error) {
       console.error("Error sending invitation:", error);
@@ -195,7 +197,7 @@ const ProcesoAlta: React.FC = () => {
                   </td>
                   <td
                     className={`p-4 text-center ${
-                      propietario.presupuestoTextil === "pendiente" && !propietario.presupuestoTextilActioned
+                      propietario.presupuestoTextil === "pendiente"
                         ? "bg-yellow-100"
                         : ""
                     }`}
@@ -203,13 +205,13 @@ const ProcesoAlta: React.FC = () => {
                     {renderActionButton(
                       propietario.presupuestoTextil,
                       propietario.id,
-                      "presupuestoTextilActioned",
+                      "presupuestoTextil",
                       typeof propietario.presupuestoTextil === "string"
                         ? propietario.presupuestoTextil
                         : undefined
                     )}
                     <button
-                      onClick={() => handleNavigate(`/presupuesto-textil/${propietario.id}`, propietario.id, "presupuestoTextilActioned")}
+                      onClick={() => handleNavigate(`/presupuesto-textil/${propietario.id}`, propietario.id, "presupuestoTextil")}
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Presupuesto
@@ -220,7 +222,7 @@ const ProcesoAlta: React.FC = () => {
                   </td>
                   <td
                     className={`p-4 text-center ${
-                      propietario.contrato === "pendiente" && !propietario.contratoActioned
+                      propietario.contrato === "pendiente"
                         ? "bg-yellow-100"
                         : ""
                     }`}
@@ -228,13 +230,13 @@ const ProcesoAlta: React.FC = () => {
                     {renderActionButton(
                       propietario.contrato,
                       propietario.id,
-                      "contratoActioned",
+                      "contrato",
                       typeof propietario.contrato === "string"
                         ? propietario.contrato
                         : undefined
                     )}
                     <button
-                      onClick={() => handleNavigate(`/contrato/${propietario.id}`, propietario.id, "contratoActioned")}
+                      onClick={() => handleNavigate(`/contrato/${propietario.id}`, propietario.id, "contrato")}
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Contrato
