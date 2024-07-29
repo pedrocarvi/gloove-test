@@ -1,11 +1,12 @@
 /** @type {import('tailwindcss').Config} */
-const config = {
+module.exports = {
+  darkMode: "class",
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
         primary: {
-          light: "#7FDDD6",
+          light: "#7FD1E4",
           DEFAULT: "#38B2AC",
           dark: "#2C9C94",
         },
@@ -15,24 +16,40 @@ const config = {
           dark: "#4C51BF",
         },
         accent: {
-          light: "#FBBF24",
+          light: "#FFDB7D",
           DEFAULT: "#F59E0B",
           dark: "#B45309",
         },
         neutral: {
           light: "#F7FAFC",
-          DEFAULT: "#EDF2F7",
-          dark: "#E2E8F0",
+          DEFAULT: "#E2E8F0",
+          dark: "#CBD5E0",
         },
         danger: {
-          light: "#FED7D7",
+          light: "#FEB2B2",
           DEFAULT: "#F56565",
           dark: "#C53030",
         },
+        dark: {
+          background: "#1A202C",
+          text: "#A0AEC0",
+          primary: "#2D3748",
+          secondary: "#4A5568",
+        },
+      },
+      fontFamily: {
+        sans: ["Roboto", "sans-serif"],
+        heading: ["Poppins", "sans-serif"],
+      },
+      screens: {
+        xs: "480px", // Agrega un nuevo punto de quiebre para pantallas extra pequeñas
+        sm: "640px",
+        md: "768px",
+        lg: "1024px",
+        xl: "1280px",
+        "2xl": "1536px",
       },
     },
   },
   plugins: [],
 };
-
-module.exports = config;

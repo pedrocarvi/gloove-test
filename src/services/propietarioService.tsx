@@ -15,9 +15,10 @@ export interface Propietario {
   name: string;
   email: string;
   fichaTecnica: string;
-  formularioTextil: string;
   presupuestoTextil: string;
-  distintoDocument: string;
+  dni: string;
+  referenciaCatastral: string;
+  vut: string;
   contrato: string;
   inventario: string;
   chat: number;
@@ -32,62 +33,63 @@ const failedDocumentsCache: { [key: string]: boolean } = {};
 
 const fetchDocumentURL = async (
   propietarioId: string,
-  docPath: string
+  docPath: string,
+  formats: string[] = ["jpg", "png", "pdf"]
 ): Promise<string> => {
-  const cacheKey = `${propietarioId}/${docPath}`;
-
-  if (failedDocumentsCache[cacheKey]) {
-    return "pendiente";
-  }
-
-  try {
-    const fileRef = ref(
-      storage,
-      `DocumentacionPropietarios/${propietarioId}/${docPath}`
-    );
-    return await getDownloadURL(fileRef);
-  } catch (error) {
-    if ((error as any).code === "storage/object-not-found") {
-      console.warn(
-        `Document ${docPath} for propietario ${propietarioId} not found.`
-      );
-      failedDocumentsCache[cacheKey] = true;
-      return "pendiente";
-    } else {
-      console.error(
-        `Error fetching URL for document ${docPath} of propietario ${propietarioId}:`,
-        error
-      );
-      return "pendiente";
+  for (const format of formats) {
+    const fullPath = `${docPath}.${format}`;
+    const cacheKey = `${propietarioId}/${fullPath}`;
+    if (failedDocumentsCache[cacheKey]) {
+      continue;
+    }
+    try {
+      const fileRef = ref(storage, fullPath);
+      const url = await getDownloadURL(fileRef);
+      console.log(`Fetched URL for ${fullPath}: ${url}`);
+      return url;
+    } catch (error) {
+      if ((error as any).code === "storage/object-not-found") {
+        console.warn(`Document ${fullPath} not found.`);
+        failedDocumentsCache[cacheKey] = true;
+      } else {
+        console.error(`Error getting URL for document ${fullPath}:`, error);
+        return "pendiente";
+      }
     }
   }
+  return "pendiente";
 };
 
 export const updatePropietarioDocuments = async (propietario: Propietario) => {
   propietario.fichaTecnica = await fetchDocumentURL(
     propietario.id,
-    "FichaTecnica/technical_form.pdf"
-  );
-  propietario.formularioTextil = await fetchDocumentURL(
-    propietario.id,
-    "TextileSummaries/textile_summaries.pdf"
+    `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${propietario.id}`
   );
   propietario.presupuestoTextil = await fetchDocumentURL(
     propietario.id,
-    "PresupuestoTextil/textil_presupuesto.pdf"
+    `Presupuesto Textil/textile_summary_${propietario.id}`
   );
-  propietario.distintoDocument = await fetchDocumentURL(
+  propietario.dni = await fetchDocumentURL(
     propietario.id,
-    "DistinctDocuments/distinct_documents.pdf"
+    `DocumentacionPropietarios/dNI/dNI_${propietario.id}`
+  );
+  propietario.referenciaCatastral = await fetchDocumentURL(
+    propietario.id,
+    `DocumentacionPropietarios/refCatastral/refCatastral_${propietario.id}`
+  );
+  propietario.vut = await fetchDocumentURL(
+    propietario.id,
+    `DocumentacionPropietarios/vUT/vUT_${propietario.id}`
   );
   propietario.contrato = await fetchDocumentURL(
     propietario.id,
-    "Contratos/contract.pdf"
+    `DocumentacionPropietarios/Contratos/contract_${propietario.id}`
   );
   propietario.inventario = await fetchDocumentURL(
     propietario.id,
-    "Inventario/inventario.pdf"
+    `DocumentacionPropietarios/Inventario/inventario_${propietario.id}`
   );
+  return propietario;
 };
 
 export const getPropietariosEnProceso = async (): Promise<Propietario[]> => {

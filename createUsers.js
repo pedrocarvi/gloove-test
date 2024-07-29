@@ -82,10 +82,10 @@ async function createUser(email, password, role, name) {
 
 // Ejemplo de uso
 createUser(
-  "propietario28@example.com",
+  "propietario292@example.com",
   "password123",
   "propietario",
   "Valentino Garcia"
 );
-createUser("empleado28@example.com", "password123", "empleado", "Juan Perez");
-createUser("huesped28@example.com", "password123", "huesped", "Ana Lopez");
+createUser("empleado292@example.com", "password123", "empleado", "Juan Perez");
+createUser("huesped292@example.com", "password123", "huesped", "Ana Lopez");

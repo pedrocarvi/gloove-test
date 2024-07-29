@@ -7,6 +7,7 @@ import {
   ArrowDown,
   Download,
   Send,
+  Loader,
 } from "lucide-react";
 import {
   getPropietariosEnProceso,
@@ -19,6 +20,7 @@ const ProcesoAlta: React.FC = () => {
   const [newOwnerEmail, setNewOwnerEmail] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [propietarios, setPropietarios] = useState<Propietario[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
@@ -29,6 +31,8 @@ const ProcesoAlta: React.FC = () => {
         setPropietarios(data);
       } catch (error) {
         console.error("Error fetching propietarios en proceso:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPropietarios();
@@ -105,6 +109,14 @@ const ProcesoAlta: React.FC = () => {
     handleAction(id, action);
     navigate(path);
   };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Loader className="animate-spin" size={48} />
+      </div>
+    );
+  }
 
   return (
     <div className="p-4 max-w-6xl mx-auto bg-gray-50 min-h-screen">
@@ -193,13 +205,7 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(2, propietario.currentStep)}
                   </td>
-                  <td
-                    className={`p-4 text-center ${
-                      propietario.presupuestoTextil === "pendiente" && !propietario.presupuestoTextilActioned
-                        ? "bg-yellow-100"
-                        : ""
-                    }`}
-                  >
+                  <td className="p-4 text-center">
                     {renderActionButton(
                       propietario.presupuestoTextil,
                       propietario.id,
@@ -209,7 +215,13 @@ const ProcesoAlta: React.FC = () => {
                         : undefined
                     )}
                     <button
-                      onClick={() => handleNavigate(`/presupuesto-textil/${propietario.id}`, propietario.id, "presupuestoTextilActioned")}
+                      onClick={() =>
+                        handleNavigate(
+                          `/presupuesto-textil/${propietario.id}`,
+                          propietario.id,
+                          "presupuestoTextilActioned"
+                        )
+                      }
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Presupuesto
@@ -218,13 +230,7 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(4, propietario.currentStep)}
                   </td>
-                  <td
-                    className={`p-4 text-center ${
-                      propietario.contrato === "pendiente" && !propietario.contratoActioned
-                        ? "bg-yellow-100"
-                        : ""
-                    }`}
-                  >
+                  <td className="p-4 text-center">
                     {renderActionButton(
                       propietario.contrato,
                       propietario.id,
@@ -234,7 +240,13 @@ const ProcesoAlta: React.FC = () => {
                         : undefined
                     )}
                     <button
-                      onClick={() => handleNavigate(`/contrato/${propietario.id}`, propietario.id, "contratoActioned")}
+                      onClick={() =>
+                        handleNavigate(
+                          `/contrato/${propietario.id}`,
+                          propietario.id,
+                          "contratoActioned"
+                        )
+                      }
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Contrato

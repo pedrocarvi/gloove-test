@@ -1,6 +1,5 @@
-// src/@types/react-slick.d.ts
 declare module "react-slick" {
-  import * as React from "react";
+  import { Component } from "react";
 
   export interface Settings {
     dots?: boolean;
@@ -8,13 +7,10 @@ declare module "react-slick" {
     speed?: number;
     slidesToShow?: number;
     slidesToScroll?: number;
-    arrows?: boolean;
     autoplay?: boolean;
     autoplaySpeed?: number;
-    pauseOnHover?: boolean;
-    className?: string;
-    adaptiveHeight?: boolean;
+    [key: string]: any;
   }
 
-  export default class Slider extends React.Component<Settings> {}
+  export default class Slider extends Component<Settings> {}
 }
