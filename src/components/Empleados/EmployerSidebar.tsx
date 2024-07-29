@@ -6,17 +6,17 @@ import {
   HomeIcon,
   UserIcon,
   CogIcon,
-  ChatBubbleLeftRightIcon as MessagesIcon,
-  ArrowRightOnRectangleIcon as LogoutIcon,
-  QuestionMarkCircleIcon as HelpIcon,
-  ClipboardIcon as TasksIcon,
+  ChatBubbleLeftRightIcon,
+  ArrowRightOnRectangleIcon,
+  QuestionMarkCircleIcon,
+  ClipboardIcon,
   UserGroupIcon,
-  MagnifyingGlassIcon as SearchIcon,
+  MagnifyingGlassIcon,
   SunIcon,
   Cog6ToothIcon,
-  PencilSquareIcon as InventoryIcon, // Icono para Inventario
-  TrashIcon as CleaningIcon, // Icono para Limpieza
-  WrenchScrewdriverIcon as MaintenanceIcon, // Icono para Mantenimiento
+  PencilSquareIcon,
+  TrashIcon,
+  WrenchScrewdriverIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 
@@ -55,16 +55,16 @@ const EmployerSidebar: React.FC = () => {
       path: "/huespedes",
       icon: <UserGroupIcon className="h-6 w-6" />,
     },
-    { name: "Tareas", path: "/tasks", icon: <TasksIcon className="h-6 w-6" /> },
+    { name: "Tareas", path: "/tasks", icon: <ClipboardIcon className="h-6 w-6" /> },
     {
-      name: "Mensajes",
-      path: "/messages",
-      icon: <MessagesIcon className="h-6 w-6" />,
+      name: "Chat con Propietarios",
+      path: "/chat",
+      icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
     },
     {
       name: "Buscador",
       path: "/buscador",
-      icon: <SearchIcon className="h-6 w-6" />,
+      icon: <MagnifyingGlassIcon className="h-6 w-6" />,
     },
     {
       name: "Glovito",
@@ -74,18 +74,18 @@ const EmployerSidebar: React.FC = () => {
     {
       name: "Inventario",
       path: "/inventario",
-      icon: <InventoryIcon className="h-6 w-6" />,
-    }, // Nueva ruta para Inventario
+      icon: <PencilSquareIcon className="h-6 w-6" />,
+    },
     {
       name: "Limpieza",
       path: "/limpieza",
-      icon: <CleaningIcon className="h-6 w-6" />,
-    }, // Nueva ruta para Limpieza
+      icon: <TrashIcon className="h-6 w-6" />,
+    },
     {
       name: "Mantenimiento",
       path: "/mantenimiento",
-      icon: <MaintenanceIcon className="h-6 w-6" />,
-    }, // Nueva ruta para Mantenimiento
+      icon: <WrenchScrewdriverIcon className="h-6 w-6" />,
+    },
     {
       name: "Mi Perfil",
       path: "/profile",
@@ -96,11 +96,11 @@ const EmployerSidebar: React.FC = () => {
       path: "/settings",
       icon: <Cog6ToothIcon className="h-6 w-6" />,
     },
-    { name: "Ayuda", path: "/help", icon: <HelpIcon className="h-6 w-6" /> },
+    { name: "Ayuda", path: "/help", icon: <QuestionMarkCircleIcon className="h-6 w-6" /> },
     {
       name: "Cerrar Sesión",
       path: "#",
-      icon: <LogoutIcon className="h-6 w-6" />,
+      icon: <ArrowRightOnRectangleIcon className="h-6 w-6" />,
       action: toggleLogoutModal,
     },
   ];

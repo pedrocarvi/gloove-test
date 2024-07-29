@@ -13,16 +13,28 @@ interface ContractData {
   signature: string;
 }
 
-export const generateContractPDF = async (contractData: ContractData, contractText: string): Promise<jsPDF> => {
+export const generateContractPDF = async (contractData: ContractData, contractText: string, employeeSignature: string): Promise<jsPDF> => {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   const pageHeight = doc.internal.pageSize.getHeight();
   const margin = 20;
   const lineHeight = 7;
 
+  // Obtener el logo
+  let logoUrl = '';
+  try {
+    const storage = getStorage();
+    const logoRef = ref(storage, 'glooveLogo.png');
+    logoUrl = await getDownloadURL(logoRef);
+  } catch (error) {
+    console.warn('Logo no disponible, continuando sin logo.');
+  }
+
   // Función para añadir el encabezado a cada página
   const addHeader = (pageNumber: number) => {
-    doc.addImage(logoUrl, 'PNG', margin, 10, 40, 20);
+    if (logoUrl) {
+      doc.addImage(logoUrl, 'PNG', margin, 10, 40, 20);
+    }
     doc.setFontSize(10);
     doc.setTextColor(100);
     doc.text(`Página ${pageNumber}`, pageWidth - margin, 10, { align: 'right' });
@@ -42,10 +54,11 @@ export const generateContractPDF = async (contractData: ContractData, contractTe
     return y + lines.length * lineHeight;
   };
 
-  // Obtener el logo
-  const storage = getStorage();
-  const logoRef = ref(storage, 'glooveLogo.png');
-  const logoUrl = await getDownloadURL(logoRef);
+  // Verificar si una cadena base64 es válida
+  const isValidBase64 = (str: string) => {
+    const base64Regex = /^data:image\/(png|jpeg);base64,/;
+    return base64Regex.test(str);
+  };
 
   // Iniciar la primera página
   let pageNumber = 1;
@@ -60,8 +73,8 @@ export const generateContractPDF = async (contractData: ContractData, contractTe
   // Añadir contenido del contrato
   doc.setFontSize(12);
   doc.setFont('helvetica', 'normal');
-  
-  const paragraphs = contractText.split('\n\n');
+
+  const paragraphs = contractText.split('\n');
   for (const paragraph of paragraphs) {
     if (yPosition > pageHeight - margin * 2) {
       doc.addPage();
@@ -70,7 +83,7 @@ export const generateContractPDF = async (contractData: ContractData, contractTe
       addFooter();
       yPosition = 40;
     }
-    yPosition = addText(paragraph, margin, yPosition + 10, pageWidth - 2 * margin);
+    yPosition = addText(paragraph, margin, yPosition, pageWidth - 2 * margin);
   }
 
   // Añadir sección de firmas
@@ -80,11 +93,40 @@ export const generateContractPDF = async (contractData: ContractData, contractTe
   doc.text('FDO. GLOOVE', pageWidth / 2 + margin, yPosition);
 
   yPosition += 10;
-  doc.addImage(contractData.signature, 'PNG', margin, yPosition, 70, 30);
-  
+
+  // Verificar y añadir las firmas
+  const addSignature = (signature: string, x: number, y: number) => {
+    if (isValidBase64(signature)) {
+      try {
+        doc.addImage(signature, 'PNG', x, y, 70, 30);
+      } catch (error) {
+        console.error("Error al añadir la imagen de la firma:", error);
+        throw new Error("Error al añadir la imagen de la firma");
+      }
+    } else {
+      console.error("Firma no válida");
+      throw new Error("Firma no válida");
+    }
+  };
+
+  if (contractData.signature) {
+    addSignature(contractData.signature, margin, yPosition);
+  } else {
+    console.error("Firma del propietario no válida");
+    throw new Error("Firma del propietario no válida");
+  }
+
+  if (employeeSignature) {
+    addSignature(employeeSignature, pageWidth / 2 + margin, yPosition);
+  } else {
+    console.error("Firma del empleado no válida");
+    throw new Error("Firma del empleado no válida");
+  }
+
   // Añadir espacio para la firma de GLOOVE
   doc.setFont('helvetica', 'normal');
   doc.text('(Espacio reservado para firma de GLOOVE)', pageWidth / 2 + margin, yPosition + 35);
 
   return doc;
 };
+

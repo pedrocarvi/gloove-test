@@ -10,8 +10,8 @@ interface BenefitItem {
   pvc: number;
 }
 
-export interface BenefitData {  // Asegúrate de exportar esta interfaz
-  beneficioId: string;
+export interface BenefitData {
+  beneficioId: string;  // Asegúrate de que este sea `BENEFICIO-${userId.substring(0, 6)}`
   fecha: string;
   items: BenefitItem[];
 }

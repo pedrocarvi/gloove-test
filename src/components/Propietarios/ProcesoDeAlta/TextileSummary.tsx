@@ -190,29 +190,29 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({ onAccept, initialValues
     const pdfData = pdfDoc.output("datauristring");
 
     const storage = getStorage();
-    const pdfRef = ref(storage, `Presupuesto Textil/${priceType === "pvc" ? "Beneficio" : "textile_summary"}_${userId}.pdf`);
-    await uploadString(pdfRef, pdfData, "data_url");
+  const pdfRef = ref(storage, `Presupuesto Textil/${priceType === "pvc" ? "Beneficio" : "textile_summary"}_${userId}.pdf`);
+  await uploadString(pdfRef, pdfData, "data_url");
 
-    if (priceType === "pvc") {
-      const benefitData: BenefitData = {
-        beneficioId: `BENEFICIO-${userId.substring(0, 6)}`,
-        fecha: new Date().toLocaleDateString(),
-        items: items.map(item => ({
-          concepto: item.concepto,
-          cantidad: item.cantidad,
-          pvp: prices[item.concepto as keyof typeof prices]?.pvp || 0,
-          pvc: prices[item.concepto as keyof typeof prices]?.pvc || 0
-        }))
-      };
-      const benefitPDF = await generateBenefitPDF(benefitData);
-      const benefitPDFData = benefitPDF.output("datauristring");
+  if (priceType === "pvc") {
+    const benefitData: BenefitData = {
+      beneficioId: `BENEFICIO-${userId.substring(0, 6)}`,
+      fecha: new Date().toLocaleDateString(),
+      items: items.map(item => ({
+        concepto: item.concepto,
+        cantidad: item.cantidad,
+        pvp: prices[item.concepto as keyof typeof prices]?.pvp || 0,
+        pvc: prices[item.concepto as keyof typeof prices]?.pvc || 0
+      }))
+    };
+    const benefitPDF = await generateBenefitPDF(benefitData);
+    const benefitPDFData = benefitPDF.output("datauristring");
 
-      const benefitPDFRef = ref(storage, `Presupuesto Textil/Beneficio_${userId}.pdf`);
-      await uploadString(benefitPDFRef, benefitPDFData, "data_url");
-    }
+    const benefitPDFRef = ref(storage, `Presupuesto Textil/Beneficio_${userId}.pdf`);
+    await uploadString(benefitPDFRef, benefitPDFData, "data_url");
+  }
 
-    return await getDownloadURL(pdfRef);
-  };
+  return await getDownloadURL(pdfRef);
+};
 
   const handleAccept = async () => {
     if (!user) {

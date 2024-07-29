@@ -11,10 +11,10 @@ import {
 } from "lucide-react";
 import {
   getPropietariosEnProceso,
-  enviarInvitacion,
   actualizarEstadoPropietario,
   Propietario,
 } from "../../services/propietarioService";
+import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const ProcesoAlta: React.FC = () => {
   const [newOwnerEmail, setNewOwnerEmail] = useState("");
@@ -23,6 +23,7 @@ const ProcesoAlta: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const itemsPerPage = 10;
   const navigate = useNavigate();
+  const functions = getFunctions();
 
   useEffect(() => {
     const fetchPropietarios = async () => {
@@ -41,7 +42,8 @@ const ProcesoAlta: React.FC = () => {
   const handleAddNewOwner = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await enviarInvitacion(newOwnerEmail);
+      const sendInvitation = httpsCallable(functions, 'sendInvitation');
+      await sendInvitation({ email: newOwnerEmail });
       setNewOwnerEmail("");
     } catch (error) {
       console.error("Error sending invitation:", error);
@@ -205,16 +207,27 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(2, propietario.currentStep)}
                   </td>
+<<<<<<< HEAD
                   <td className="p-4 text-center">
+=======
+                  <td
+                    className={`p-4 text-center ${
+                      propietario.presupuestoTextil === "pendiente"
+                        ? "bg-yellow-100"
+                        : ""
+                    }`}
+                  >
+>>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                     {renderActionButton(
                       propietario.presupuestoTextil,
                       propietario.id,
-                      "presupuestoTextilActioned",
+                      "presupuestoTextil",
                       typeof propietario.presupuestoTextil === "string"
                         ? propietario.presupuestoTextil
                         : undefined
                     )}
                     <button
+<<<<<<< HEAD
                       onClick={() =>
                         handleNavigate(
                           `/presupuesto-textil/${propietario.id}`,
@@ -222,6 +235,9 @@ const ProcesoAlta: React.FC = () => {
                           "presupuestoTextilActioned"
                         )
                       }
+=======
+                      onClick={() => handleNavigate(`/presupuesto-textil/${propietario.id}`, propietario.id, "presupuestoTextil")}
+>>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Presupuesto
@@ -230,16 +246,27 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(4, propietario.currentStep)}
                   </td>
+<<<<<<< HEAD
                   <td className="p-4 text-center">
+=======
+                  <td
+                    className={`p-4 text-center ${
+                      propietario.contrato === "pendiente"
+                        ? "bg-yellow-100"
+                        : ""
+                    }`}
+                  >
+>>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                     {renderActionButton(
                       propietario.contrato,
                       propietario.id,
-                      "contratoActioned",
+                      "contrato",
                       typeof propietario.contrato === "string"
                         ? propietario.contrato
                         : undefined
                     )}
                     <button
+<<<<<<< HEAD
                       onClick={() =>
                         handleNavigate(
                           `/contrato/${propietario.id}`,
@@ -247,6 +274,9 @@ const ProcesoAlta: React.FC = () => {
                           "contratoActioned"
                         )
                       }
+=======
+                      onClick={() => handleNavigate(`/contrato/${propietario.id}`, propietario.id, "contrato")}
+>>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Contrato
