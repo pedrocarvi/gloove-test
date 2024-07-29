@@ -14,7 +14,7 @@ import {
   actualizarEstadoPropietario,
   Propietario,
 } from "../../services/propietarioService";
-import { getFunctions, httpsCallable } from 'firebase/functions';
+import { getFunctions, httpsCallable } from "firebase/functions";
 
 const ProcesoAlta: React.FC = () => {
   const [newOwnerEmail, setNewOwnerEmail] = useState("");
@@ -42,7 +42,7 @@ const ProcesoAlta: React.FC = () => {
   const handleAddNewOwner = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const sendInvitation = httpsCallable(functions, 'sendInvitation');
+      const sendInvitation = httpsCallable(functions, "sendInvitation");
       await sendInvitation({ email: newOwnerEmail });
       setNewOwnerEmail("");
     } catch (error) {
@@ -207,9 +207,6 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(2, propietario.currentStep)}
                   </td>
-<<<<<<< HEAD
-                  <td className="p-4 text-center">
-=======
                   <td
                     className={`p-4 text-center ${
                       propietario.presupuestoTextil === "pendiente"
@@ -217,7 +214,6 @@ const ProcesoAlta: React.FC = () => {
                         : ""
                     }`}
                   >
->>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                     {renderActionButton(
                       propietario.presupuestoTextil,
                       propietario.id,
@@ -227,17 +223,13 @@ const ProcesoAlta: React.FC = () => {
                         : undefined
                     )}
                     <button
-<<<<<<< HEAD
                       onClick={() =>
                         handleNavigate(
                           `/presupuesto-textil/${propietario.id}`,
                           propietario.id,
-                          "presupuestoTextilActioned"
+                          "presupuestoTextil"
                         )
                       }
-=======
-                      onClick={() => handleNavigate(`/presupuesto-textil/${propietario.id}`, propietario.id, "presupuestoTextil")}
->>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Presupuesto
@@ -246,9 +238,6 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(4, propietario.currentStep)}
                   </td>
-<<<<<<< HEAD
-                  <td className="p-4 text-center">
-=======
                   <td
                     className={`p-4 text-center ${
                       propietario.contrato === "pendiente"
@@ -256,7 +245,6 @@ const ProcesoAlta: React.FC = () => {
                         : ""
                     }`}
                   >
->>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                     {renderActionButton(
                       propietario.contrato,
                       propietario.id,
@@ -266,17 +254,13 @@ const ProcesoAlta: React.FC = () => {
                         : undefined
                     )}
                     <button
-<<<<<<< HEAD
                       onClick={() =>
                         handleNavigate(
                           `/contrato/${propietario.id}`,
                           propietario.id,
-                          "contratoActioned"
+                          "contrato"
                         )
                       }
-=======
-                      onClick={() => handleNavigate(`/contrato/${propietario.id}`, propietario.id, "contrato")}
->>>>>>> 2b04cbb75ccb62cbe8e306422549d7722239f4eb
                       className="ml-2 bg-blue-500 text-white p-1 rounded"
                     >
                       Ir a Contrato
