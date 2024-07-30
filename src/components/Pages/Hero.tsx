@@ -30,7 +30,12 @@ const Hero: React.FC = () => {
           <source
             src="/RecursosWeb/vid/FondoO.mp4"
             type="video/mp4"
-            media="(min-width: 1024px)"
+            media="(min-width: 1024px) and (max-width: 1423px)"
+          />
+          <source
+            src="dist/RecursosWeb/vid/FondoO2.mp4"
+            type="video/mp4"
+            media="(min-width: 1424px)"
           />
         </video>
       </motion.div>
@@ -48,15 +53,13 @@ const Hero: React.FC = () => {
             eraseSpeed={50}
             typingDelay={500}
             eraseDelay={1000}
-            displayTextRenderer={(text: string, i: number) => {
-              return (
-                <span key={i}>
-                  {text.split("").map((char: string, j: number) => (
-                    <span key={j}>{char}</span>
-                  ))}
-                </span>
-              );
-            }}
+            displayTextRenderer={(text: string, i: number) => (
+              <span key={i}>
+                {text.split("").map((char, j) => (
+                  <span key={j}>{char}</span>
+                ))}
+              </span>
+            )}
           />
         </motion.h1>
         <motion.p

@@ -5,9 +5,8 @@ import { motion } from "framer-motion";
 
 import Hero from "./Hero";
 import ServicesSection from "./ServicesSection";
-import Carousel from "./Carousel";
 import FeaturesSection from "./FeaturesSection";
-import Inmobiliaria from "./Inmobiliaria";
+import Footer from "./Footer";
 import Experiencias from "./Experiencias";
 import Contacto from "./Contacto";
 import Blog from "./Blog";
@@ -24,7 +23,7 @@ const Home: React.FC = () => {
         <Hero />
       </section>
       <motion.section
-        className="min-h-screen"
+        className=" "
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
@@ -32,52 +31,57 @@ const Home: React.FC = () => {
         <ServicesSection />
       </motion.section>
       <motion.section
-        className="min-h-screen"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
+        className=" "
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <FeaturesSection />
       </motion.section>
       <motion.section
-        className="min-h-screen"
+        className="min-h-screen py-16 relative"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <CollaboratorsSection />
+        <video
+          className="absolute inset-0 w-full h-full object-cover hidden md:block"
+          src="dist/RecursosWeb/vid/grabacion_grande.mov"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <video
+          className="absolute inset-0 w-full h-full object-cover md:hidden"
+          src="dist/RecursosWeb/vid/sm6.mov"
+          autoPlay
+          loop
+          muted
+          playsInline
+        />
+        <div className="relative z-10">
+          {" "}
+          {/* Contenido superpuesto al video */}
+        </div>
       </motion.section>
+
       <motion.section
-        className="min-h-screen"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <Experiencias />
-      </motion.section>
-      <motion.section
-        className="min-h-screen"
+        className=" py-0"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
         <Contacto />
       </motion.section>
+
       <motion.section
-        className="min-h-screen"
+        className=" py-0"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
       >
-        <Blog />
-      </motion.section>
-      <motion.section
-        className="min-h-screen"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <Testimonios />
+        <Footer />
       </motion.section>
     </div>
   );
