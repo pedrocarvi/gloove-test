@@ -1,69 +1,124 @@
 import React from "react";
-import { motion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
-import Slider, { Settings } from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/splide/dist/css/splide.min.css";
+import Quote from "/RecursosWeb/img/blockquote.svg";
 
-const Testimonios: React.FC = () => {
-  const { ref, inView } = useInView({ triggerOnce: true, threshold: 0.1 });
+// Exportación correcta de reviews
+const reviews = [
+  {
+    id: 1,
+    image:
+      "https://images.unsplash.com/photo-1605462863863-10d9e47e15ee?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "John Doe",
+    text: "I was extremely pleased with the quality of the product. It exceeded my expectations and provided great value for the price.",
+  },
+  {
+    id: 2,
+    image:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Jane Smith",
+    text: "The customer service was excellent. They were responsive and helpful throughout the entire process, making it a smooth experience for me.",
+  },
+  {
+    id: 3,
+    image:
+      "https://images.unsplash.com/photo-1463453091185-61582044d556?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Alex Johnson",
+    text: "The attention to detail in their work is impressive. Every aspect of the project was handled with precision and care. I highly recommend their services.",
+  },
+  {
+    id: 4,
+    image:
+      "https://plus.unsplash.com/premium_photo-1671823917954-dc943c1bd9df?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "Emily Davis",
+    text: "The team demonstrated a deep understanding of my requirements. They were able to capture the essence of my vision and deliver a product that exceeded my expectations.",
+  },
+  {
+    id: 5,
+    image:
+      "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=1776&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "David Miller",
+    text: "The product not only met but exceeded my expectations. It's clear that the team is dedicated to delivering high-quality work. I'm a satisfied customer.",
+  },
+];
 
-  const settings: Settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 5000,
-  };
-
-  const testimonios = [
-    {
-      id: 1,
-      texto: "Excelente servicio, muy satisfecho!",
-      autor: "Juan Pérez",
-    },
-    {
-      id: 2,
-      texto: "Una experiencia inolvidable, altamente recomendado.",
-      autor: "María López",
-    },
-    // Añade más testimonios aquí
-  ];
-
+const Testimonials = () => {
   return (
-    <section
-      id="testimonios"
-      className="h-screen flex items-center justify-center bg-gray-100 dark:bg-dark-background px-4"
-    >
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0, y: 50 }}
-        animate={inView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 1 }}
-        className="text-center max-w-3xl"
-      >
-        <h2 className="text-2xl md:text-3xl font-bold dark:text-dark-text">
-          Testimonios
-        </h2>
-        <div className="mt-6">
-          <Slider {...settings}>
-            {testimonios.map((testimonio) => (
-              <div key={testimonio.id} className="p-4">
-                <p className="text-lg dark:text-dark-text">
-                  {testimonio.texto}
-                </p>
-                <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-                  - {testimonio.autor}
-                </p>
-              </div>
+    <section className="bg-gradient-to-r from-blue-700 to-teal-400 py-16 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-2xl mx-auto text-center">
+        <h2 className="text-3xl font-extrabold text-white">Testimonios</h2>
+        <p className="mt-4 text-lg text-teal-100">
+          Lo que nuestros clientes dicen sobre nosotros.
+        </p>
+      </div>
+
+      <div className="mt-12">
+        <div className="relative">
+          <blockquote className="flex justify-center">
+            <img
+              className="w-10 h-10 absolute -top-8 left-8 opacity-20"
+              src={Quote}
+              alt="quote"
+            />
+            <img
+              className="w-10 h-10 absolute -bottom-8 right-8 opacity-20 transform rotate-180"
+              src={Quote}
+              alt="quote"
+            />
+          </blockquote>
+
+          <Splide
+            options={{
+              perPage: 1,
+              autoplay: true,
+              speed: 1000,
+              rewind: true,
+              rewindByDrag: true,
+              arrows: false,
+              pagination: false,
+              type: "loop",
+              gap: "1rem",
+            }}
+          >
+            {reviews.map((review) => (
+              <SplideSlide
+                key={review.id}
+                className="flex flex-col items-center"
+              >
+                <img
+                  className="w-16 h-16 rounded-full object-cover border-4 border-white"
+                  src={review.image}
+                  alt={review.name}
+                />
+                <div className="bg-white shadow-lg rounded-lg p-6 mt-6 w-full max-w-md">
+                  <p className="text-gray-700 text-base mb-4">
+                    "{review.text}"
+                  </p>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center">
+                      <div className="flex space-x-1">
+                        {[...Array(5)].map((_, i) => (
+                          <span
+                            key={i}
+                            className={`star ${
+                              i < 4 ? "text-yellow-500" : "text-gray-300"
+                            }`}
+                          >
+                            &#9733;
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-gray-600 text-sm">{review.name}</p>
+                  </div>
+                </div>
+              </SplideSlide>
             ))}
-          </Slider>
+          </Splide>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 };
 
-export default Testimonios;
+export default Testimonials;

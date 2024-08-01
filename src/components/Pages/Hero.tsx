@@ -18,34 +18,34 @@ const Hero: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source
-            src="/RecursosWeb/vid/FondoM.mp4"
+            src="RecursosWeb/vid/FondoM.mp4"
             type="video/mp4"
             media="(max-width: 767px)"
           />
           <source
-            src="/RecursosWeb/vid/FondoT.mp4"
+            src="RecursosWeb/vid/FondoT.mp4"
             type="video/mp4"
             media="(min-width: 768px) and (max-width: 1023px)"
           />
           <source
-            src="/RecursosWeb/vid/FondoO.mp4"
+            src="RecursosWeb/vid/FondoO.mp4"
             type="video/mp4"
             media="(min-width: 1024px) and (max-width: 1423px)"
           />
           <source
-            src="dist/RecursosWeb/vid/FondoO2.mp4"
+            src="RecursosWeb/vid/FondoO2.mp4"
             type="video/mp4"
             media="(min-width: 1424px)"
           />
         </video>
       </motion.div>
-      <div className="absolute inset-0 bg-black bg-opacity-50 z-10"></div>
+      <div className="absolute inset-0   bg-opacity-40 z-10"></div>
       <div className="relative text-center text-white px-4 sm:px-6 lg:px-8 z-20 flex flex-col items-center justify-center h-full">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="font-heading font-bold italic uppercase text-[34px] sm:text-[45px] md:text-[59px] leading-none tracking-[-0.767px] mb-4"
+          className="font-heading font-bold italic uppercase text-[28px] sm:text-[40px] md:text-[52px] lg:text-[60px] leading-tight tracking-[-0.5px] mb-6"
         >
           <TypingEffect
             text={["Be Happy", "Be Gloove"]}
@@ -66,7 +66,7 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="font-sans font-semibold italic text-[16px] sm:text-[18px] md:text-[20px] tracking-[0.4px]"
+          className="font-sans font-semibold italic text-[18px] sm:text-[20px] md:text-[24px] lg:text-[28px] tracking-[0.5px] mb-8"
         >
           Tu gestor turístico de confianza
         </motion.p>
@@ -75,9 +75,10 @@ const Hero: React.FC = () => {
             scale: 1.1,
             boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
           }}
-          className="mt-8 bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded transition duration-300"
+          className="mt-8 bg-gloovePrimary text-white font-bold py-3 px-6 rounded transition duration-300 hover:bg-gloovePrimary-dark"
+          onClick={() => console.log("Descubre más clicado")}
         >
-          Descubre más
+          DESCUBRE MÁS
         </motion.button>
       </div>
     </section>

@@ -1,34 +1,29 @@
-/** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: "class",
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        primary: {
-          light: "#7FD1E4",
-          DEFAULT: "#38B2AC",
-          dark: "#2C9C94",
+        gloovePrimary: {
+          // Nombre único para evitar conflictos
+          DEFAULT: "#146b79",
+          dark: "#0e505e",
+          light: "#b0d4e3",
         },
-        secondary: {
-          light: "#A3BFFA",
-          DEFAULT: "#667EEA",
-          dark: "#4C51BF",
+        glooveSecondary: {
+          // Nombre único para evitar conflictos
+          light: "#f1f5f9",
+          DEFAULT: "#c2d3cd",
+          dark: "#4A5568",
         },
-        accent: {
-          light: "#FFDB7D",
+        glooveText: {
+          // Nombre único para evitar conflictos
+          DEFAULT: "#333333",
+          dark: "#ffffff",
+        },
+        glooveAccent: {
+          // Nombre único para evitar conflictos
           DEFAULT: "#F59E0B",
-          dark: "#B45309",
-        },
-        neutral: {
-          light: "#F7FAFC",
-          DEFAULT: "#E2E8F0",
-          dark: "#CBD5E0",
-        },
-        danger: {
-          light: "#FEB2B2",
-          DEFAULT: "#F56565",
-          dark: "#C53030",
         },
         dark: {
           background: "#1A202C",
@@ -39,15 +34,7 @@ module.exports = {
       },
       fontFamily: {
         sans: ["Roboto", "sans-serif"],
-        heading: ["Poppins", "sans-serif"],
-      },
-      screens: {
-        xs: "480px", // Agrega un nuevo punto de quiebre para pantallas extra pequeñas
-        sm: "640px",
-        md: "768px",
-        lg: "1024px",
-        xl: "1280px",
-        "2xl": "1536px",
+        heading: ["'Open Sans'", "sans-serif"],
       },
     },
   },

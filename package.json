@@ -16,6 +16,8 @@
     "@react-spring/rafz": "^9.7.4",
     "@react-three/drei": "^9.109.2",
     "@react-three/fiber": "^8.16.8",
+    "@splidejs/react-splide": "^0.7.12",
+    "@splidejs/splide": "^4.1.4",
     "@tippyjs/react": "^4.2.6",
     "@types/jest": "^29.5.12",
     "@types/jspdf": "^2.0.0",
@@ -61,7 +63,7 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.1.11",
     "sweetalert2": "^11.6.13",
-    "swiper": "^11.1.7",
+    "swiper": "^11.1.9",
     "three": "^0.166.1",
     "tsparticles": "^3.5.0",
     "typescript": "^5.5.2"

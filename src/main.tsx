@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./App.css"; // Importa el archivo App.css aquí
 import "./assets/styles/tailwind.css"; // Ajusta la ruta según la estructura de tu proyecto
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const rootElement = document.getElementById("root");
 

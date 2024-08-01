@@ -1,27 +1,19 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import {
-  FaHotel,
-  FaUserTie,
-  FaBuilding,
-  FaStar,
-  FaFacebook,
-  FaTwitter,
-  FaInstagram,
-} from "react-icons/fa";
+import { FaHotel, FaUserTie, FaBuilding, FaStar } from "react-icons/fa";
 
 const cardImages = [
-  "/RecursosWeb/img/Pro/pro.png",
-  "/RecursosWeb/img/Res/res.png",
-  "/RecursosWeb/img/Inm/Inm.png",
-  "/RecursosWeb/img/Exp/Exp.png",
+  "/RecursosWeb/img/Pro/pexels-olly-915051.jpg",
+  "/RecursosWeb/img/Res/pexels-ketut-subiyanto-4546018.jpg",
+  "/RecursosWeb/img/Inm/pexels-maksgelatin-4352247.jpg",
+  "/RecursosWeb/img/Exp/pexels-maksgelatin-4352247.jpg",
 ];
 
 const cardDescriptions = [
-  "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-  "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.",
-  "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore.",
+  "Ofrecemos un servicio integral para propietarios, gestionando sus inmuebles con profesionalidad y transparencia.",
+  "Gestionamos reservas con un sistema ágil y eficiente, asegurando la mejor experiencia para nuestros huéspedes.",
+  "Proveemos soluciones inmobiliarias adaptadas a las necesidades de cada cliente, garantizando seguridad y confianza.",
+  "Creamos experiencias únicas e inolvidables, desde actividades culturales hasta aventuras extremas.",
 ];
 
 type CardProps = {
@@ -43,12 +35,13 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <motion.div
-      className={`relative flex flex-col justify-end cursor-pointer bg-cover bg-center rounded-[20px] shadow-lg transition-all duration-500 ease-in-out ${
-        expanded ? "w-[450px] h-[600px]" : "w-[250px] h-[350px]"
+      className={`relative flex flex-col md:flex-row items-center cursor-pointer bg-cover bg-center rounded-2xl shadow-lg transition-all duration-500 ease-in-out ${
+        expanded
+          ? "w-[450px] h-[600px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
+          : "w-[350px] h-[200px] md:w-[600px] md:h-[350px] lg:w-[350px] lg:h-[600px]"
       }`}
       style={{
         backgroundImage: `url(${imageUrl})`,
-        backgroundColor: expanded ? "#f0f4f8" : "#e0e7ea",
       }}
       onClick={onClick}
       whileHover={{ scale: expanded ? 1.05 : 1.1 }}
@@ -56,42 +49,36 @@ const Card: React.FC<CardProps> = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
     >
-      <div className="absolute inset-0 bg-black bg-opacity-50 rounded-[20px]"></div>
-      <div className="relative z-10 p-4 bg-gray-800 bg-opacity-75 rounded-b-[20px]">
-        <h2 className="text-2xl font-bold text-white text-center">{title}</h2>
+      <motion.div
+        className="absolute inset-0 bg-gray-900 bg-opacity-60 rounded-2xl"
+        whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
+        transition={{ duration: 0.3 }}
+      ></motion.div>
+      <div className="relative z-10 p-4 text-white text-center md:text-left md:w-1/2">
+        <h2 className="text-2xl md:text-3xl font-bold flex items-center justify-center md:justify-start">
+          <Icon className="mr-2 text-xl md:text-2xl lg:text-3xl" /> {title}
+        </h2>
         {expanded && (
-          <div className="text-center">
-            <Icon className="text-4xl text-white mb-4" />
-            <p className="mt-2 text-gray-300">{description}</p>
+          <div>
+            <p className="mt-4 text-white text-sm md:text-base leading-relaxed">
+              {description}
+            </p>
             <motion.a
               href="#"
-              className="mt-4 inline-block bg-white text-gray-800 px-4 py-2 rounded-full shadow-md hover:bg-gray-200 transition"
+              className="mt-6 inline-block bg-gloovePrimary-dark text-white px-6 py-3 rounded-full shadow-md hover:bg-gloovePrimary transition"
               whileHover={{ scale: 1.05 }}
             >
-              Ir a la página
+              Descubrir más
             </motion.a>
           </div>
         )}
       </div>
-      {expanded && (
-        <motion.div
-          className="absolute top-0 left-0 w-full h-full"
-          initial={{ scale: 0.9 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.5 }}
-        >
-          <img
-            src={imageUrl}
-            alt={title}
-            className="w-full h-full object-cover rounded-[20px]"
-          />
-        </motion.div>
-      )}
-      <div className="absolute top-4 right-4 flex space-x-2 opacity-0 group-hover:opacity-100 transition-opacity">
-        <FaFacebook className="text-white text-2xl hover:text-blue-600 transition" />
-        <FaTwitter className="text-white text-2xl hover:text-blue-400 transition" />
-        <FaInstagram className="text-white text-2xl hover:text-pink-600 transition" />
-      </div>
+      <motion.div
+        className="absolute -bottom-10 right-4 md:right-10 transform transition-transform duration-500 ease-in-out"
+        animate={{ x: expanded ? -10 : 0 }}
+      >
+        <Icon className="text-white text-4xl md:text-5xl lg:text-6xl" />
+      </motion.div>
     </motion.div>
   );
 };
@@ -105,14 +92,14 @@ const ServicesSection: React.FC = () => {
 
   const cards = [
     {
-      title: "Propietarios",
-      icon: FaUserTie,
+      title: "Huéspedes",
+      icon: FaHotel,
       description: cardDescriptions[0],
       imageUrl: cardImages[0],
     },
     {
-      title: "Reservas",
-      icon: FaHotel,
+      title: "Propietarios",
+      icon: FaUserTie,
       description: cardDescriptions[1],
       imageUrl: cardImages[1],
     },
@@ -131,16 +118,19 @@ const ServicesSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-16 min-h-screen bg-gradient-to-r from-[#146b79] to-[#08090a] relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h1 className="text-4xl font-extrabold text-white">
+    <section className="min-h-screen py-24 bg-gradient-to-r from-gloovePrimary-light to-glooveSecondary-light relative flex flex-col items-center">
+      <div className="text-center mb-12 max-w-5xl mx-auto px-4">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-gloovePrimary-dark mb-4">
           Servicios Destacados
         </h1>
-        <p className="mt-4 text-2xl text-gray-300">
-          Descubre nuestros últimos trabajos
+        <p className="text-xl md:text-2xl text-glooveSecondary-dark hidden md:block">
+          Gloove ofrece una amplia gama de servicios como gestor turístico,
+          asegurando la mejor experiencia tanto para propietarios como para
+          viajeros. Conoce nuestros servicios y cómo podemos ayudarte a
+          disfrutar al máximo de tus propiedades y viajes.
         </p>
       </div>
-      <div className="mt-12 flex flex-wrap justify-center items-center gap-5">
+      <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-8 max-w-full px-4">
         {cards.map((card, index) => (
           <Card
             key={index}

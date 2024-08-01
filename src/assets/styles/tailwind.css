@@ -4,7 +4,6 @@
 
 .theme-toggle-icon {
   transition: transform 0.2s ease;
-  transform: scale(0);
 }
 
 .theme-toggle-icon.scale-100 {

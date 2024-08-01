@@ -1,5 +1,5 @@
 import React from "react";
-import Navbar from "./Header";
+import Header from "./Header";
 import { useDarkMode } from "../../context/DarkModeContext";
 import { motion } from "framer-motion";
 
@@ -18,26 +18,11 @@ const Home: React.FC = () => {
 
   return (
     <div className={mode === "dark" ? "dark" : ""}>
-      <Navbar />
-      <section className="min-h-screen">
-        <Hero />
-      </section>
-      <motion.section
-        className=" "
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <ServicesSection />
-      </motion.section>
-      <motion.section
-        className=" "
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-      >
-        <FeaturesSection />
-      </motion.section>
+      <Header />
+      <Hero />
+
+      <ServicesSection />
+
       <motion.section
         className="min-h-screen py-16 relative"
         initial={{ opacity: 0, y: 50 }}
@@ -46,7 +31,7 @@ const Home: React.FC = () => {
       >
         <video
           className="absolute inset-0 w-full h-full object-cover hidden md:block"
-          src="dist/RecursosWeb/vid/grabacion_grande.mov"
+          src="/RecursosWeb/vid/grabacion_grande.mov"
           autoPlay
           loop
           muted
@@ -54,29 +39,19 @@ const Home: React.FC = () => {
         />
         <video
           className="absolute inset-0 w-full h-full object-cover md:hidden"
-          src="dist/RecursosWeb/vid/sm6.mov"
+          src="/RecursosWeb/vid/sm6.mov"
           autoPlay
           loop
           muted
           playsInline
         />
-        <div className="relative z-10">
-          {" "}
-          {/* Contenido superpuesto al video */}
-        </div>
+        <div className="relative z-10"></div>
       </motion.section>
+      <FeaturesSection />
 
+      <Contacto />
       <motion.section
-        className=" py-0"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 1 }}
-      >
-        <Contacto />
-      </motion.section>
-
-      <motion.section
-        className=" py-0"
+        className=" "
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
