@@ -3,7 +3,6 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/splide/dist/css/splide.min.css";
 import Quote from "/RecursosWeb/img/blockquote.svg";
 
-// Exportación correcta de reviews
 const reviews = [
   {
     id: 1,
@@ -45,77 +44,60 @@ const reviews = [
 const Testimonials = () => {
   return (
     <section className="bg-gradient-to-r from-blue-700 to-teal-400 py-16 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto text-center">
-        <h2 className="text-3xl font-extrabold text-white">Testimonios</h2>
-        <p className="mt-4 text-lg text-teal-100">
+      <div className="max-w-xl mx-auto text-center">
+        <h2 className="text-3xl font-extrabold text-white mb-4">Testimonios</h2>
+        <p className="text-lg text-teal-100">
           Lo que nuestros clientes dicen sobre nosotros.
         </p>
       </div>
 
-      <div className="mt-12">
-        <div className="relative">
-          <blockquote className="flex justify-center">
-            <img
-              className="w-10 h-10 absolute -top-8 left-8 opacity-20"
-              src={Quote}
-              alt="quote"
-            />
-            <img
-              className="w-10 h-10 absolute -bottom-8 right-8 opacity-20 transform rotate-180"
-              src={Quote}
-              alt="quote"
-            />
-          </blockquote>
-
-          <Splide
-            options={{
-              perPage: 1,
-              autoplay: true,
-              speed: 1000,
-              rewind: true,
-              rewindByDrag: true,
-              arrows: false,
-              pagination: false,
-              type: "loop",
-              gap: "1rem",
-            }}
-          >
-            {reviews.map((review) => (
-              <SplideSlide
-                key={review.id}
-                className="flex flex-col items-center"
-              >
-                <img
-                  className="w-16 h-16 rounded-full object-cover border-4 border-white"
-                  src={review.image}
-                  alt={review.name}
-                />
-                <div className="bg-white shadow-lg rounded-lg p-6 mt-6 w-full max-w-md">
-                  <p className="text-gray-700 text-base mb-4">
-                    "{review.text}"
-                  </p>
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center">
-                      <div className="flex space-x-1">
-                        {[...Array(5)].map((_, i) => (
-                          <span
-                            key={i}
-                            className={`star ${
-                              i < 4 ? "text-yellow-500" : "text-gray-300"
-                            }`}
-                          >
-                            &#9733;
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-gray-600 text-sm">{review.name}</p>
-                  </div>
-                </div>
-              </SplideSlide>
-            ))}
-          </Splide>
-        </div>
+      <div className="mt-12 relative">
+        <Splide
+          options={{
+            perPage: 1,
+            autoplay: true,
+            speed: 1000,
+            rewind: true,
+            rewindByDrag: true,
+            arrows: false,
+            pagination: true,
+            type: "loop",
+            gap: "1rem",
+            breakpoints: {
+              640: {
+                gap: "0.5rem",
+              },
+            },
+          }}
+        >
+          {reviews.map((review) => (
+            <SplideSlide
+              key={review.id}
+              className="flex flex-col items-center text-center"
+            >
+              <img
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-4 border-white mb-4"
+                src={review.image}
+                alt={review.name}
+              />
+              <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+                <p className="text-gray-700 text-sm md:text-base mb-4">
+                  "{review.text}"
+                </p>
+                <p className="text-gray-600 text-xs md:text-sm">
+                  {review.name}
+                </p>
+              </div>
+            </SplideSlide>
+          ))}
+        </Splide>
+        <blockquote className="flex justify-center items-center mt-4 opacity-20">
+          <img
+            className="w-10 h-10 transform rotate-180"
+            src={Quote}
+            alt="quote"
+          />
+        </blockquote>
       </div>
     </section>
   );

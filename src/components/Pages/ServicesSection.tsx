@@ -35,10 +35,10 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <motion.div
-      className={`relative flex flex-col md:flex-row items-center cursor-pointer bg-cover bg-center rounded-2xl shadow-lg transition-all duration-500 ease-in-out ${
+      className={`relative flex flex-col md:flex-row items-center cursor-pointer bg-cover bg-center rounded-2xl shadow-lg transition-all duration-500 ease-in-out overflow-hidden ${
         expanded
-          ? "w-[450px] h-[600px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
-          : "w-[350px] h-[200px] md:w-[600px] md:h-[350px] lg:w-[350px] lg:h-[600px]"
+          ? "w-[350px] h-[500px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
+          : "w-[300px] h-[150px] md:w-[600px] md:h-[300px] lg:w-[350px] lg:h-[600px]"
       }`}
       style={{
         backgroundImage: `url(${imageUrl})`,
@@ -54,8 +54,8 @@ const Card: React.FC<CardProps> = ({
         whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
         transition={{ duration: 0.3 }}
       ></motion.div>
-      <div className="relative z-10 p-4 text-white text-center md:text-left md:w-1/2">
-        <h2 className="text-2xl md:text-3xl font-bold flex items-center justify-center md:justify-start">
+      <div className="relative z-10 p-4 md:p-8 text-white text-center md:text-left w-full">
+        <h2 className="text-lg md:text-2xl font-bold flex items-center justify-center md:justify-start">
           <Icon className="mr-2 text-xl md:text-2xl lg:text-3xl" /> {title}
         </h2>
         {expanded && (
@@ -65,7 +65,7 @@ const Card: React.FC<CardProps> = ({
             </p>
             <motion.a
               href="#"
-              className="mt-6 inline-block bg-gloovePrimary-dark text-white px-6 py-3 rounded-full shadow-md hover:bg-gloovePrimary transition"
+              className="mt-6 inline-block bg-gloovePrimary-dark text-white px-4 py-2 md:px-6 md:py-3 rounded-full shadow-md hover:bg-gloovePrimary transition"
               whileHover={{ scale: 1.05 }}
             >
               Descubrir más
@@ -73,12 +73,14 @@ const Card: React.FC<CardProps> = ({
           </div>
         )}
       </div>
-      <motion.div
-        className="absolute -bottom-10 right-4 md:right-10 transform transition-transform duration-500 ease-in-out"
-        animate={{ x: expanded ? -10 : 0 }}
-      >
-        <Icon className="text-white text-4xl md:text-5xl lg:text-6xl" />
-      </motion.div>
+      {expanded && (
+        <motion.div
+          className="absolute bottom-4 right-4 transform transition-transform duration-500 ease-in-out"
+          animate={{ x: expanded ? -10 : 0 }}
+        >
+          <Icon className="text-white text-3xl md:text-5xl lg:text-6xl" />
+        </motion.div>
+      )}
     </motion.div>
   );
 };
