@@ -28,10 +28,12 @@ import "swiper/css/navigation";
 import "swiper/css/autoplay";
 
 const cardImages = [
-  "/RecursosWeb/img/Pro/pexels-olly-915051.jpg",
-  "/RecursosWeb/img/Res/pexels-ketut-subiyanto-4546018.jpg",
-  "/RecursosWeb/img/Inm/pexels-maksgelatin-4352247.jpg",
-  "/RecursosWeb/img/Exp/pexels-maksgelatin-4352247.jpg",
+  "/RecursosWeb/img/Servicios/1/s1.png",
+  "/RecursosWeb/img/Servicios/2/s2.png",
+  "/RecursosWeb/img/Servicios/3/s3.png",
+  "/RecursosWeb/img/Servicios/4/s4.png",
+  "/RecursosWeb/img/Servicios/5/s5.png",
+  "/RecursosWeb/img/Servicios/6/s6.png",
 ];
 
 const cardTitles = [
@@ -39,16 +41,20 @@ const cardTitles = [
   "Servicios de mejora continua",
   "Servicios de tecnología y automatización",
   "Servicios de gestión de reservas y ocupación",
+  "Servicios de marketing y publicidad",
+  "Servicios de consultoría estratégica",
 ];
 
 const cardDetails = [
-  "Resumen mensual de contabilidad para el propietario...",
-  "Análisis de datos, optimización de procesos...",
-  "Domotización de acceso, gestión de check-in...",
-  "Sesión y edición fotográfica, publicación en plataformas...",
+  "Ofrecemos un resumen mensual de contabilidad para los propietarios, garantizando una gestión transparente y eficiente.",
+  "Proporcionamos análisis de datos y optimización de procesos para mejorar continuamente el rendimiento.",
+  "Implementamos soluciones tecnológicas avanzadas para la automatización y eficiencia operativa.",
+  "Gestionamos reservas y ocupación para maximizar la rentabilidad de las propiedades.",
+  "Desarrollamos campañas de marketing efectivas para promocionar las propiedades y atraer más huéspedes.",
+  "Ofrecemos consultoría estratégica para ayudar a los propietarios a tomar decisiones informadas y planificar el futuro.",
 ];
 
-const icons = [FaBuilding, FaStar, FaBuilding, FaHotel];
+const icons = [FaBuilding, FaUserTie, FaBuilding, FaHotel, FaStar, FaStar];
 
 type CardProps = {
   title: string;

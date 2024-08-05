@@ -2,61 +2,44 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { db } from "@/firebaseConfig";
 import { getDoc, doc, updateDoc } from "firebase/firestore";
-import { getStorage, ref, getDownloadURL, uploadString } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  getDownloadURL,
+  uploadString,
+} from "firebase/storage";
 import Swal from "sweetalert2";
 import { generateFacturaPDF, FacturaData } from "@/utils/facturaGenerator";
 import { sendEmail } from "@/utils/emailService";
 
 // Definición de precios (asegúrate de que esto coincida con la estructura en TextileSummary)
 const prices = {
-  total_sabanas: { pvc: 5.66, pvp: 7.84 },
-  total_fundas_edredon: { pvc: 15.07, pvp: 17.26 },
-  total_alfombrines: { pvc: 2.95, pvp: 3.38 },
-  total_toallas_grandes: { pvc: 9.41, pvp: 10.60 },
-  total_toallas_pequenas: { pvc: 3.38, pvp: 2.82 },
-  total_fundas_almohada: { pvc: 1.46, pvp: 1.22 },
-  // Añadir todos los precios restantes aquí
-  toalla_ducha: { pvc: 7.84, pvp: 9.41 },
-  toalla_lavabo: { pvc: 2.82, pvp: 3.38 },
-  alfombrin: { pvc: 2.46, pvp: 2.95 },
-  sabana_90x200: { pvc: 4.72, pvp: 5.66 },
+  fundas_edredon: { pvc: 15.07, pvp: 17.26 },
+  alfombrines: { pvc: 2.95, pvp: 3.38 },
+  toallas: { pvc: 5.33, pvp: 6.4 }, // Promedio entre 50x100 y 100x150
+  sabana_90: { pvc: 4.72, pvp: 5.66 },
   sabana_105: { pvc: 5.07, pvp: 6.08 },
-  sabana_150x200: { pvc: 6.89, pvp: 8.27 },
-  sabana_180x200: { pvc: 10.20, pvp: 12.24 },
-  funda_almohada_45x95: { pvc: 1.22, pvp: 1.46 },
-  funda_almohada_45x110: { pvc: 1.38, pvp: 1.66 },
-  relleno_almohada_45x75: { pvc: 8.83, pvp: 10.60 },
-  relleno_almohada_45x90: { pvc: 9.99, pvp: 11.99 },
-  relleno_almohada_45x105: { pvc: 12.24, pvp: 14.69 },
-  relleno_almohada_45x135: { pvc: 15.76, pvp: 18.91 },
+  sabana_135: { pvc: 5.87, pvp: 7.04 },
+  sabana_150: { pvc: 6.52, pvp: 7.83 },
+  sabana_180: { pvc: 8.42, pvp: 10.11 },
+  funda_almohada_95: { pvc: 1.22, pvp: 1.46 },
+  relleno_almohada_90: { pvc: 9.99, pvp: 11.99 },
   funda_nordica_90: { pvc: 12.56, pvp: 15.07 },
   funda_nordica_105: { pvc: 14.38, pvp: 17.26 },
   funda_nordica_135: { pvc: 17.72, pvp: 21.26 },
   funda_nordica_150: { pvc: 18.88, pvp: 22.66 },
   funda_nordica_180: { pvc: 21.57, pvp: 25.88 },
-  funda_nordica_200: { pvc: 21.73, pvp: 26.08 },
-  relleno_nordico_90: { pvc: 18.09, pvp: 21.71 },
-  relleno_nordico_105: { pvc: 19.87, pvp: 23.84 },
-  relleno_nordico_135: { pvc: 26.06, pvp: 31.27 },
-  relleno_nordico_150: { pvc: 27.89, pvp: 33.47 },
-  relleno_nordico_180: { pvc: 29.54, pvp: 35.45 },
-  relleno_nordico_200: { pvc: 32.94, pvp: 39.53 },
-  relleno_nordico_90_alt: { pvc: 14.46, pvp: 17.35 },
-  relleno_nordico_105_alt: { pvc: 12.62, pvp: 15.14 },
-  relleno_nordico_135_alt: { pvc: 11.63, pvp: 13.96 },
-  relleno_nordico_150_alt: { pvc: 10.98, pvp: 13.18 },
-  relleno_nordico_180_alt: { pvc: 9.86, pvp: 11.83 },
-  relleno_nordico_200_alt: { pvc: 9.19, pvp: 11.03 },
   protector_colchon: { pvc: 8.96, pvp: 10.75 },
 };
-
 
 const PresupuestoTextil: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [presupuestoUrl, setPresupuestoUrl] = useState<string | null>(null);
   const [beneficioUrl, setBeneficioUrl] = useState<string | null>(null);
   const [facturaUrl, setFacturaUrl] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'presupuesto' | 'beneficio' | 'factura'>('presupuesto');
+  const [activeTab, setActiveTab] = useState<
+    "presupuesto" | "beneficio" | "factura"
+  >("presupuesto");
   const [emails, setEmails] = useState<string[]>([""]);
   const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
   const navigate = useNavigate();
@@ -71,8 +54,14 @@ const PresupuestoTextil: React.FC = () => {
     if (!id) return;
     try {
       const storage = getStorage();
-      const presupuestoRef = ref(storage, `Presupuesto Textil/textile_summary_${id}.pdf`);
-      const beneficioRef = ref(storage, `Presupuesto Textil/Beneficio_${id}.pdf`);
+      const presupuestoRef = ref(
+        storage,
+        `Presupuesto Textil/textile_summary_${id}.pdf`
+      );
+      const beneficioRef = ref(
+        storage,
+        `Presupuesto Textil/Beneficio_${id}.pdf`
+      );
       const facturaRef = ref(storage, `Presupuesto Textil/Factura_${id}.pdf`);
 
       const presupuestoUrl = await getDownloadURL(presupuestoRef);
@@ -151,7 +140,13 @@ const PresupuestoTextil: React.FC = () => {
         items: [],
       };
 
-      const presupuestoRef = doc(db, "propietarios", id, "proceso_de_alta", "textile_summaries");
+      const presupuestoRef = doc(
+        db,
+        "propietarios",
+        id,
+        "proceso_de_alta",
+        "textile_summaries"
+      );
       const presupuestoSnap = await getDoc(presupuestoRef);
       const presupuestoData = presupuestoSnap.data();
 
@@ -162,18 +157,23 @@ const PresupuestoTextil: React.FC = () => {
             concepto,
             cantidad: cantidad as number,
             pvp: prices[concepto as keyof typeof prices]?.pvp || 0,
-            total: (cantidad as number) * (prices[concepto as keyof typeof prices]?.pvp || 0),
+            total:
+              (cantidad as number) *
+              (prices[concepto as keyof typeof prices]?.pvp || 0),
           }));
       }
 
       const facturaPdf = await generateFacturaPDF(facturaData);
-      const pdfDataUri = facturaPdf.output('datauristring');
+      const pdfDataUri = facturaPdf.output("datauristring");
       setFacturaUrl(pdfDataUri);
-      
+
       // Subir el PDF a Firebase Storage
       const storage = getStorage();
-      const facturaRef = ref(storage, `Facturas/${id}/Factura_${facturaData.facturaId}.pdf`);
-      await uploadString(facturaRef, pdfDataUri, 'data_url');
+      const facturaRef = ref(
+        storage,
+        `Facturas/${id}/Factura_${facturaData.facturaId}.pdf`
+      );
+      await uploadString(facturaRef, pdfDataUri, "data_url");
 
       Swal.fire({
         icon: "success",
@@ -194,7 +194,7 @@ const PresupuestoTextil: React.FC = () => {
 
   const handleDownloadFactura = () => {
     if (facturaUrl) {
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = facturaUrl;
       link.download = `Factura_${id}.pdf`;
       link.click();
@@ -218,20 +218,29 @@ const PresupuestoTextil: React.FC = () => {
   };
 
   const handleDocumentSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    const selectedOptions = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setSelectedDocuments(selectedOptions);
   };
 
   const handleSendEmail = async () => {
-    const validEmails = emails.filter(email => email.trim() !== "");
-    const documents = selectedDocuments.map(doc => {
-      switch(doc) {
-        case 'presupuesto': return presupuestoUrl;
-        case 'beneficio': return beneficioUrl;
-        case 'factura': return facturaUrl;
-        default: return null;
-      }
-    }).filter((url): url is string => url !== null);
+    const validEmails = emails.filter((email) => email.trim() !== "");
+    const documents = selectedDocuments
+      .map((doc) => {
+        switch (doc) {
+          case "presupuesto":
+            return presupuestoUrl;
+          case "beneficio":
+            return beneficioUrl;
+          case "factura":
+            return facturaUrl;
+          default:
+            return null;
+        }
+      })
+      .filter((url): url is string => url !== null);
 
     try {
       await sendEmail({
@@ -257,54 +266,65 @@ const PresupuestoTextil: React.FC = () => {
 
   return (
     <div className="p-4 max-w-6xl mx-auto bg-gray-50 min-h-screen">
-
-      <h1 className="text-3xl font-bold mb-6 text-center">Presupuesto Textil</h1>
+      <h1 className="text-3xl font-bold mb-6 text-center">
+        Presupuesto Textil
+      </h1>
       <div className="mb-4 flex justify-center space-x-4">
         <button
-          onClick={() => setActiveTab('presupuesto')}
-          className={`py-2 px-4 rounded-md ${activeTab === 'presupuesto' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+          onClick={() => setActiveTab("presupuesto")}
+          className={`py-2 px-4 rounded-md ${
+            activeTab === "presupuesto"
+              ? "bg-blue-500 text-white"
+              : "bg-gray-200"
+          }`}
         >
           Ver Presupuesto
         </button>
         {beneficioUrl && (
           <button
-            onClick={() => setActiveTab('beneficio')}
-            className={`py-2 px-4 rounded-md ${activeTab === 'beneficio' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setActiveTab("beneficio")}
+            className={`py-2 px-4 rounded-md ${
+              activeTab === "beneficio"
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
           >
             Ver Beneficio
           </button>
         )}
         {facturaUrl && (
           <button
-            onClick={() => setActiveTab('factura')}
-            className={`py-2 px-4 rounded-md ${activeTab === 'factura' ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            onClick={() => setActiveTab("factura")}
+            className={`py-2 px-4 rounded-md ${
+              activeTab === "factura" ? "bg-blue-500 text-white" : "bg-gray-200"
+            }`}
           >
             Ver Factura
           </button>
         )}
       </div>
-      {activeTab === 'presupuesto' && presupuestoUrl && (
+      {activeTab === "presupuesto" && presupuestoUrl && (
         <iframe
           src={presupuestoUrl}
           className="w-full h-screen border-2 border-gray-300"
           title="Presupuesto Textil"
         />
       )}
-      {activeTab === 'beneficio' && beneficioUrl && (
+      {activeTab === "beneficio" && beneficioUrl && (
         <iframe
           src={beneficioUrl}
           className="w-full h-screen border-2 border-gray-300"
           title="Beneficio Textil"
         />
       )}
-      {activeTab === 'factura' && facturaUrl && (
+      {activeTab === "factura" && facturaUrl && (
         <iframe
           src={facturaUrl}
           className="w-full h-screen border-2 border-gray-300"
           title="Factura Textil"
         />
       )}
-     <div className="mt-4 flex space-x-2 justify-center">
+      <div className="mt-4 flex space-x-2 justify-center">
         <button
           onClick={handleAccept}
           className="bg-green-500 text-white py-2 px-4 rounded-md"
@@ -337,7 +357,9 @@ const PresupuestoTextil: React.FC = () => {
         </button>
       </div>
       <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Enviar documentos por correo</h2>
+        <h2 className="text-2xl font-bold mb-4">
+          Enviar documentos por correo
+        </h2>
         {emails.map((email, index) => (
           <div key={index} className="flex mb-2">
             <input

@@ -45,7 +45,7 @@ const ProgressBar: React.FC<ProgressBarProps> = React.memo(
     );
 
     return (
-      <div className="p-6 bg-white rounded-lg shadow-lg">
+      <div className="p-6 bg-white rounded-lg shadow-lg w-full max-w-4xl mx-auto">
         <div className="relative pt-1">
           <motion.div
             className="overflow-hidden h-4 mb-4 text-xs flex rounded bg-neutral-light"
@@ -55,7 +55,7 @@ const ProgressBar: React.FC<ProgressBarProps> = React.memo(
           >
             <div className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-primary"></div>
           </motion.div>
-          <div className="flex justify-between mt-2">
+          <div className="flex flex-wrap justify-between mt-2">
             {steps.map(renderStep)}
           </div>
         </div>

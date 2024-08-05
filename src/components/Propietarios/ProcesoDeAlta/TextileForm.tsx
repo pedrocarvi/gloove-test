@@ -71,7 +71,10 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
 
     try {
       // Guardar los datos del formulario en Firestore
-      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/textil_presupuesto`);
+      const docRef = doc(
+        db,
+        `propietarios/${user.uid}/proceso_de_alta/textil_presupuesto`
+      );
       await setDoc(docRef, {
         userId: user.uid,
         ...formData,
@@ -107,32 +110,36 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {[
-            { name: "toalla", label: "Toalla", options: ["50x100", "100x150"] },
+            {
+              name: "toalla",
+              label: "Toalla",
+              options: ["50x100 (Lavabo)", "100x150 (Ducha)"],
+            },
             { name: "alfombrin", label: "Alfombrín", options: ["50x65"] },
             {
               name: "sabanaEncimera",
               label: "Sábana Encimera",
-              options: ["90", "105", "150", "180"],
+              options: ["90", "105", "135", "150", "180"],
             },
             {
               name: "fundaAlmohada",
               label: "Funda Almohada",
-              options: ["75", "90"],
+              options: ["95"],
             },
             {
               name: "rellenoAlmohada",
               label: "Relleno Almohada",
-              options: ["75", "90"],
+              options: ["90"],
             },
             {
               name: "fundaNordica",
               label: "Funda Nórdica",
-              options: ["90", "105", "135", "150", "180", "200"],
+              options: ["90", "105", "135", "150", "180"],
             },
             {
               name: "rellenoNordico",
               label: "Relleno Nórdico",
-              options: ["90", "105", "135", "150", "180", "200"],
+              options: ["90", "105", "135", "150", "180"],
             },
             {
               name: "protectorColchon",

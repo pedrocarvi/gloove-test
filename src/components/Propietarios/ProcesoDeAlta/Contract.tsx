@@ -3,7 +3,12 @@ import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import SignatureCanvas from "react-signature-canvas";
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
 import Swal from "sweetalert2";
 import { generateContractPDF } from "@/utils/contractPdfGenerator";
 
@@ -12,7 +17,10 @@ interface ContractProps {
   initialValues?: any;
 }
 
-const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => {
+const Contract: React.FC<ContractProps> = ({
+  onAccept,
+  initialValues = {},
+}) => {
   const [formData, setFormData] = useState<any>(initialValues);
   const [technicalFormData, setTechnicalFormData] = useState<any>(null);
   const [isSigned, setIsSigned] = useState(!!initialValues.signature);
@@ -164,7 +172,10 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
   useEffect(() => {
     const fetchData = async () => {
       if (user) {
-        const technicalFormRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/technical_form`);
+        const technicalFormRef = doc(
+          db,
+          `propietarios/${user.uid}/proceso_de_alta/technical_form`
+        );
         const technicalFormSnap = await getDoc(technicalFormRef);
         if (technicalFormSnap.exists()) {
           setTechnicalFormData(technicalFormSnap.data());
@@ -179,13 +190,19 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
     if (technicalFormData) {
       const replaceContractPlaceholders = (text: string, data: any) => {
         const currentDate = new Date();
-        const formattedDate = `${currentDate.getDate()}/${currentDate.getMonth() + 1}/${currentDate.getFullYear()}`;
+        const formattedDate = `${currentDate.getDate()}/${
+          currentDate.getMonth() + 1
+        }/${currentDate.getFullYear()}`;
 
         return text
           .replace("[Fecha Alta]", formattedDate)
           .replace("[Propietario]", data.propietario || "")
           .replace("[DNI]", data.dni || "")
-          .replace("[Domicilio]", `${data.direccion}, ${data.cPostal}, ${data.ciudad}, ${data.provincia}` || "")
+          .replace(
+            "[Domicilio]",
+            `${data.direccion}, ${data.cPostal}, ${data.ciudad}, ${data.provincia}` ||
+              ""
+          )
           .replace("[Ciudad]", data.ciudad || "")
           .replace("[Dirección Exacta]", data.direccion || "")
           .replace("[numCatastro]", data.numCatastro || "")
@@ -193,14 +210,19 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
           .replace("[Email]", data.email || "");
       };
 
-      const updatedText = replaceContractPlaceholders(contractTextExample, technicalFormData);
+      const updatedText = replaceContractPlaceholders(
+        contractTextExample,
+        technicalFormData
+      );
       setContractText(updatedText);
     }
   }, [technicalFormData]);
 
   const handleSign = () => {
     if (sigCanvas.current) {
-      const dataURL = sigCanvas.current.getTrimmedCanvas().toDataURL("image/png");
+      const dataURL = sigCanvas.current
+        .getTrimmedCanvas()
+        .toDataURL("image/png");
       setFormData({ ...formData, signature: dataURL });
       setIsSigned(true);
     }
@@ -222,25 +244,36 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
         numCatastro: technicalFormData.numCatastro,
         numeroVUT: technicalFormData.numeroVUT,
         email: technicalFormData.email,
-        signature: formData.signature
+        signature: formData.signature,
       };
 
       // Firma de empleado predeterminada (puedes ajustarla según sea necesario)
-      const employeeSignature = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAADQmU3KAAAA...";
+      const employeeSignature =
+        "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAYAAADQmU3KAAAA...";
 
       // Generar el PDF del contrato
-      const pdfDoc = await generateContractPDF(contractData, contractText, employeeSignature);
+      const pdfDoc = await generateContractPDF(
+        contractData,
+        contractText,
+        employeeSignature
+      );
       const pdfData = pdfDoc.output("datauristring");
 
       // Subir el PDF a Firebase Storage
       const storage = getStorage();
-      const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`);
+      const pdfRef = ref(
+        storage,
+        `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`
+      );
       await uploadString(pdfRef, pdfData, "data_url");
 
       const pdfUrl = await getDownloadURL(pdfRef);
 
       // Guardar la referencia del PDF en Firestore
-      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/contract`);
+      const docRef = doc(
+        db,
+        `propietarios/${user.uid}/proceso_de_alta/contract`
+      );
       await setDoc(docRef, { ...formData, pdfUrl });
 
       await updateDoc(doc(db, "users", user.uid), {
@@ -286,7 +319,8 @@ const Contract: React.FC<ContractProps> = ({ onAccept, initialValues = {} }) => 
           <SignatureCanvas
             ref={sigCanvas}
             canvasProps={{
-              className: "signature-canvas w-full h-64 border border-gray-300 rounded-md",
+              className:
+                "signature-canvas w-full h-64 border border-gray-300 rounded-md",
             }}
           />
         )}

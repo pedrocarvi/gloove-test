@@ -27,11 +27,14 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const generateUniqueId = () => {
+  const generateUniqueId = (): string => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   };
 
-  const uploadFile = async (file: string, documentType: string) => {
+  const uploadFile = async (
+    file: string,
+    documentType: string
+  ): Promise<string> => {
     const fileName = `${documentType}_${generateUniqueId()}.jpg`;
     const path = `DocumentacionPropietarios/${documentType}/${fileName}`;
     const storage = getStorage();
@@ -41,7 +44,7 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
     return path;
   };
 
-  const handleUpload = async () => {
+  const handleUpload = async (): Promise<void> => {
     if (!user) {
       console.error("Usuario no autenticado");
       Swal.fire({
@@ -59,7 +62,9 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
       const uploadedPaths = {
         dni: images.dni ? await uploadFile(images.dni, "dNI") : "",
         vut: images.vut ? await uploadFile(images.vut, "vUT") : "",
-        referenciaCatastral: images.referenciaCatastral ? await uploadFile(images.referenciaCatastral, "refCatastral") : "",
+        referenciaCatastral: images.referenciaCatastral
+          ? await uploadFile(images.referenciaCatastral, "refCatastral")
+          : "",
       };
 
       console.log("Documentos subidos exitosamente.");
@@ -94,7 +99,7 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
   const pdfUrl =
     "https://firebasestorage.googleapis.com/v0/b/software-gloove.appspot.com/o/Documentacion%20obligatoria%2FDocumentacio%CC%81n%20necesaria%20para%20cumplimentacio%CC%81n%20de%20contrato.pdf?alt=media&token=1b8a312e-f7cc-4c02-ba0c-f536a871745c";
 
-  const handleDownloadPdf = () => {
+  const handleDownloadPdf = (): void => {
     const link = document.createElement("a");
     link.href = pdfUrl;
     link.download = "Documentación_necesaria.pdf";
@@ -106,7 +111,7 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     type: keyof ImageState
-  ) => {
+  ): void => {
     const file = e.target.files?.[0];
     if (file) {
       const validTypes = [
@@ -135,7 +140,7 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-100 py-8 px-4">
+    <div className="flex flex-col items-center justify-center bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
       <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mb-8">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Documentación Necesaria
@@ -170,6 +175,10 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Sube tus documentos
         </h2>
+        <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-6">
+          <p className="font-bold">Importante</p>
+          <p>Los documentos deben ser en formato PDF y originales.</p>
+        </div>
         {Object.keys(images).map((type) => (
           <div key={type} className="mb-6">
             <h3 className="text-xl font-semibold mb-4 capitalize text-gray-700">

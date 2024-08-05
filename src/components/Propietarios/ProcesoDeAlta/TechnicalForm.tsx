@@ -3,7 +3,12 @@ import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
 import { generateCorporatePDF } from "@/utils/pdfGenerator";
 
 interface FormData {
@@ -132,11 +137,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     const { name, value, type } = e.target;
     const newValue =
       type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
-
-    setFormData({
-      ...formData,
-      [name]: newValue,
-    });
+    setFormData({ ...formData, [name]: newValue });
   };
 
   const handleCamaChange = (index: number, name: string, value: any) => {
@@ -148,29 +149,30 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!user) {
-      console.error("Error: user is undefined");
-      return;
-    }
+    if (isSubmitting || !user) return;
 
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-
-      const pdfDoc = await generateCorporatePDF("Ficha Técnica del Alojamiento Turístico", formData);
+      // Generar y subir el PDF
+      const pdfDoc = await generateCorporatePDF(
+        "Ficha Técnica del Alojamiento Turístico",
+        formData
+      );
       const pdfData = pdfDoc.output("datauristring");
-
       const storage = getStorage();
-      const pdfRef = ref(storage, `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${user.uid}.pdf`);
+      const pdfRef = ref(
+        storage,
+        `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${user.uid}.pdf`
+      );
       await uploadString(pdfRef, pdfData, "data_url");
-
       const pdfUrl = await getDownloadURL(pdfRef);
 
-      const docRef = doc(db, `propietarios/${user.uid}/proceso_de_alta/technical_form`);
-      await setDoc(docRef, {
-        userId: user.uid,
-        pdfUrl,
-        ...formData,
-      });
+      // Guardar la información en Firestore
+      const docRef = doc(
+        db,
+        `propietarios/${user.uid}/proceso_de_alta/technical_form`
+      );
+      await setDoc(docRef, { userId: user.uid, pdfUrl, ...formData });
 
       await updateDoc(doc(db, "users", user.uid), {
         currentStep: 1,
@@ -205,105 +207,160 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           {/* Información del propietario */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Propietario
+              <label
+                htmlFor="propietario"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Propietario <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="propietario"
                 name="propietario"
                 value={formData.propietario}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                e-Mail
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                e-Mail <span className="text-red-500">*</span>
               </label>
               <input
                 type="email"
+                id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                DNI/PASAPORTE
-              </label>
-              <input
-                type="text"
-                name="DNI"
-                value={formData.DNI}
-                onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Num Catastro
-              </label>
-              <input
-                type="text"
-                name="numCatastro"
-                value={formData.numCatastro}
-                onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
           </div>
 
-          {/* Información de la propiedad */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Ciudad
+              <label
+                htmlFor="DNI"
+                className="block text-sm font-medium text-gray-700"
+              >
+                DNI/PASAPORTE <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="DNI"
+                name="DNI"
+                value={formData.DNI}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="numCatastro"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Num Catastro <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="numCatastro"
+                name="numCatastro"
+                value={formData.numCatastro}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+              <p className="mt-2 text-sm text-gray-600">
+                Puedes encontrar la referencia catastral en tus facturas de
+                servicios, IBI o en el{" "}
+                <a
+                  href="https://www1.sedecatastro.gob.es/CYCBienInmueble/OVCBusqueda.aspx"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  sitio web del catastro
+                </a>
+                .
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label
+                htmlFor="ciudad"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Ciudad <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="text"
+                id="ciudad"
                 name="ciudad"
                 value={formData.ciudad}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Provincia
+              <label
+                htmlFor="provincia"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Provincia <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="provincia"
                 name="provincia"
                 value={formData.provincia}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Dirección
+              <label
+                htmlFor="direccion"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Dirección <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="direccion"
                 name="direccion"
                 value={formData.direccion}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Código Postal
+              <label
+                htmlFor="cPostal"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Código Postal <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="cPostal"
                 name="cPostal"
                 value={formData.cPostal}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -312,11 +369,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           {/* Características adicionales */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="licenciaTuristica"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Licencia Turística
               </label>
               <input
                 type="checkbox"
+                id="licenciaTuristica"
                 name="licenciaTuristica"
                 checked={formData.licenciaTuristica}
                 onChange={handleChange}
@@ -324,23 +385,32 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Número VUT
+              <label
+                htmlFor="numeroVUT"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Número VUT <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="numeroVUT"
                 name="numeroVUT"
                 value={formData.numeroVUT}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="comPropietarios"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Comunidad de Propietarios
               </label>
               <input
                 type="checkbox"
+                id="comPropietarios"
                 name="comPropietarios"
                 checked={formData.comPropietarios}
                 onChange={handleChange}
@@ -348,14 +418,19 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Tipo de Vivienda
+              <label
+                htmlFor="tipoVivienda"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Tipo de Vivienda <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
+                id="tipoVivienda"
                 name="tipoVivienda"
                 value={formData.tipoVivienda}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -364,11 +439,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           {/* Más características adicionales */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="exterior"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Exterior
               </label>
               <input
                 type="checkbox"
+                id="exterior"
                 name="exterior"
                 checked={formData.exterior}
                 onChange={handleChange}
@@ -376,11 +455,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="interior"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Interior
               </label>
               <input
                 type="checkbox"
+                id="interior"
                 name="interior"
                 checked={formData.interior}
                 onChange={handleChange}
@@ -388,11 +471,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="portero"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Portero
               </label>
               <input
                 type="checkbox"
+                id="portero"
                 name="portero"
                 checked={formData.portero}
                 onChange={handleChange}
@@ -400,11 +487,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="porteroAutomatico"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Portero Automático
               </label>
               <input
                 type="checkbox"
+                id="porteroAutomatico"
                 name="porteroAutomatico"
                 checked={formData.porteroAutomatico}
                 onChange={handleChange}
@@ -412,23 +503,32 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Ascensor
+              <label
+                htmlFor="ascensor"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Ascensor <span className="text-red-500">*</span>
               </label>
               <input
                 type="checkbox"
+                id="ascensor"
                 name="ascensor"
                 checked={formData.ascensor}
                 onChange={handleChange}
+                required
                 className="mt-1 block"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="garaje"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Garaje
               </label>
               <input
                 type="checkbox"
+                id="garaje"
                 name="garaje"
                 checked={formData.garaje}
                 onChange={handleChange}
@@ -436,11 +536,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="garajeConcertado"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Garaje Concertado
               </label>
               <input
                 type="checkbox"
+                id="garajeConcertado"
                 name="garajeConcertado"
                 checked={formData.garajeConcertado}
                 onChange={handleChange}
@@ -448,11 +552,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="facilAparcamiento"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Fácil Aparcamiento
               </label>
               <input
                 type="checkbox"
+                id="facilAparcamiento"
                 name="facilAparcamiento"
                 checked={formData.facilAparcamiento}
                 onChange={handleChange}
@@ -460,11 +568,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="vistas"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Vistas
               </label>
               <input
                 type="text"
+                id="vistas"
                 name="vistas"
                 value={formData.vistas}
                 onChange={handleChange}
@@ -472,11 +584,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="piscina"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Piscina
               </label>
               <input
                 type="checkbox"
+                id="piscina"
                 name="piscina"
                 checked={formData.piscina}
                 onChange={handleChange}
@@ -484,11 +600,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="jardin"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Jardín
               </label>
               <input
                 type="checkbox"
+                id="jardin"
                 name="jardin"
                 checked={formData.jardin}
                 onChange={handleChange}
@@ -499,10 +619,14 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
 
           {/* Observaciones */}
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="observaciones"
+              className="block text-sm font-medium text-gray-700"
+            >
               Observaciones
             </label>
             <textarea
+              id="observaciones"
               name="observaciones"
               value={formData.observaciones}
               onChange={handleChange}
@@ -513,11 +637,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           {/* Servicios adicionales */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="zonasComunes"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Zonas Comunes
               </label>
               <input
                 type="text"
+                id="zonasComunes"
                 name="zonasComunes"
                 value={formData.zonasComunes}
                 onChange={handleChange}
@@ -525,11 +653,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="zonasTuristicas"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Zonas Turísticas
               </label>
               <input
                 type="text"
+                id="zonasTuristicas"
                 name="zonasTuristicas"
                 value={formData.zonasTuristicas}
                 onChange={handleChange}
@@ -537,11 +669,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="accesibilidad"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Accesibilidad
               </label>
               <input
                 type="text"
+                id="accesibilidad"
                 name="accesibilidad"
                 value={formData.accesibilidad}
                 onChange={handleChange}
@@ -553,35 +689,49 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           {/* Características y amueblamiento */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Habitaciones
+              <label
+                htmlFor="habitaciones"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Habitaciones <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
+                id="habitaciones"
                 name="habitaciones"
                 value={formData.habitaciones}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Baños
+              <label
+                htmlFor="banos"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Baños <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
+                id="banos"
                 name="banos"
                 value={formData.banos}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="aseos"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Aseos
               </label>
               <input
                 type="number"
+                id="aseos"
                 name="aseos"
                 value={formData.aseos}
                 onChange={handleChange}
@@ -589,11 +739,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="duchas"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Ducha
               </label>
               <input
                 type="number"
+                id="duchas"
                 name="duchas"
                 value={formData.duchas}
                 onChange={handleChange}
@@ -601,11 +755,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="baneras"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Bañera
               </label>
               <input
                 type="number"
+                id="baneras"
                 name="baneras"
                 value={formData.baneras}
                 onChange={handleChange}
@@ -613,11 +771,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="trastero"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Trastero
               </label>
               <input
                 type="checkbox"
+                id="trastero"
                 name="trastero"
                 checked={formData.trastero}
                 onChange={handleChange}
@@ -625,11 +787,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="mascotas"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Mascotas
               </label>
               <input
                 type="checkbox"
+                id="mascotas"
                 name="mascotas"
                 checked={formData.mascotas}
                 onChange={handleChange}
@@ -637,11 +803,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label
+                htmlFor="cocina"
+                className="block text-sm font-medium text-gray-700"
+              >
                 Cocina
               </label>
               <input
                 type="text"
+                id="cocina"
                 name="cocina"
                 value={formData.cocina}
                 onChange={handleChange}
@@ -649,14 +819,19 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Capacidad Máxima
+              <label
+                htmlFor="capacidadMaxima"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Capacidad Máxima <span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
+                id="capacidadMaxima"
                 name="capacidadMaxima"
                 value={formData.capacidadMaxima}
                 onChange={handleChange}
+                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -673,11 +848,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 <h5 className="font-bold text-gray-700">Cama {index + 1}</h5>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
-                      Tipo
+                    <label
+                      htmlFor={`tipo-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
+                      Tipo <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="text"
+                      id={`tipo-${index}`}
                       name={`tipo-${index}`}
                       value={cama.tipo}
                       onChange={(e) =>
@@ -687,11 +866,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`aireAcondicionado-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Aire Acondicionado
                     </label>
                     <input
                       type="checkbox"
+                      id={`aireAcondicionado-${index}`}
                       name={`aireAcondicionado-${index}`}
                       checked={cama.aireAcondicionado}
                       onChange={(e) =>
@@ -705,11 +888,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`calefaccion-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Calefacción
                     </label>
                     <input
                       type="checkbox"
+                      id={`calefaccion-${index}`}
                       name={`calefaccion-${index}`}
                       checked={cama.calefaccion}
                       onChange={(e) =>
@@ -719,11 +906,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`ventilador-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Ventilador
                     </label>
                     <input
                       type="checkbox"
+                      id={`ventilador-${index}`}
                       name={`ventilador-${index}`}
                       checked={cama.ventilador}
                       onChange={(e) =>
@@ -733,11 +924,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`electrodomesticos-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Electrodomésticos
                     </label>
                     <input
                       type="text"
+                      id={`electrodomesticos-${index}`}
                       name={`electrodomesticos-${index}`}
                       value={cama.electrodomesticos}
                       onChange={(e) =>
@@ -751,11 +946,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`aguaCaliente-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Agua Caliente
                     </label>
                     <input
                       type="text"
+                      id={`aguaCaliente-${index}`}
                       name={`aguaCaliente-${index}`}
                       value={cama.aguaCaliente}
                       onChange={(e) =>
@@ -765,11 +964,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`estadoPintura-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Estado de la Pintura
                     </label>
                     <input
                       type="text"
+                      id={`estadoPintura-${index}`}
                       name={`estadoPintura-${index}`}
                       value={cama.estadoPintura}
                       onChange={(e) =>
@@ -779,11 +982,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`reformaAno-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Año de la Reforma
                     </label>
                     <input
                       type="text"
+                      id={`reformaAno-${index}`}
                       name={`reformaAno-${index}`}
                       value={cama.reformaAno}
                       onChange={(e) =>
@@ -793,11 +1000,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`estadoMobiliario-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Estado del Mobiliario
                     </label>
                     <input
                       type="text"
+                      id={`estadoMobiliario-${index}`}
                       name={`estadoMobiliario-${index}`}
                       value={cama.estadoMobiliario}
                       onChange={(e) =>
@@ -811,11 +1022,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`persianas-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Persianas
                     </label>
                     <input
                       type="checkbox"
+                      id={`persianas-${index}`}
                       name={`persianas-${index}`}
                       checked={cama.persianas}
                       onChange={(e) =>
@@ -825,11 +1040,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`tv-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       TV
                     </label>
                     <input
                       type="checkbox"
+                      id={`tv-${index}`}
                       name={`tv-${index}`}
                       checked={cama.tv}
                       onChange={(e) =>
@@ -839,11 +1058,15 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label
+                      htmlFor={`mosquiteras-${index}`}
+                      className="block text-sm font-medium text-gray-700"
+                    >
                       Mosquiteras
                     </label>
                     <input
                       type="checkbox"
+                      id={`mosquiteras-${index}`}
                       name={`mosquiteras-${index}`}
                       checked={cama.mosquiteras}
                       onChange={(e) =>
@@ -862,10 +1085,10 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               type="submit"
               disabled={isSubmitting}
               className={`w-full py-2 px-4 bg-primary text-white font-semibold rounded-md shadow-md hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-primary focus:ring-opacity-50 ${
-                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
+                isSubmitting ? "opacity-50 cursor-not-allowed" : ""
               }`}
             >
-              {isSubmitting ? 'Guardando...' : 'Aceptar'}
+              {isSubmitting ? "Guardando..." : "Aceptar"}
             </button>
           </div>
         </form>

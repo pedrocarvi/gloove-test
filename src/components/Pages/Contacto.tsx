@@ -15,6 +15,8 @@ const Contacto = () => {
   return (
     <section className="relative flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-700 to-teal-400 p-8 overflow-hidden">
       {/* Texto e Información */}
+      <Testimonios />
+
       <motion.div className="w-full max-w-3xl p-8 text-center relative z-10 space-y-6">
         <motion.h2 className="text-white text-4xl md:text-5xl font-extrabold uppercase tracking-wide">
           Sobre Nosotros
@@ -57,7 +59,6 @@ const Contacto = () => {
       </motion.div>
 
       {/* Componente de Testimonios */}
-      <Testimonios />
 
       {/* Formulario de Contacto */}
       {isFormVisible && (

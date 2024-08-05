@@ -10,25 +10,34 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
   User as FirebaseUser,
   UserCredential,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 
+// Define la interfaz User extendiendo FirebaseUser para incluir propiedades adicionales
 interface User extends FirebaseUser {
   role?: string;
   currentStep?: number;
   completedRegistration?: boolean;
 }
 
+// Define el tipo de contexto de autenticación
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<UserCredential>;
+  loginWithGoogle: () => Promise<void>;
+  loginWithFacebook: () => Promise<void>;
   logout: () => Promise<void>;
 }
 
+// Crea el contexto de autenticación
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Hook para usar el contexto de autenticación
 export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
@@ -37,10 +46,12 @@ export const useAuth = (): AuthContextType => {
   return context;
 };
 
+// Define las propiedades del proveedor de autenticación
 interface AuthProviderProps {
   children: ReactNode;
 }
 
+// Componente proveedor de autenticación
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,11 +60,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         try {
-          console.log("User is authenticated:", user.uid);
           const userDoc = await getDoc(doc(db, "users", user.uid));
           if (userDoc.exists()) {
             const userData = userDoc.data();
-            console.log("User data found in Firestore:", userData);
             setUser({
               ...user,
               role: userData?.role,
@@ -61,25 +70,41 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
               completedRegistration: userData?.completedRegistration,
             } as User);
           } else {
-            console.log("User document not found in Firestore");
-            // Aquí podrías crear el documento del usuario si no existe
-            setUser(user);
+            setUser(user as User); // Si no se encuentra el documento, usa solo la información del usuario de Firebase
           }
         } catch (error) {
           console.error("Error fetching user data:", error);
           setUser(null);
         }
       } else {
-        console.log("No user is authenticated");
         setUser(null);
       }
       setLoading(false);
     });
+
     return unsubscribe;
   }, []);
 
   const login = (email: string, password: string) => {
     return signInWithEmailAndPassword(auth, email, password);
+  };
+
+  const loginWithGoogle = async () => {
+    const provider = new GoogleAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Error al iniciar sesión con Google:", error);
+    }
+  };
+
+  const loginWithFacebook = async () => {
+    const provider = new FacebookAuthProvider();
+    try {
+      await signInWithPopup(auth, provider);
+    } catch (error) {
+      console.error("Error al iniciar sesión con Facebook:", error);
+    }
   };
 
   const logout = () => {
@@ -89,6 +114,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const value = {
     user,
     login,
+    loginWithGoogle,
+    loginWithFacebook,
     logout,
   };
 
