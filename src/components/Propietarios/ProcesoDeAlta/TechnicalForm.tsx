@@ -1,5 +1,5 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
-import { doc, setDoc, updateDoc } from "firebase/firestore";
+import React, { useState, useEffect, ChangeEvent, FormEvent } from "react";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
@@ -130,6 +130,23 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useAuth();
+
+  // Fetch existing data
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const docRef = doc(
+          db,
+          `propietarios/${user.uid}/proceso_de_alta/technical_form`
+        );
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+          setFormData(docSnap.data() as FormData);
+        }
+      }
+    };
+    fetchData();
+  }, [user]);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -852,7 +869,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                       htmlFor={`tipo-${index}`}
                       className="block text-sm font-medium text-gray-700"
                     >
-                      Tipo <span className="text-red-500">*</span>
+                      Tipo de habitación
                     </label>
                     <input
                       type="text"
