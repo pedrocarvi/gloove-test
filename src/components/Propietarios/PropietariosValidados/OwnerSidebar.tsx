@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   HomeIcon,
@@ -13,13 +13,22 @@ import {
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
-import { useAuth } from "@/context/AuthContext"; // Asumiendo que useAuth tiene el método logout
+import { useAuth } from "@/context/AuthContext";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "@/firebaseConfig";
 
-const OwnerSidebar = () => {
+interface Property {
+  id: string;
+  name: string;
+  [key: string]: any;
+}
+
+const OwnerSidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const { logout } = useAuth(); // Obtén el método logout del contexto de autenticación
+  const [properties, setProperties] = useState<Property[]>([]);
 
   const toggleLogoutModal = () => {
     setIsLogoutModalOpen(!isLogoutModalOpen);
@@ -27,12 +36,33 @@ const OwnerSidebar = () => {
 
   const handleLogout = async () => {
     setIsLogoutModalOpen(false);
-    await logout(); // Cierra sesión usando el método del contexto de autenticación
+    await logout();
     navigate("/login");
   };
 
-  const handleAltaVivienda = () => {
-    navigate("/proceso-de-alta/0");
+  useEffect(() => {
+    if (user) {
+      fetchProperties();
+    }
+  }, [user]);
+
+  const fetchProperties = async () => {
+    try {
+      if (user && user.uid) {
+        const q = query(
+          collection(db, "properties"),
+          where("ownerId", "==", user.uid)
+        );
+        const querySnapshot = await getDocs(q);
+        const propertiesList: Property[] = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        })) as Property[];
+        setProperties(propertiesList);
+      }
+    } catch (error) {
+      console.error("Error fetching properties:", error);
+    }
   };
 
   const menuItems = [
@@ -45,7 +75,6 @@ const OwnerSidebar = () => {
       name: "Alta de vivienda",
       path: "/proceso-de-alta/0",
       icon: <DocumentPlusIcon className="h-6 w-6" />,
-      action: handleAltaVivienda,
     },
     {
       name: "Mis viviendas",
@@ -68,6 +97,11 @@ const OwnerSidebar = () => {
       icon: <BellIcon className="h-6 w-6" />,
     },
     {
+      name: "Preguntas Frecuentes",
+      path: "/faq",
+      icon: <QuestionMarkCircleIcon className="h-6 w-6" />,
+    },
+    {
       name: "Mi perfil",
       path: "/OwnerProfile",
       icon: <UserIcon className="h-6 w-6" />,
@@ -83,16 +117,19 @@ const OwnerSidebar = () => {
       icon: <ArrowRightOnRectangleIcon className="h-6 w-6" />,
       action: toggleLogoutModal,
     },
+    // Nuevo ítem del menú para PropertyDetails
     {
-      name: "Help",
-      path: "/help",
-      icon: <QuestionMarkCircleIcon className="h-6 w-6" />,
+      name: "Detalles de la propiedad",
+      path: properties.length > 0 ? `/property/${properties[0].id}` : "#",
+      icon: <HomeModernIcon className="h-6 w-6" />,
     },
   ];
 
   return (
-    <aside className="bg-primary-dark text-white w-64 space-y-6 py-7 px-2">
-      <div className="text-white text-3xl font-bold text-center">Gloove</div>
+    <aside className="bg-gloovePrimary-dark text-glooveText-dark w-64 space-y-6 py-7 px-2 h-screen">
+      <div className="text-glooveText-dark text-3xl font-bold text-center">
+        Gloove
+      </div>
       <nav className="space-y-2">
         {menuItems.map((item) => (
           <Link
@@ -106,12 +143,28 @@ const OwnerSidebar = () => {
                   }
                 : undefined
             }
-            className={`w-full flex items-center space-x-4 py-2 px-4 rounded-md hover:bg-primary-light transition ${
-              location.pathname === item.path ? "bg-primary-light" : ""
+            className={`w-full flex items-center space-x-4 py-2 px-4 rounded-md transition-all duration-200 ${
+              location.pathname === item.path
+                ? "bg-gloovePrimary-light text-gloovePrimary-dark"
+                : "text-glooveText-dark hover:bg-gloovePrimary-light hover:text-gloovePrimary-dark"
             }`}
           >
             {item.icon}
             <span>{item.name}</span>
+          </Link>
+        ))}
+        {properties.map((property) => (
+          <Link
+            key={property.id}
+            to={`/property/${property.id}`}
+            className={`w-full flex items-center space-x-4 py-2 px-4 rounded-md transition-all duration-200 ${
+              location.pathname === `/property/${property.id}`
+                ? "bg-gloovePrimary-light text-gloovePrimary-dark"
+                : "text-glooveText-dark hover:bg-gloovePrimary-light hover:text-gloovePrimary-dark"
+            }`}
+          >
+            <HomeModernIcon className="h-6 w-6" />
+            <span>{property.name}</span>
           </Link>
         ))}
       </nav>
@@ -151,7 +204,7 @@ const OwnerSidebar = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark"
+                className="bg-gloovePrimary-dark text-white px-4 py-2 rounded-md hover:bg-gloovePrimary"
               >
                 Cerrar Sesión
               </button>

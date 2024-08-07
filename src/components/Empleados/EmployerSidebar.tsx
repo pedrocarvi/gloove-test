@@ -1,5 +1,3 @@
-// src/components/Empleados/EmployerSidebar.tsx
-
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -55,7 +53,11 @@ const EmployerSidebar: React.FC = () => {
       path: "/huespedes",
       icon: <UserGroupIcon className="h-6 w-6" />,
     },
-    { name: "Tareas", path: "/tasks", icon: <ClipboardIcon className="h-6 w-6" /> },
+    {
+      name: "Tareas",
+      path: "/tasks",
+      icon: <ClipboardIcon className="h-6 w-6" />,
+    },
     {
       name: "Chat con Propietarios",
       path: "/chat",
@@ -96,7 +98,11 @@ const EmployerSidebar: React.FC = () => {
       path: "/settings",
       icon: <Cog6ToothIcon className="h-6 w-6" />,
     },
-    { name: "Ayuda", path: "/help", icon: <QuestionMarkCircleIcon className="h-6 w-6" /> },
+    {
+      name: "Ayuda",
+      path: "/help",
+      icon: <QuestionMarkCircleIcon className="h-6 w-6" />,
+    },
     {
       name: "Cerrar Sesión",
       path: "#",
@@ -106,8 +112,10 @@ const EmployerSidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="bg-primary-dark text-white w-64 space-y-6 py-7 px-2">
-      <div className="text-white text-3xl font-bold text-center">Gloove</div>
+    <aside className="bg-gloovePrimary-dark text-glooveText-dark w-64 space-y-6 py-7 px-2 h-screen">
+      <div className="text-glooveText-dark text-3xl font-bold text-center">
+        Gloove
+      </div>
       <nav className="space-y-2">
         {menuItems.map((item) => (
           <Link
@@ -121,8 +129,10 @@ const EmployerSidebar: React.FC = () => {
                   }
                 : undefined
             }
-            className={`w-full flex items-center space-x-4 py-2 px-4 rounded-md hover:bg-primary-light transition ${
-              location.pathname === item.path ? "bg-primary-light" : ""
+            className={`w-full flex items-center space-x-4 py-2 px-4 rounded-md transition-all duration-200 ${
+              location.pathname === item.path
+                ? "bg-gloovePrimary-light text-gloovePrimary-dark"
+                : "text-glooveText-dark hover:bg-gloovePrimary-light hover:text-gloovePrimary-dark"
             }`}
           >
             {item.icon}
@@ -166,7 +176,7 @@ const EmployerSidebar: React.FC = () => {
               </button>
               <button
                 onClick={handleLogout}
-                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark"
+                className="bg-gloovePrimary-dark text-white px-4 py-2 rounded-md hover:bg-gloovePrimary"
               >
                 Cerrar Sesión
               </button>
@@ -179,4 +189,3 @@ const EmployerSidebar: React.FC = () => {
 };
 
 export default EmployerSidebar;
-//mi comen

@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import {
   BarChart,
   Bar,
-  XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
   ResponsiveContainer,
+  XAxis,
+  YAxis,
 } from "recharts";
 import {
   FiHome,
@@ -18,6 +18,7 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 import { AiOutlineBarChart } from "react-icons/ai";
+import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 const data = [
   { name: "Jan", inquiries: 30, income: 2400, source: "Web" },
@@ -52,6 +53,19 @@ const properties = [
   },
 ];
 
+const CustomXAxis = (props: {
+  [x: string]: any;
+  dataKey?: "name" | undefined;
+}) => {
+  const { dataKey = "name", ...rest } = props;
+  return <XAxis dataKey={dataKey} {...rest} />;
+};
+
+const CustomYAxis = (props: { [x: string]: any }) => {
+  const { ...rest } = props;
+  return <YAxis {...rest} />;
+};
+
 const OwnerDashboard: React.FC = () => {
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -65,7 +79,7 @@ const OwnerDashboard: React.FC = () => {
               <h2 className="text-2xl font-bold">{property.name}</h2>
               <Link
                 to={`/property/${property.id}`}
-                className="text-primary font-bold"
+                className="text-gloovePrimary-dark font-bold"
               >
                 <FiHome className="inline mr-2" /> Ver Detalles
               </Link>
@@ -92,8 +106,8 @@ const OwnerDashboard: React.FC = () => {
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <CustomXAxis />
+                  <CustomYAxis />
                   <Tooltip />
                   <Legend />
                   <Bar dataKey="income" fill="#82ca9d" />
@@ -105,8 +119,8 @@ const OwnerDashboard: React.FC = () => {
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={data}>
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
+                  <CustomXAxis />
+                  <CustomYAxis />
                   <Tooltip />
                   <Legend />
                   <Bar dataKey="inquiries" fill="#8884d8" />
@@ -122,7 +136,7 @@ const OwnerDashboard: React.FC = () => {
             to="/statistics"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
           >
-            <h2 className="text-2xl font-bold mb-4 text-primary-dark flex items-center">
+            <h2 className="text-2xl font-bold mb-4 text-gloovePrimary-dark flex items-center">
               <AiOutlineBarChart className="mr-2" /> Estadísticas
             </h2>
             <p className="text-gray-700">
@@ -135,7 +149,7 @@ const OwnerDashboard: React.FC = () => {
             to="/calendar"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
           >
-            <h2 className="text-2xl font-bold mb-4 text-primary-dark flex items-center">
+            <h2 className="text-2xl font-bold mb-4 text-gloovePrimary-dark flex items-center">
               <FiCalendar className="mr-2" /> Calendario de Reservas
             </h2>
             <p className="text-gray-700">
@@ -147,7 +161,7 @@ const OwnerDashboard: React.FC = () => {
             to="/messages"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
           >
-            <h2 className="text-2xl font-bold mb-4 text-primary-dark flex items-center">
+            <h2 className="text-2xl font-bold mb-4 text-gloovePrimary-dark flex items-center">
               <FiMessageSquare className="mr-2" /> Mensajes
             </h2>
             <p className="text-gray-700">
@@ -159,7 +173,7 @@ const OwnerDashboard: React.FC = () => {
             to="/profile"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
           >
-            <h2 className="text-2xl font-bold mb-4 text-primary-dark flex items-center">
+            <h2 className="text-2xl font-bold mb-4 text-gloovePrimary-dark flex items-center">
               <FiUser className="mr-2" /> Perfil del Propietario
             </h2>
             <p className="text-gray-700">

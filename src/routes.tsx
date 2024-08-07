@@ -33,6 +33,8 @@ import SearchPage from "./components/Empleados/ControlPropietarios/SearchPage";
 import InventoryPage from "./components/Empleados/InventoryPage";
 import CleaningPage from "./components/Empleados/CleaningPage";
 import MaintenancePage from "./components/Empleados/MaintenancePage";
+import FaqPage from "./components/Propietarios/PropietariosValidados/FaqPage";
+import PropertyDetails from "./components/Propietarios/PropietariosValidados/PropertyDetails";
 
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
@@ -47,7 +49,7 @@ const AppRoutes: React.FC = () => {
       {user && user.role === "propietario" && !user.completedRegistration && (
         <Route path="/proceso-de-alta/:step" element={<ProcesoDeAlta />} />
       )}
-        
+
       {user && user.role === "propietario" && user.completedRegistration && (
         <Route path="/" element={<OwnerLayout />}>
           <Route path="/dashboard-propietarios" element={<OwnerDashboard />} />
@@ -59,10 +61,11 @@ const AppRoutes: React.FC = () => {
           <Route path="/OwnerProfile" element={<OwnerProfile />} />
           <Route path="/notifications" element={<UnderConstruction />} />
           <Route path="/settings" element={<UnderConstruction />} />
-          <Route path="/help" element={<UnderConstruction />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/property/:propertyId" element={<PropertyDetails />} />
         </Route>
       )}
-          
+
       {user && user.role === "huesped" && (
         <Route path="/" element={<HuespedesLayout />}>
           <Route path="/dashboard-huespedes" element={<HuespedesDashboard />} />
@@ -73,18 +76,24 @@ const AppRoutes: React.FC = () => {
           <Route path="/incidencias" element={<IncidentForm />} />
         </Route>
       )}
-      
+
       {user && user.role === "empleado" && (
         <Route path="/" element={<EmpleadosLayout />}>
           <Route path="/dashboard-empleados" element={<EmployeeDashboard />} />
           <Route path="/proceso-alta" element={<ProcesoAlta />} />
-          <Route path="/propietarios-validados" element={<PropietariosValidados />} />
+          <Route
+            path="/propietarios-validados"
+            element={<PropietariosValidados />}
+          />
           <Route path="/nuevo-propietario" element={<NuevoPropietarioForm />} />
           <Route path="/buscador" element={<SearchPage />} />
           <Route path="/inventario" element={<InventoryPage />} />
           <Route path="/limpieza" element={<CleaningPage />} />
           <Route path="/mantenimiento" element={<MaintenancePage />} />
-          <Route path="/presupuesto-textil/:id" element={<PresupuestoTextil />} />
+          <Route
+            path="/presupuesto-textil/:id"
+            element={<PresupuestoTextil />}
+          />
           <Route path="/contrato/:id" element={<Contrato />} />
           <Route path="/chat" element={<ChatEmpleado />} />
           <Route path="/huespedes" element={<UnderConstruction />} />
@@ -93,10 +102,10 @@ const AppRoutes: React.FC = () => {
           <Route path="/glovito" element={<UnderConstruction />} />
           <Route path="/profile" element={<UnderConstruction />} />
           <Route path="/settings" element={<UnderConstruction />} />
-          <Route path="/help" element={<UnderConstruction />} />
+          <Route path="/faq" element={<FaqPage />} />
         </Route>
       )}
-      
+
       {!user && <Route path="*" element={<Login />} />}
     </Routes>
   );

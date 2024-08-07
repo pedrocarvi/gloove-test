@@ -401,7 +401,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 className="mt-1 block"
               />
             </div>
-            <div>
+            <div className="mt-4">
               <label
                 htmlFor="numeroVUT"
                 className="block text-sm font-medium text-gray-700"
@@ -417,7 +417,23 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
+              <p className="mt-2 text-sm text-gray-600">
+                Este número hace referencia a la licencia turística de la
+                vivienda. Se consigue mediante la presentación de los documentos
+                en los organismos gubernamentales correspondientes de cada
+                comunidad autónoma. Más información disponible en el{" "}
+                <a
+                  href="https://www.turisme.gva.es/opencms/opencms/turisme/es/contents/tramitacion/viviendas_turisticas/viviendas_turisticas.html?tam="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 underline"
+                >
+                  sitio web de tramitación de viviendas turísticas
+                </a>
+                .
+              </p>
             </div>
+
             <div>
               <label
                 htmlFor="comPropietarios"
@@ -532,7 +548,6 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 name="ascensor"
                 checked={formData.ascensor}
                 onChange={handleChange}
-                required
                 className="mt-1 block"
               />
             </div>
