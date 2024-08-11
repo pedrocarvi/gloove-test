@@ -20,6 +20,7 @@ const Home: React.FC = () => {
         <Header />
         <Element name="inicio">
           <motion.div
+            id="inicio"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
@@ -29,16 +30,13 @@ const Home: React.FC = () => {
         </Element>
 
         <Element name="servicios">
-          <motion.section
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-          >
+          <motion.section id="servicios">
             <ServicesSection />
           </motion.section>
         </Element>
 
         <motion.section
+          id="nosotros"
           className="min-h-screen py-16 relative"
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -74,6 +72,7 @@ const Home: React.FC = () => {
 
         <Element name="contacto">
           <motion.section
+            id="contacto"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}

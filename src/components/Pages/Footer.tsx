@@ -8,6 +8,7 @@ import {
   FaTwitter,
   FaLinkedin,
   FaYoutube,
+  FaArrowUp, // Importamos el ícono de flecha hacia arriba
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 
@@ -184,6 +185,20 @@ const Footer = () => {
           </div>
         </motion.div>
       </div>
+
+      {/* Botón de Volver Arriba */}
+      <motion.div
+        whileHover={{ scale: 1.2 }}
+        className="flex justify-center mt-8"
+      >
+        <a
+          href="#inicio"
+          className="bg-teal-500 text-white p-3 rounded-full hover:bg-teal-600 transition"
+        >
+          <FaArrowUp size={24} />
+        </a>
+      </motion.div>
+
       <div className="bg-gray-800 py-4 mt-10">
         <div className="container mx-auto text-center">
           <p className="text-sm text-gray-500">

@@ -75,7 +75,7 @@ const Hero: React.FC = () => {
             scale: 1.1,
             boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
           }}
-          className="mt-8 bg-gloovePrimary text-white font-bold py-3 px-6 rounded transition duration-300 hover:bg-gloovePrimary-dark"
+          className="mt-8 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 animate-pulse"
           onClick={() => console.log("Descubre más clicado")}
         >
           DESCUBRE MÁS

@@ -6,6 +6,7 @@ import { FaStar, FaRegStar } from "react-icons/fa";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
+
 const houses = [
   {
     name: "Casa 1",
@@ -21,6 +22,28 @@ const houses = [
       size: "120 m²",
     },
     ratings: 4,
+    textileInventory: {
+      bedLinen: "Ropa de cama de alta calidad",
+      towels: "Toallas de algodón",
+    },
+    contract: {
+      startDate: "2023-01-01",
+      endDate: "2023-12-31",
+    },
+    inventory: {
+      items: [
+        { name: "Cama", quantity: 2 },
+        { name: "Sofá", quantity: 1 },
+      ],
+    },
+    budget: {
+      amount: 1000,
+    },
+    documents: [
+      { name: "Ficha técnica", url: "https://example.com/ficha_tecnica.pdf" },
+      { name: "Contrato", url: "https://example.com/contract.pdf" },
+      { name: "Inventario", url: "https://example.com/inventario.pdf" },
+    ],
   },
   {
     name: "Casa 2",
@@ -36,6 +59,28 @@ const houses = [
       size: "200 m²",
     },
     ratings: 5,
+    textileInventory: {
+      bedLinen: "Ropa de cama de lujo",
+      towels: "Toallas de felpa",
+    },
+    contract: {
+      startDate: "2023-02-01",
+      endDate: "2023-11-30",
+    },
+    inventory: {
+      items: [
+        { name: "Mesa", quantity: 1 },
+        { name: "Sillas", quantity: 4 },
+      ],
+    },
+    budget: {
+      amount: 1500,
+    },
+    documents: [
+      { name: "Ficha técnica", url: "https://example.com/ficha_tecnica2.pdf" },
+      { name: "Contrato", url: "https://example.com/contract2.pdf" },
+      { name: "Inventario", url: "https://example.com/inventario2.pdf" },
+    ],
   },
 ];
 
@@ -157,6 +202,69 @@ const HousesSection: React.FC = () => {
                 </p>
                 <p>{house.description}</p>
               </div>
+              {house.textileInventory && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold">Inventario Textil:</h3>
+                  <p>
+                    <strong>Ropa de cama:</strong>{" "}
+                    {house.textileInventory.bedLinen}
+                  </p>
+                  <p>
+                    <strong>Toallas:</strong> {house.textileInventory.towels}
+                  </p>
+                </div>
+              )}
+              {house.contract && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold">Contrato:</h3>
+                  <p>
+                    <strong>Fecha de inicio:</strong> {house.contract.startDate}
+                  </p>
+                  <p>
+                    <strong>Fecha de fin:</strong> {house.contract.endDate}
+                  </p>
+                </div>
+              )}
+              {house.inventory && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold">
+                    Inventario Completo:
+                  </h3>
+                  <ul>
+                    {house.inventory.items.map((item, index) => (
+                      <li key={index}>
+                        {item.name}: {item.quantity}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {house.budget && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold">Presupuesto Textil:</h3>
+                  <p>
+                    <strong>Monto aprobado:</strong> ${house.budget.amount}
+                  </p>
+                </div>
+              )}
+              {house.documents && (
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold">Documentación:</h3>
+                  <ul>
+                    {house.documents.map((doc, index) => (
+                      <li key={index}>
+                        <a
+                          href={doc.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {doc.name}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <div className="mb-4">
                 <h3 className="text-lg font-semibold">Valoraciones:</h3>
                 <div className="flex items-center space-x-1">

@@ -35,6 +35,7 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <motion.div
+      id="servicios"
       className={`relative flex flex-col md:flex-row items-center cursor-pointer bg-cover bg-center rounded-2xl shadow-lg transition-all duration-500 ease-in-out ${
         expanded
           ? "w-[300px] h-[500px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
@@ -122,7 +123,7 @@ const ServicesSection: React.FC = () => {
   return (
     <section
       className="min-h-screen py-24 bg-gradient-to-r from-gloovePrimary-light to-glooveSecondary-light relative flex flex-col items-center"
-      id="services"
+      id="servicios"
     >
       <div className="text-center mb-12 max-w-5xl mx-auto px-4">
         <h1 className="text-4xl md:text-6xl font-extrabold text-gloovePrimary-dark mb-4">

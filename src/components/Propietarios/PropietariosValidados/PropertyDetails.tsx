@@ -61,6 +61,7 @@ const PropertyDetails: React.FC = () => {
           <strong>Descripción:</strong> {propertyData?.description}
         </p>
       </div>
+
       {propertyData?.textileInventory && (
         <div className="mb-6">
           <h2 className="text-2xl font-bold">Inventario Textil</h2>
@@ -73,6 +74,7 @@ const PropertyDetails: React.FC = () => {
           </p>
         </div>
       )}
+
       {propertyData?.contract && (
         <div className="mb-6">
           <h2 className="text-2xl font-bold">Contrato</h2>
@@ -84,6 +86,7 @@ const PropertyDetails: React.FC = () => {
           </p>
         </div>
       )}
+
       {propertyData?.inventory && (
         <div className="mb-6">
           <h2 className="text-2xl font-bold">Inventario Completo</h2>
@@ -91,6 +94,30 @@ const PropertyDetails: React.FC = () => {
             {propertyData.inventory.items.map((item, index) => (
               <li key={index}>
                 {item.name}: {item.quantity}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {propertyData?.budget && (
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold">Presupuesto Textil</h2>
+          <p>
+            <strong>Monto aprobado:</strong> {propertyData.budget.amount}
+          </p>
+        </div>
+      )}
+
+      {propertyData?.documents && (
+        <div className="mb-6">
+          <h2 className="text-2xl font-bold">Documentación</h2>
+          <ul>
+            {propertyData.documents.map((doc, index) => (
+              <li key={index}>
+                <a href={doc.url} target="_blank" rel="noopener noreferrer">
+                  {doc.name}
+                </a>
               </li>
             ))}
           </ul>

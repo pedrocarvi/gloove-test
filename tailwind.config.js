@@ -22,8 +22,10 @@ module.exports = {
           dark: "#ffffff",
         },
         glooveAccent: {
-          // Nombre único para evitar conflictos
-          DEFAULT: "#F59E0B",
+          // Nuevo color de acento basado en la paleta existente
+          DEFAULT: "#20a4f3", // Un azul más vibrante como acento
+          light: "#78c0e0", // Azul más claro
+          dark: "#1c84d1", // Azul más oscuro para dark mode
         },
         dark: {
           background: "#1A202C",
