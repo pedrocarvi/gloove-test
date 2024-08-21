@@ -254,7 +254,7 @@ const Header = () => {
       {/* Menú desplegable para móviles */}
       {menuOpen && (
         <motion.div
-          className="md:hidden fixed inset-0 bg-glooveSecondary-light dark:bg-dark-background z-40 h-full overflow-hidden"
+          className="md:hidden fixed inset-0 bg-glooveSecondary-light dark:bg-dark-background z-40 h-screen overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
