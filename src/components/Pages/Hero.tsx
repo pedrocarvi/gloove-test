@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import TypingEffect from "react-typing-effect"; // Librería para el efecto de escritura
+import TypingEffect from "react-typing-effect";
 
 const Hero: React.FC = () => {
   return (
@@ -39,13 +39,12 @@ const Hero: React.FC = () => {
           />
         </video>
       </motion.div>
-      <div className="absolute inset-0   bg-opacity-40 z-10"></div>
       <div className="relative text-center text-white px-4 sm:px-6 lg:px-8 z-20 flex flex-col items-center justify-center h-full">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="font-heading font-bold italic uppercase text-[28px] sm:text-[40px] md:text-[52px] lg:text-[60px] leading-tight tracking-[-0.5px] mb-6"
+          className="font-heading font-bold italic uppercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tighter mb-6"
         >
           <TypingEffect
             text={["Be Happy", "Be Gloove"]}
@@ -66,7 +65,7 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="font-sans font-semibold italic text-[18px] sm:text-[20px] md:text-[24px] lg:text-[28px] tracking-[0.5px] mb-8"
+          className="font-sans font-semibold italic text-base sm:text-lg md:text-xl lg:text-2xl tracking-normal mb-8"
         >
           Tu gestor turístico de confianza
         </motion.p>

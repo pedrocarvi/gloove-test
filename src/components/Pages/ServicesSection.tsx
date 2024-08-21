@@ -35,11 +35,10 @@ const Card: React.FC<CardProps> = ({
 }) => {
   return (
     <motion.div
-      id="servicios"
       className={`relative flex flex-col md:flex-row items-center cursor-pointer bg-cover bg-center rounded-2xl shadow-lg transition-all duration-500 ease-in-out ${
         expanded
-          ? "w-[300px] h-[500px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
-          : "w-[250px] h-[150px] md:w-[600px] md:h-[300px] lg:w-[350px] lg:h-[600px]"
+          ? "w-[320px] h-[540px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
+          : "w-[260px] h-[160px] md:w-[600px] md:h-[320px] lg:w-[350px] lg:h-[600px]"
       }`}
       style={{
         backgroundImage: `url(${imageUrl})`,
@@ -66,7 +65,7 @@ const Card: React.FC<CardProps> = ({
             </p>
             <motion.a
               href="#"
-              className="mt-6 inline-block bg-gloovePrimary-dark text-white px-6 py-3 rounded-full shadow-md hover:bg-gloovePrimary transition"
+              className="mt-6 inline-block bg-teal-400 text-white px-6 py-3 rounded-full shadow-md hover:bg-teal-500 transition"
               whileHover={{ scale: 1.05 }}
             >
               Descubrir más
@@ -122,14 +121,14 @@ const ServicesSection: React.FC = () => {
 
   return (
     <section
-      className="min-h-screen py-24 bg-gradient-to-r from-gloovePrimary-light to-glooveSecondary-light relative flex flex-col items-center"
+      className="min-h-screen py-24 bg-gradient-to-b from-teal-300 to-blue-500 flex flex-col items-center"
       id="servicios"
     >
       <div className="text-center mb-12 max-w-5xl mx-auto px-4">
-        <h1 className="text-4xl md:text-6xl font-extrabold text-gloovePrimary-dark mb-4">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
           Servicios Destacados
         </h1>
-        <p className="text-xl md:text-2xl text-glooveSecondary-dark hidden md:block">
+        <p className="text-xl md:text-2xl text-teal-100 hidden md:block">
           Gloove ofrece una amplia gama de servicios como gestor turístico,
           asegurando la mejor experiencia tanto para propietarios como para
           viajeros. Conoce nuestros servicios y cómo podemos ayudarte a

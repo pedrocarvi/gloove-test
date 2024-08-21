@@ -7,26 +7,25 @@ import {
   FaLinkedin,
   FaYoutube,
 } from "react-icons/fa";
-import Testimonios from "./Testimonios";
+import Testimonials from "./Testimonios";
 
 const Contacto = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
 
   return (
     <section className="relative flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-700 to-teal-400 p-8 overflow-hidden">
-      {/* Texto e Información */}
-      <Testimonios />
+      <Testimonials />
 
       <motion.div className="w-full max-w-3xl p-8 text-center relative z-10 space-y-6">
         <motion.h2 className="text-white text-4xl md:text-5xl font-extrabold uppercase tracking-wide">
           Sobre Nosotros
         </motion.h2>
-        <motion.p className="text-white text-lg leading-relaxed">
+        <motion.p className="text-white text-lg md:text-xl leading-relaxed">
           Gloove, el gestor de viviendas vacacionales que se apoya en la
           experiencia de un amplio equipo de profesionales y en las últimas
           tecnologías para ayudarte a alcanzar los mejores resultados.
         </motion.p>
-        <motion.p className="text-white text-lg leading-relaxed">
+        <motion.p className="text-white text-lg md:text-xl leading-relaxed">
           Ofrecemos una alta rentabilidad a los propietarios y una experiencia
           excepcional a los huéspedes con un servicio de calidad.
         </motion.p>
@@ -44,23 +43,23 @@ const Contacto = () => {
             )
           )}
         </div>
-        <motion.p className="text-lg font-bold text-white">
+        <motion.p className="text-lg md:text-xl font-bold text-white">
           Ponte en <span className="text-teal-300">CONTACTO</span> con nosotros
           y te daremos respuesta{" "}
           <span className="text-teal-300">INMEDIATA</span>
         </motion.p>
         <motion.button
-          className="mt-6 px-8 py-4 bg-teal-300 text-blue-700 font-bold rounded-lg shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1 focus:outline-none"
-          whileHover={{ scale: 1.05 }}
+          whileHover={{
+            scale: 1.1,
+            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
+          }}
+          className="mt-6 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 animate-pulse"
           onClick={() => setIsFormVisible(!isFormVisible)}
         >
           Contáctanos
         </motion.button>
       </motion.div>
 
-      {/* Componente de Testimonios */}
-
-      {/* Formulario de Contacto */}
       {isFormVisible && (
         <motion.div
           className="fixed inset-0 flex justify-center items-center bg-black bg-opacity-75 z-50"

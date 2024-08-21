@@ -80,8 +80,8 @@ const Header = () => {
 
     const observer = new IntersectionObserver(callback, {
       root: null,
-      rootMargin: "0px", // Puedes ajustar esto, por ejemplo, "0px 0px -50% 0px"
-      threshold: 0.3, // Puedes probar valores como 0.5 o 0.7 para diferentes sensibilidades
+      rootMargin: "0px",
+      threshold: 0.3,
     });
 
     sections.forEach((section) => {
@@ -117,7 +117,7 @@ const Header = () => {
           : "bg-glooveSecondary-light text-glooveText dark:bg-dark-background dark:text-dark-text"
       } ${scrollPosition > 50 ? "shadow-lg" : "shadow-none"}`}
     >
-      <div className="container mx-auto flex items-center justify-between p-4">
+      <div className="container mx-auto flex flex-wrap items-center justify-between p-4">
         <RouterLink to="/" className="flex items-center space-x-2">
           <motion.img
             src={logo}
@@ -144,7 +144,7 @@ const Header = () => {
         </div>
 
         {/* Menú en dispositivos grandes */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex flex-grow items-center justify-end space-x-8">
           {navItems.map((link) => (
             <div
               key={link.label}
@@ -211,14 +211,15 @@ const Header = () => {
             <motion.button
               whileHover={{
                 scale: 1.1,
-                boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
+                boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
               }}
-              className="flex items-center bg-gloovePrimary-dark text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+              className="flex items-center bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-2 px-6 rounded-full transition duration-300 hover:scale-105"
             >
-              <FaUser className="mr-2" />
+              <FaUser className="mr-2 text-lg" />
               INICIAR SESIÓN
             </motion.button>
           </RouterLink>
+
           <div className="relative ml-4">
             <button
               className={`flex items-center justify-center rounded-full p-2 ${
@@ -251,46 +252,50 @@ const Header = () => {
       {/* Menú desplegable para móviles */}
       {menuOpen && (
         <motion.div
-          className="md:hidden fixed inset-0 bg-glooveSecondary-light dark:bg-dark-background z-40 h-full overflow-hidden"
+          className="md:hidden fixed inset-0 bg-glooveSecondary-light dark:bg-dark-background z-40 h-screen flex flex-col justify-center items-center px-4"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <div className="flex flex-col items-center justify-center h-full">
-            <button
-              onClick={() => setMenuOpen(false)}
-              className="absolute top-4 right-4 text-gloovePrimary focus:outline-none"
-            >
-              <XMarkIcon className="h-6 w-6" />
-            </button>
-            <nav className="w-full flex flex-col items-center space-y-2">
-              {navItems.map((item, index) => (
-                <ScrollLink
-                  key={index}
-                  to={item.url}
-                  smooth={true}
-                  offset={-70}
-                  duration={500}
-                  className="w-full flex items-center justify-center text-gloovePrimary hover:text-gloovePrimary-dark transition duration-200 py-4 text-lg uppercase"
-                  onClick={() => setMenuOpen(false)}
-                >
-                  <item.icon className="mr-2" />
-                  {item.title}
-                </ScrollLink>
-              ))}
-              <motion.button
-                whileHover={{
-                  scale: 1.1,
-                  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
-                }}
-                className="w-full flex items-center justify-center bg-gloovePrimary-dark text-white font-bold py-3 mt-4 rounded-lg transition duration-300"
+          <button
+            onClick={() => setMenuOpen(false)}
+            className="absolute top-4 right-4 text-gloovePrimary focus:outline-none"
+          >
+            <XMarkIcon className="h-8 w-8 hover:text-gloovePrimary-dark transition-colors duration-200 ease-in-out transform hover:scale-110" />
+          </button>
+          <nav className="w-full flex flex-col items-center space-y-6">
+            {navItems.map((item, index) => (
+              <ScrollLink
+                key={index}
+                to={item.url}
+                smooth={true}
+                offset={-70}
+                duration={500}
+                className="w-full flex items-center justify-center text-gloovePrimary dark:text-white hover:text-gloovePrimary-dark dark:hover:text-gloovePrimary-light transition duration-300 py-4 text-lg uppercase transform hover:scale-105"
                 onClick={() => setMenuOpen(false)}
               >
-                <FaUser className="mr-2" />
-                INICIAR SESIÓN
-              </motion.button>
-            </nav>
-          </div>
+                <motion.div
+                  whileHover={{ scale: 1.3, rotate: 10 }}
+                  transition={{ duration: 0.3 }}
+                  className="mr-2"
+                >
+                  <item.icon className="text-2xl" />
+                </motion.div>
+                {item.title}
+              </ScrollLink>
+            ))}
+            <motion.button
+              whileHover={{
+                scale: 1.1,
+                boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
+              }}
+              className="w-full max-w-xs flex items-center justify-center bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 mt-4 rounded-full transition duration-300 hover:scale-105 animate-pulse"
+              onClick={() => setMenuOpen(false)}
+            >
+              <FaUser className="mr-2 text-xl" />
+              INICIAR SESIÓN
+            </motion.button>
+          </nav>
         </motion.div>
       )}
     </header>
