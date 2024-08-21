@@ -212,14 +212,15 @@ const Header = () => {
             <motion.button
               whileHover={{
                 scale: 1.1,
-                boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
+                boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
               }}
-              className="flex items-center bg-gloovePrimary-dark text-white font-bold py-2 px-6 rounded-lg transition duration-300"
+              className="flex items-center bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-2 px-6 rounded-full transition duration-300 hover:scale-105"
             >
-              <FaUser className="mr-2" />
+              <FaUser className="mr-2 text-lg" />
               INICIAR SESIÓN
             </motion.button>
           </RouterLink>
+
           <div className="relative ml-4">
             <button
               className={`flex items-center justify-center rounded-full p-2 ${
@@ -251,7 +252,6 @@ const Header = () => {
         </nav>
       </div>
 
-      
       {/* Menú desplegable para móviles */}
       {menuOpen && (
         <motion.div
