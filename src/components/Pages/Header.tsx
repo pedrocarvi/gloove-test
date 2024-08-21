@@ -212,11 +212,14 @@ const Header = () => {
             <motion.button
               whileHover={{
                 scale: 1.1,
-                boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
+                boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.3)",
+                filter: "brightness(1.2)",
+                transition: { duration: 0.5 },
               }}
-              className="flex items-center bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-2 px-6 rounded-full transition duration-300 hover:scale-105"
+              initial={{ scale: 1, filter: "brightness(1)" }}
+              className="flex items-center bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 hover:shadow-lg"
             >
-              <FaUser className="mr-2 text-lg" />
+              <FaUser className="mr-2 text-xl" />
               INICIAR SESIÓN
             </motion.button>
           </RouterLink>

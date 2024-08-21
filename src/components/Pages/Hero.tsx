@@ -37,6 +37,18 @@ const Hero: React.FC = () => {
             type="video/mp4"
             media="(min-width: 1424px)"
           />
+          {/* Añadir un formato alternativo como WebM */}
+          <source
+            src="RecursosWeb/vid/FondoM.webm"
+            type="video/webm"
+            media="(min-width: 1424px)"
+          />
+          {/* Fallback image */}
+          <img
+            src="RecursosWeb/vid/img.jpg"
+            alt="Background"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
         </video>
       </motion.div>
       <div className="relative text-center text-white px-4 sm:px-6 lg:px-8 z-20 flex flex-col items-center justify-center h-full">
@@ -44,7 +56,7 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
-          className="font-heading font-bold italic uppercase text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight tracking-tighter mb-6"
+          className="font-heading font-bold italic uppercase text-4xl sm:text-5xl md:text-6xl lg:text-7xl leading-tight tracking-tighter mb-6"
         >
           <TypingEffect
             text={["Be Happy", "Be Gloove"]}
@@ -65,16 +77,16 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
-          className="font-sans font-semibold italic text-base sm:text-lg md:text-xl lg:text-2xl tracking-normal mb-8"
+          className="font-sans font-semibold italic text-lg sm:text-xl md:text-2xl lg:text-3xl tracking-normal mb-8"
         >
           Tu gestor turístico de confianza
         </motion.p>
         <motion.button
           whileHover={{
-            scale: 1.1,
-            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
+            scale: 1.2,
+            boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.2)",
           }}
-          className="mt-8 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 animate-pulse"
+          className="mt-8 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-4 px-10 rounded-full transition duration-300 hover:scale-105 animate-pulse"
           onClick={() => console.log("Descubre más clicado")}
         >
           DESCUBRE MÁS
