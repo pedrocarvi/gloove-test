@@ -44,7 +44,7 @@ const Card: React.FC<CardProps> = ({
         backgroundImage: `url(${imageUrl})`,
       }}
       onClick={onClick}
-      whileHover={{ scale: expanded ? 1.05 : 1.1 }}
+      whileHover={{ scale: expanded ? 1.05 : 1.1, rotate: expanded ? 0 : 3 }}
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 50 }}
@@ -65,7 +65,7 @@ const Card: React.FC<CardProps> = ({
             </p>
             <motion.a
               href="#"
-              className="mt-6 inline-block bg-teal-400 text-white px-6 py-3 rounded-full shadow-md hover:bg-teal-500 transition"
+              className="mt-6 inline-block bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white px-6 py-3 rounded-full shadow-md transition duration-300 hover:scale-105"
               whileHover={{ scale: 1.05 }}
             >
               Descubrir más
@@ -121,14 +121,14 @@ const ServicesSection: React.FC = () => {
 
   return (
     <section
-      className="min-h-screen py-24 bg-gradient-to-b from-teal-300 to-blue-500 flex flex-col items-center"
+      className="min-h-screen py-24 bg-gradient-to-b from-gloovePrimary-light to-glooveSecondary-light flex flex-col items-center"
       id="servicios"
     >
       <div className="text-center mb-12 max-w-5xl mx-auto px-4">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-white mb-4">
+        <h1 className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark mb-4">
           Servicios Destacados
         </h1>
-        <p className="text-xl md:text-2xl text-teal-100 hidden md:block">
+        <p className="text-xl md:text-2xl text-glooveSecondary-dark hidden md:block">
           Gloove ofrece una amplia gama de servicios como gestor turístico,
           asegurando la mejor experiencia tanto para propietarios como para
           viajeros. Conoce nuestros servicios y cómo podemos ayudarte a
