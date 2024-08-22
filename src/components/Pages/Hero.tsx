@@ -15,6 +15,7 @@ const Hero: React.FC = () => {
           autoPlay
           loop
           muted
+          playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
           <source
@@ -37,13 +38,11 @@ const Hero: React.FC = () => {
             type="video/mp4"
             media="(min-width: 1424px)"
           />
-          {/* Añadir un formato alternativo como WebM */}
           <source
             src="RecursosWeb/vid/FondoM.webm"
             type="video/webm"
             media="(min-width: 1424px)"
           />
-          {/* Fallback image */}
           <img
             src="RecursosWeb/vid/img.jpg"
             alt="Background"
