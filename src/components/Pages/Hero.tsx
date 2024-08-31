@@ -3,6 +3,13 @@ import { motion } from "framer-motion";
 import TypingEffect from "react-typing-effect";
 
 const Hero: React.FC = () => {
+  const handleScrollToContact = () => {
+    const contactSection = document.getElementById("contacto");
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section id="inicio" className="relative h-screen overflow-hidden">
       <motion.div
@@ -17,6 +24,7 @@ const Hero: React.FC = () => {
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
+          poster="RecursosWeb/vid/img.jpg" // Aquí defines la imagen que se mostrará antes de cargar el video
         >
           <source
             src="RecursosWeb/vid/FondoM.mp4"
@@ -86,7 +94,7 @@ const Hero: React.FC = () => {
             boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.2)",
           }}
           className="mt-8 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-4 px-10 rounded-full transition duration-300 hover:scale-105 animate-pulse"
-          onClick={() => console.log("Descubre más clicado")}
+          onClick={handleScrollToContact}
         >
           DESCUBRE MÁS
         </motion.button>

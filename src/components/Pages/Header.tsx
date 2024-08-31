@@ -15,7 +15,6 @@ import {
 } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { useDarkMode } from "../../context/DarkModeContext";
-import logo from "../../../public/RecursosWeb/img/Logo/Logo-Gloove.webp";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 
 // Elementos de navegación
@@ -121,7 +120,7 @@ const Header = () => {
       <div className="container mx-auto flex items-center justify-between p-4">
         <RouterLink to="/" className="flex items-center space-x-2">
           <motion.img
-            src={logo}
+            src="/RecursosWeb/img/Logo/Logo-Gloove.webp" // Ruta relativa desde la raíz
             alt="Logo"
             className={`h-12 ${
               isTransparent ? "filter invert brightness-0" : ""

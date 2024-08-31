@@ -1,152 +1,158 @@
-import React, { useState } from "react";
+import React from "react";
 import { motion } from "framer-motion";
 import { FaHotel, FaUserTie, FaBuilding, FaStar } from "react-icons/fa";
 
-const cardImages = [
-  "/RecursosWeb/img/Pro/pexels-olly-915051.jpg",
-  "/RecursosWeb/img/Res/pexels-ketut-subiyanto-4546018.jpg",
-  "/RecursosWeb/img/Inm/pexels-maksgelatin-4352247.jpg",
-  "/RecursosWeb/img/Exp/pexels-pixabay-327269.jpg",
+// Datos de las tarjetas
+const cardDetails = [
+  {
+    title: "Huéspedes",
+    icon: FaHotel,
+    description:
+      "Ofrecemos un servicio integral para propietarios, gestionando sus inmuebles con profesionalidad y transparencia.",
+    imageUrl: "/RecursosWeb/img/Pro/pexels-olly-915051.jpg",
+    socialLinks: {
+      facebook: "#",
+      twitter: "#",
+      instagram: "#",
+    },
+  },
+  {
+    title: "Propietarios",
+    icon: FaUserTie,
+    description:
+      "Gestionamos reservas con un sistema ágil y eficiente, asegurando la mejor experiencia para nuestros huéspedes.",
+    imageUrl: "/RecursosWeb/img/Res/pexels-ketut-subiyanto-4546018.jpg",
+    socialLinks: {
+      facebook: "#",
+      twitter: "#",
+      instagram: "#",
+    },
+  },
+  {
+    title: "Inmobiliaria",
+    icon: FaBuilding,
+    description:
+      "Proveemos soluciones inmobiliarias adaptadas a las necesidades de cada cliente, garantizando seguridad y confianza.",
+    imageUrl: "/RecursosWeb/img/Inm/pexels-maksgelatin-4352247.jpg",
+    socialLinks: {
+      facebook: "#",
+      twitter: "#",
+      instagram: "#",
+    },
+  },
+  {
+    title: "Experiencias",
+    icon: FaStar,
+    description:
+      "Creamos experiencias únicas e inolvidables, desde actividades culturales hasta aventuras extremas.",
+    imageUrl: "/RecursosWeb/img/Exp/pexels-pixabay-327269.jpg",
+    socialLinks: {
+      facebook: "#",
+      twitter: "#",
+      instagram: "#",
+    },
+  },
 ];
-
-const cardDescriptions = [
-  "Ofrecemos un servicio integral para propietarios, gestionando sus inmuebles con profesionalidad y transparencia.",
-  "Gestionamos reservas con un sistema ágil y eficiente, asegurando la mejor experiencia para nuestros huéspedes.",
-  "Proveemos soluciones inmobiliarias adaptadas a las necesidades de cada cliente, garantizando seguridad y confianza.",
-  "Creamos experiencias únicas e inolvidables, desde actividades culturales hasta aventuras extremas.",
-];
-
-type CardProps = {
-  title: string;
-  description: string;
-  imageUrl: string;
-  icon: React.ElementType;
-  expanded: boolean;
-  onClick: () => void;
-};
-
-const Card: React.FC<CardProps> = ({
-  title,
-  description,
-  imageUrl,
-  icon: Icon,
-  expanded,
-  onClick,
-}) => {
-  return (
-    <motion.div
-      className={`relative flex flex-col md:flex-row items-center cursor-pointer bg-cover bg-center rounded-2xl shadow-lg transition-all duration-500 ease-in-out ${
-        expanded
-          ? "w-[320px] h-[540px] md:w-[700px] md:h-[400px] lg:w-[500px] lg:h-[700px]"
-          : "w-[260px] h-[160px] md:w-[600px] md:h-[320px] lg:w-[350px] lg:h-[600px]"
-      }`}
-      style={{
-        backgroundImage: `url(${imageUrl})`,
-      }}
-      onClick={onClick}
-      whileHover={{ scale: expanded ? 1.05 : 1.1, rotate: expanded ? 0 : 3 }}
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 50 }}
-    >
-      <motion.div
-        className="absolute inset-0 bg-gray-900 bg-opacity-60 rounded-2xl"
-        whileHover={{ backgroundColor: "rgba(0, 0, 0, 0.7)" }}
-        transition={{ duration: 0.3 }}
-      ></motion.div>
-      <div className="relative z-10 p-4 text-white text-center md:text-left md:w-1/2">
-        <h2 className="text-lg md:text-2xl font-bold flex items-center justify-center md:justify-start">
-          <Icon className="mr-2 text-xl md:text-2xl lg:text-3xl" /> {title}
-        </h2>
-        {expanded && (
-          <div>
-            <p className="mt-4 text-white text-sm md:text-base leading-relaxed">
-              {description}
-            </p>
-            <motion.a
-              href="#"
-              className="mt-6 inline-block bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white px-6 py-3 rounded-full shadow-md transition duration-300 hover:scale-105"
-              whileHover={{ scale: 1.05 }}
-            >
-              Descubrir más
-            </motion.a>
-          </div>
-        )}
-      </div>
-      {expanded && (
-        <motion.div
-          className="absolute bottom-4 right-4 transform transition-transform duration-500 ease-in-out"
-          animate={{ x: expanded ? -10 : 0 }}
-        >
-          <Icon className="text-white text-3xl md:text-5xl lg:text-6xl" />
-        </motion.div>
-      )}
-    </motion.div>
-  );
-};
 
 const ServicesSection: React.FC = () => {
-  const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
-
-  const handleCardClick = (index: number) => {
-    setExpandedIndex(index === expandedIndex ? null : index);
-  };
-
-  const cards = [
-    {
-      title: "Huéspedes",
-      icon: FaHotel,
-      description: cardDescriptions[0],
-      imageUrl: cardImages[0],
-    },
-    {
-      title: "Propietarios",
-      icon: FaUserTie,
-      description: cardDescriptions[1],
-      imageUrl: cardImages[1],
-    },
-    {
-      title: "Inmobiliaria",
-      icon: FaBuilding,
-      description: cardDescriptions[2],
-      imageUrl: cardImages[2],
-    },
-    {
-      title: "Experiencias",
-      icon: FaStar,
-      description: cardDescriptions[3],
-      imageUrl: cardImages[3],
-    },
-  ];
-
   return (
-    <section
-      className="min-h-screen py-24 bg-gradient-to-b from-gloovePrimary-light to-glooveSecondary-light flex flex-col items-center"
-      id="servicios"
-    >
-      <div className="text-center mb-12 max-w-5xl mx-auto px-4">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark mb-4">
+    <section className="relative py-16 bg-[#F6F7F5] overflow-hidden">
+      {" "}
+      {/* Fondo ajustado */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+        <motion.h2
+          className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark text-center mb-4"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           Servicios Destacados
-        </h1>
-        <p className="text-xl md:text-2xl text-glooveSecondary-dark hidden md:block">
-          Gloove ofrece una amplia gama de servicios como gestor turístico,
-          asegurando la mejor experiencia tanto para propietarios como para
-          viajeros. Conoce nuestros servicios y cómo podemos ayudarte a
-          disfrutar al máximo de tus propiedades y viajes.
-        </p>
-      </div>
-      <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-8 max-w-full px-4">
-        {cards.map((card, index) => (
-          <Card
-            key={index}
-            title={card.title}
-            description={card.description}
-            imageUrl={card.imageUrl}
-            icon={card.icon}
-            expanded={expandedIndex === index}
-            onClick={() => handleCardClick(index)}
-          />
-        ))}
+        </motion.h2>
+
+        {/* Subtítulo añadido */}
+        <motion.p
+          className="text-lg md:text-xl text-glooveSecondary-dark text-center mb-12"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
+          Descubre nuestros servicios que te garantizan una experiencia
+          excepcional.
+        </motion.p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {cardDetails.map((card, index) => (
+            <motion.div
+              key={index}
+              className="relative bg-white rounded-xl shadow-lg overflow-hidden transform transition-transform hover:scale-105"
+              initial={{ opacity: 0, y: 50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.3,
+                ease: "easeOut",
+              }}
+              whileHover={{
+                scale: 1.05,
+                boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.4)",
+              }}
+            >
+              <img
+                src={card.imageUrl}
+                alt={card.title}
+                className="w-full h-40 object-cover"
+              />
+              <div className="p-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-xl font-bold text-gray-800">
+                    {card.title}
+                  </div>
+                  <card.icon className="text-3xl text-[#106a8a]" />
+                </div>
+                <p className="text-sm text-gray-600 mt-2 mb-4">
+                  {card.description}
+                </p>
+                <motion.a
+                  href="#"
+                  className="block text-center bg-gradient-to-r from-[#106a8a] via-[#1e8bc3] to-[#20a4f3] text-white px-4 py-2 rounded-full shadow-md transition-transform duration-300"
+                  whileHover={{
+                    scale: 1.1,
+                    boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.3)",
+                  }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  Descubrir más
+                </motion.a>
+                {/* Redes Sociales */}
+                <div className="mt-4 flex justify-center space-x-4">
+                  <motion.a
+                    href={card.socialLinks.facebook}
+                    className="text-[#106a8a] hover:text-[#1e8bc3]"
+                    whileHover={{ scale: 1.2 }}
+                  >
+                    <i className="fab fa-facebook-f"></i>
+                  </motion.a>
+                  <motion.a
+                    href={card.socialLinks.twitter}
+                    className="text-[#106a8a] hover:text-[#1e8bc3]"
+                    whileHover={{ scale: 1.2 }}
+                  >
+                    <i className="fab fa-twitter"></i>
+                  </motion.a>
+                  <motion.a
+                    href={card.socialLinks.instagram}
+                    className="text-[#106a8a] hover:text-[#1e8bc3]"
+                    whileHover={{ scale: 1.2 }}
+                  >
+                    <i className="fab fa-instagram"></i>
+                  </motion.a>
+                </div>
+              </div>
+              {/* Indicador visual */}
+              <div className="absolute inset-0 border-2 border-transparent hover:border-[#20a4f3] transition-all duration-300 rounded-xl"></div>
+            </motion.div>
+          ))}
+        </div>
       </div>
     </section>
   );

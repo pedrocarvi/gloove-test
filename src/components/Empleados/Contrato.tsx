@@ -3,7 +3,12 @@ import { useParams, useNavigate } from "react-router-dom";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db, storage } from "@/firebaseConfig";
 import SignatureCanvas from "react-signature-canvas";
-import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import {
+  getStorage,
+  ref,
+  uploadString,
+  getDownloadURL,
+} from "firebase/storage";
 import Swal from "sweetalert2";
 import { generateContractPDF } from "@/utils/contractPdfGenerator";
 import { sendEmail } from "@/utils/emailService";
@@ -22,7 +27,10 @@ const Contrato: React.FC = () => {
     const fetchPdfUrl = async () => {
       try {
         const storage = getStorage();
-        const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${id}.pdf`);
+        const pdfRef = ref(
+          storage,
+          `DocumentacionPropietarios/Contratos/contract_${id}.pdf`
+        );
         const url = await getDownloadURL(pdfRef);
         setPdfUrl(url);
       } catch (error) {
@@ -38,7 +46,10 @@ const Contrato: React.FC = () => {
     const fetchFormData = async () => {
       if (!id) return;
 
-      const docRef = doc(db, `propietarios/${id}/proceso_de_alta/technical_form`);
+      const docRef = doc(
+        db,
+        `propietarios/${id}/proceso_de_alta/technical_form`
+      );
       const docSnap = await getDoc(docRef);
       if (docSnap.exists()) {
         setFormData(docSnap.data());
@@ -52,7 +63,9 @@ const Contrato: React.FC = () => {
 
   const handleSign = () => {
     if (sigCanvas.current) {
-      const dataURL = sigCanvas.current.getTrimmedCanvas().toDataURL("image/png");
+      const dataURL = sigCanvas.current
+        .getTrimmedCanvas()
+        .toDataURL("image/png");
       setFormData({ ...formData, signature: dataURL });
       setIsSigned(true);
     }
@@ -60,7 +73,9 @@ const Contrato: React.FC = () => {
 
   const handleSubmit = async () => {
     if (!id || !formData) {
-      console.error("Propietario ID o datos del formulario no están disponibles");
+      console.error(
+        "Propietario ID o datos del formulario no están disponibles"
+      );
       return;
     }
 
@@ -68,11 +83,18 @@ const Contrato: React.FC = () => {
       const contractData = { ...formData, signature: formData.signature };
 
       // Generar el PDF del contrato
-      const pdfDoc = await generateContractPDF(contractData, contractData.contractText, formData.signature);
+      const pdfDoc = await generateContractPDF(
+        contractData,
+        contractData.contractText,
+        formData.signature
+      );
       const pdfData = pdfDoc.output("datauristring");
 
       // Subir el PDF a Firebase Storage
-      const pdfRef = ref(storage, `DocumentacionPropietarios/Contratos/contract_${id}.pdf`);
+      const pdfRef = ref(
+        storage,
+        `DocumentacionPropietarios/Contratos/contract_${id}.pdf`
+      );
       await uploadString(pdfRef, pdfData, "data_url");
 
       const pdfUrl = await getDownloadURL(pdfRef);
@@ -87,7 +109,7 @@ const Contrato: React.FC = () => {
       });
 
       // Descargar el PDF
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = pdfData;
       link.download = `Contrato_${id}.pdf`;
       link.click();
@@ -118,12 +140,15 @@ const Contrato: React.FC = () => {
   };
 
   const handleDocumentSelection = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedOptions = Array.from(e.target.selectedOptions, option => option.value);
+    const selectedOptions = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setSelectedDocuments(selectedOptions);
   };
 
   const handleSendEmail = async () => {
-    const validEmails = emails.filter(email => email.trim() !== "");
+    const validEmails = emails.filter((email) => email.trim() !== "");
     const documents = [pdfUrl].filter((url): url is string => url !== null);
 
     try {
@@ -169,7 +194,8 @@ const Contrato: React.FC = () => {
           <SignatureCanvas
             ref={sigCanvas}
             canvasProps={{
-              className: "signature-canvas w-full h-64 border border-gray-300 rounded-md",
+              className:
+                "signature-canvas w-full h-64 border border-gray-300 rounded-md",
             }}
           />
         )}
@@ -219,5 +245,3 @@ const Contrato: React.FC = () => {
 };
 
 export default Contrato;
-
-

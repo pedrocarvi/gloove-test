@@ -8,56 +8,114 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import Testimonials from "./Testimonios";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/firebaseConfig"; // Aquí usamos la instancia db directamente
 
 const Contacto = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
+  const [nombre, setNombre] = useState("");
+  const [email, setEmail] = useState("");
+  const [mensaje, setMensaje] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      // Usa la instancia db directamente en lugar de volver a obtener Firestore
+      await addDoc(collection(db, "contacto"), {
+        nombre,
+        email,
+        mensaje,
+        timestamp: serverTimestamp(),
+      });
+      alert("Mensaje enviado correctamente.");
+      setNombre("");
+      setEmail("");
+      setMensaje("");
+      setIsFormVisible(false);
+    } catch (error) {
+      console.error("Error al enviar el mensaje:", error);
+      alert("Hubo un error al enviar el mensaje.");
+    }
+  };
 
   return (
-    <section className="relative flex flex-col items-center min-h-screen bg-gradient-to-r from-blue-700 to-teal-400 p-8 overflow-hidden">
+    <section className="py-16 bg-[#F6F7F5] px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center">
       <Testimonials />
 
       <motion.div className="w-full max-w-3xl p-8 text-center relative z-10 space-y-6">
-        <motion.h2 className="text-white text-4xl md:text-5xl font-extrabold uppercase tracking-wide">
+        <motion.h2
+          className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark mb-4"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           Sobre Nosotros
         </motion.h2>
-        <motion.p className="text-white text-lg md:text-xl leading-relaxed">
+        <motion.p
+          className="text-lg md:text-xl text-glooveSecondary-dark leading-relaxed"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           Gloove, el gestor de viviendas vacacionales que se apoya en la
           experiencia de un amplio equipo de profesionales y en las últimas
           tecnologías para ayudarte a alcanzar los mejores resultados.
         </motion.p>
-        <motion.p className="text-white text-lg md:text-xl leading-relaxed">
+        <motion.p
+          className="text-lg md:text-xl text-glooveSecondary-dark leading-relaxed"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           Ofrecemos una alta rentabilidad a los propietarios y una experiencia
           excepcional a los huéspedes con un servicio de calidad.
         </motion.p>
         <div className="flex justify-center space-x-4 mt-4">
-          {[FaInstagram, FaFacebook, FaWhatsapp, FaLinkedin, FaYoutube].map(
+          {[FaInstagram, FaFacebook, FaLinkedin, FaYoutube].map(
             (Icon, index) => (
               <motion.a
                 key={index}
                 href="#"
-                className="text-white hover:text-teal-300 transition-colors duration-300"
+                className="text-gloovePrimary-dark hover:text-teal-300 transition-colors duration-300"
                 whileHover={{ scale: 1.3, rotate: 15 }}
               >
                 <Icon size={32} />
               </motion.a>
             )
           )}
+          <motion.a
+            href="https://wa.me/34613105559"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-gloovePrimary-dark hover:text-teal-300 transition-colors duration-300"
+            whileHover={{ scale: 1.3, rotate: 15 }}
+          >
+            <FaWhatsapp size={32} />
+          </motion.a>
         </div>
-        <motion.p className="text-lg md:text-xl font-bold text-white">
+        <motion.p
+          className="text-lg md:text-xl font-bold text-gloovePrimary-dark"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+        >
           Ponte en <span className="text-teal-300">CONTACTO</span> con nosotros
           y te daremos respuesta{" "}
           <span className="text-teal-300">INMEDIATA</span>
         </motion.p>
-        <motion.button
+        <motion.a
+          href="https://wa.me/34613105559"
+          target="_blank"
+          rel="noopener noreferrer"
           whileHover={{
             scale: 1.1,
             boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
           }}
-          className="mt-6 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 animate-pulse"
-          onClick={() => setIsFormVisible(!isFormVisible)}
+          className="mt-6 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 animate-pulse"
         >
-          Contáctanos
-        </motion.button>
+          Contáctanos por WhatsApp
+        </motion.a>
       </motion.div>
 
       {isFormVisible && (
@@ -74,7 +132,9 @@ const Contacto = () => {
             exit={{ scale: 0.5 }}
           >
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-2xl font-bold">Formulario de Contacto</h3>
+              <h3 className="text-2xl font-bold text-gloovePrimary-dark">
+                Formulario de Contacto
+              </h3>
               <button
                 className="text-gray-500 hover:text-gray-700 focus:outline-none"
                 onClick={() => setIsFormVisible(false)}
@@ -82,7 +142,11 @@ const Contacto = () => {
                 &times;
               </button>
             </div>
-            <form className="space-y-4" autoComplete="off">
+            <form
+              className="space-y-4"
+              onSubmit={handleSubmit}
+              autoComplete="off"
+            >
               <div>
                 <label htmlFor="nombre" className="block text-gray-700">
                   Nombre
@@ -91,6 +155,8 @@ const Contacto = () => {
                   id="nombre"
                   type="text"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-teal-300"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
                   required
                 />
               </div>
@@ -102,6 +168,8 @@ const Contacto = () => {
                   id="email"
                   type="email"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-teal-300"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -113,6 +181,8 @@ const Contacto = () => {
                   id="mensaje"
                   className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring focus:ring-teal-300"
                   rows={4}
+                  value={mensaje}
+                  onChange={(e) => setMensaje(e.target.value)}
                   required
                 ></textarea>
               </div>
