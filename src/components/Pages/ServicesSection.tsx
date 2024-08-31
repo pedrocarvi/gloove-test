@@ -56,12 +56,11 @@ const cardDetails = [
 
 const ServicesSection: React.FC = () => {
   return (
-    <section className="relative py-16 bg-[#F6F7F5] overflow-hidden">
-      {" "}
+    <section className="relative min-h-screen flex items-center justify-center bg-[#F6F7F5] overflow-hidden py-12 sm:py-16 lg:py-24">
       {/* Fondo ajustado */}
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
+      <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <motion.h2
-          className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark text-center mb-4"
+          className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark text-center mb-8"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -71,7 +70,7 @@ const ServicesSection: React.FC = () => {
 
         {/* Subtítulo añadido */}
         <motion.p
-          className="text-lg md:text-xl text-glooveSecondary-dark text-center mb-12"
+          className="text-lg md:text-xl text-glooveSecondary-dark text-center mb-16"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
@@ -80,7 +79,7 @@ const ServicesSection: React.FC = () => {
           excepcional.
         </motion.p>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {cardDetails.map((card, index) => (
             <motion.div
               key={index}
@@ -113,7 +112,7 @@ const ServicesSection: React.FC = () => {
                   {card.description}
                 </p>
                 <motion.a
-                  href="#"
+                  href="#contacto"
                   className="block text-center bg-gradient-to-r from-[#106a8a] via-[#1e8bc3] to-[#20a4f3] text-white px-4 py-2 rounded-full shadow-md transition-transform duration-300"
                   whileHover={{
                     scale: 1.1,

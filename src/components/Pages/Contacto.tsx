@@ -9,7 +9,7 @@ import {
 } from "react-icons/fa";
 import Testimonials from "./Testimonios";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "@/firebaseConfig"; // Aquí usamos la instancia db directamente
+import { db } from "@/firebaseConfig";
 
 const Contacto = () => {
   const [isFormVisible, setIsFormVisible] = useState(false);
@@ -21,7 +21,6 @@ const Contacto = () => {
     e.preventDefault();
 
     try {
-      // Usa la instancia db directamente en lugar de volver a obtener Firestore
       await addDoc(collection(db, "contacto"), {
         nombre,
         email,
@@ -43,14 +42,19 @@ const Contacto = () => {
     <section className="py-16 bg-[#F6F7F5] px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center">
       <Testimonials />
 
-      <motion.div className="w-full max-w-3xl p-8 text-center relative z-10 space-y-6">
+      <motion.div
+        className="w-full max-w-4xl p-8 text-center relative z-10 space-y-8 bg-white shadow-xl rounded-lg"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1 }}
+      >
         <motion.h2
-          className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark mb-4"
+          className="text-4xl md:text-5xl font-extrabold text-gloovePrimary-dark mb-6"
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Sobre Nosotros
+          Contáctanos
         </motion.h2>
         <motion.p
           className="text-lg md:text-xl text-glooveSecondary-dark leading-relaxed"
@@ -58,20 +62,11 @@ const Contacto = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Gloove, el gestor de viviendas vacacionales que se apoya en la
-          experiencia de un amplio equipo de profesionales y en las últimas
-          tecnologías para ayudarte a alcanzar los mejores resultados.
+          Estamos aquí para ayudarte a obtener los mejores resultados. Déjanos
+          un mensaje o contáctanos directamente a través de nuestras redes
+          sociales.
         </motion.p>
-        <motion.p
-          className="text-lg md:text-xl text-glooveSecondary-dark leading-relaxed"
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
-        >
-          Ofrecemos una alta rentabilidad a los propietarios y una experiencia
-          excepcional a los huéspedes con un servicio de calidad.
-        </motion.p>
-        <div className="flex justify-center space-x-4 mt-4">
+        <div className="flex justify-center space-x-4 mt-8">
           {[FaInstagram, FaFacebook, FaLinkedin, FaYoutube].map(
             (Icon, index) => (
               <motion.a
@@ -94,28 +89,35 @@ const Contacto = () => {
             <FaWhatsapp size={32} />
           </motion.a>
         </div>
-        <motion.p
-          className="text-lg md:text-xl font-bold text-gloovePrimary-dark"
-          initial={{ opacity: 0, y: -50 }}
+        <motion.div
+          className="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 mt-10"
+          initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1 }}
         >
-          Ponte en <span className="text-teal-300">CONTACTO</span> con nosotros
-          y te daremos respuesta{" "}
-          <span className="text-teal-300">INMEDIATA</span>
-        </motion.p>
-        <motion.a
-          href="https://wa.me/34613105559"
-          target="_blank"
-          rel="noopener noreferrer"
-          whileHover={{
-            scale: 1.1,
-            boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
-          }}
-          className="mt-6 bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white font-bold py-3 px-8 rounded-full transition duration-300 hover:scale-105 animate-pulse"
-        >
-          Contáctanos por WhatsApp
-        </motion.a>
+          <motion.a
+            href="https://wa.me/34613105559"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{
+              scale: 1.1,
+              boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
+            }}
+            className="bg-gradient-to-r from-green-500 via-green-600 to-green-700 text-white font-bold py-3 px-10 rounded-full transition duration-300 hover:scale-105 animate-pulse"
+          >
+            Contáctanos por WhatsApp
+          </motion.a>
+          <motion.button
+            whileHover={{
+              scale: 1.1,
+              boxShadow: "0px 10px 30px rgba(0, 0, 0, 0.2)",
+            }}
+            className="bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-3 px-10 rounded-full transition duration-300 hover:scale-105 animate-pulse"
+            onClick={() => setIsFormVisible(!isFormVisible)}
+          >
+            Envíanos un Mensaje
+          </motion.button>
+        </motion.div>
       </motion.div>
 
       {isFormVisible && (
