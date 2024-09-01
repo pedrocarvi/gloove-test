@@ -25,32 +25,32 @@ const reviews = [
 
 const Testimonials = () => {
   return (
-    <section className="py-16 bg-[#F6F7F5] px-4 sm:px-6 lg:px-8">
-      <div className="max-w-xl mx-auto text-center">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-gloovePrimary-dark mb-4">
+    <section className="py-20 bg-gradient-to-r from-[#F6F7F5] to-[#E8E9E7] px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-4xl md:text-6xl font-extrabold text-gloovePrimary-dark mb-6">
           Testimonios
         </h2>
-        <p className="text-lg md:text-xl text-glooveSecondary-dark">
+        <p className="text-lg md:text-xl text-glooveSecondary-dark mb-12">
           Lo que nuestros clientes dicen sobre nosotros.
         </p>
       </div>
 
-      <div className="mt-12 relative">
+      <div className="relative">
         <Splide
           options={{
             perPage: 1,
             autoplay: true,
-            interval: 3000, // Intervalo de 3 segundos entre los testimonios
-            speed: 500, // Velocidad de transición ajustada a 0.5 segundos
+            interval: 4000, // Intervalo de 4 segundos entre los testimonios
+            speed: 800, // Velocidad de transición ajustada a 0.8 segundos
             rewind: true,
             rewindByDrag: true,
             arrows: false,
             pagination: true,
             type: "loop",
-            gap: "1rem",
+            gap: "2rem",
             breakpoints: {
               640: {
-                gap: "0.5rem",
+                gap: "1rem",
               },
             },
           }}
@@ -60,35 +60,36 @@ const Testimonials = () => {
               key={review.id}
               className="flex flex-col items-center text-center"
             >
-              <img
-                className="w-16 h-16 md:w-20 md:h-20 rounded-full object-cover border-4 border-white mb-4"
-                src={review.image}
-                alt={review.name}
-              />
-              <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
-                <p className="text-gray-700 text-sm md:text-base mb-4">
+              <div className="relative">
+                <img
+                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-white shadow-lg"
+                  src={review.image}
+                  alt={review.name}
+                />
+                <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-gloovePrimary-dark rounded-full flex items-center justify-center">
+                  <img
+                    className="w-4 h-4 transform rotate-180"
+                    src={Quote}
+                    alt="quote"
+                  />
+                </div>
+              </div>
+              <div className="bg-white shadow-xl rounded-lg p-8 mt-6 w-full max-w-2xl transition-transform transform hover:scale-105">
+                <p className="text-gray-700 text-lg md:text-xl mb-6 leading-relaxed">
                   "{review.text}"
                 </p>
-                <p className="text-gray-600 text-xs md:text-sm">
+                <p className="text-gray-600 text-base md:text-lg font-semibold">
                   {review.name}
                 </p>
-                {/* Añadir 5 estrellas */}
-                <div className="flex justify-center text-yellow-400 mt-2">
+                <div className="flex justify-center text-yellow-500 mt-4">
                   {[...Array(5)].map((_, index) => (
-                    <FaStar key={index} />
+                    <FaStar key={index} size={20} />
                   ))}
                 </div>
               </div>
             </SplideSlide>
           ))}
         </Splide>
-        <blockquote className="flex justify-center items-center mt-4 opacity-20">
-          <img
-            className="w-10 h-10 transform rotate-180"
-            src={Quote}
-            alt="quote"
-          />
-        </blockquote>
       </div>
     </section>
   );

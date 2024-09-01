@@ -40,8 +40,6 @@ const Contacto = () => {
 
   return (
     <section className="py-16 bg-[#F6F7F5] px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col items-center">
-      <Testimonials />
-
       <motion.div
         className="w-full max-w-4xl p-8 text-center relative z-10 space-y-8 bg-white shadow-xl rounded-lg"
         initial={{ opacity: 0, y: 50 }}

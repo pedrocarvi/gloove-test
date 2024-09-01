@@ -3,6 +3,7 @@ import { useDarkMode } from "../../context/DarkModeContext";
 import { motion } from "framer-motion";
 import { Element } from "react-scroll";
 import Loader from "./Loader";
+import Testimonials from "./Testimonios";
 
 // Carga diferida de los componentes menos críticos
 const Header = React.lazy(() => import("./Header"));
@@ -88,6 +89,7 @@ const Home: React.FC = () => {
                 <FeaturesSection />
               </motion.section>
             </Element>
+            <Testimonials />
 
             <Element name="contacto">
               <motion.section
