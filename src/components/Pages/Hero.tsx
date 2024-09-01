@@ -18,6 +18,7 @@ const Hero: React.FC = () => {
         animate={{ scale: 1 }}
         transition={{ duration: 2 }}
       >
+        //responsive
         <video
           autoPlay
           loop
