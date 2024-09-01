@@ -25,18 +25,8 @@ const Hero: React.FC = () => {
           muted
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
-          poster="RecursosWeb/vid/img.jpg" // Aquí defines la imagen que se mostrará antes de cargar el video
         >
-          <source
-            src="RecursosWeb/vid/nuevomovil.mp4"
-            type="video/mp4"
-            media="(max-width: 767px)"
-          />
-          <source
-            src="RecursosWeb/vid/nuevo.mp4"
-            type="video/webm"
-            media="(min-width: 1424px)"
-          />
+          <source src="RecursosWeb/vid/hotel.mp4" type="video/mp4" />
         </video>
       </motion.div>
 
