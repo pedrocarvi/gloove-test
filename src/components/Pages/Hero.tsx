@@ -26,26 +26,6 @@ const Hero: React.FC = () => {
           className="absolute inset-0 w-full h-full object-cover"
           poster="RecursosWeb/vid/img.jpg" // Aquí defines la imagen que se mostrará antes de cargar el video
         >
-          {/* <source
-            src="RecursosWeb/vid/FondoM.mp4"
-            type="video/mp4"
-            media="(max-width: 767px)"
-          />
-          <source
-            src="RecursosWeb/vid/FondoT.mp4"
-            type="video/mp4"
-            media="(min-width: 768px) and (max-width: 1023px)"
-          />
-          <source
-            src="RecursosWeb/vid/FondoO.mp4"
-            type="video/mp4"
-            media="(min-width: 1024px) and (max-width: 1423px)"
-          />
-          <source
-            src="RecursosWeb/vid/FondoO2.mp4"
-            type="video/mp4"
-            media="(min-width: 1424px)"
-          /> */}
           <source
             src="RecursosWeb/vid/nuevomovil.mp4"
             type="video/mp4"
@@ -56,13 +36,12 @@ const Hero: React.FC = () => {
             type="video/webm"
             media="(min-width: 1424px)"
           />
-          <img
-            src="RecursosWeb/vid/img.jpg"
-            alt="Background"
-            className="absolute inset-0 w-full h-full object-cover"
-          />
         </video>
       </motion.div>
+
+      {/* Overlay con gradiente para mejorar legibilidad */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/60 to-black/20 z-10"></div>
+
       <div className="relative text-center text-white px-4 sm:px-6 lg:px-8 z-20 flex flex-col items-center justify-center h-full">
         <motion.h1
           initial={{ opacity: 0, y: -50 }}
