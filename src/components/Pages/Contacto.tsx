@@ -17,7 +17,7 @@ const Contacto = () => {
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 2 }}
-        style={{ filter: "brightness(75%) contrast(95%)" }} // Reduciendo la oscuridad del video
+        style={{ filter: "brightness(70%) contrast(85%)" }} // Reduciendo la oscuridad del video
       >
         <video
           autoPlay
@@ -49,6 +49,9 @@ const Contacto = () => {
           />
         </video>
       </motion.div>
+
+      {/* Overlay con gradiente */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-transparent z-1"></div>
 
       {/* Contenido principal */}
       <motion.div
