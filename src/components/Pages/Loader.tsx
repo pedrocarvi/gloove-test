@@ -10,7 +10,7 @@ const Loader: React.FC = () => {
       <motion.img
         src="/RecursosWeb/img/Logo/Logo-Gloove.webp"
         alt="Cargando..."
-        className="h-32 w-32 mb-8" // Slightly larger to match the image proportions
+        className="mb-8"
         animate={{
           scale: [1, 1.05, 1],
         }}
@@ -19,7 +19,7 @@ const Loader: React.FC = () => {
           duration: 2, // Increased duration for slower effect
           ease: "easeInOut",
         }}
-        style={{ filter: "drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.2))" }}
+        style={{ filter: "drop-shadow(0px 0px 15px rgba(0, 0, 0, 0.2))", width: '225px' }}
       />
       <div className="relative w-3/4 h-1 bg-gray-300 rounded-full overflow-hidden mb-6">
         <motion.div

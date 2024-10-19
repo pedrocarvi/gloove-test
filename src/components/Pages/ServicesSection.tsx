@@ -1,11 +1,11 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { FaHotel, FaUserTie, FaBuilding, FaStar } from "react-icons/fa";
-
+import { Link } from "react-router-dom";
 // Datos de las tarjetas
 const cardDetails = [
   {
-    title: "Huéspedes",
+    title: "Reservas",
     icon: FaHotel,
     description:
       "Ofrecemos un servicio integral para propietarios, gestionando sus inmuebles con profesionalidad y transparencia.",
@@ -15,6 +15,7 @@ const cardDetails = [
       twitter: "#",
       instagram: "#",
     },
+    route: '/booking'
   },
   {
     title: "Propietarios",
@@ -27,6 +28,7 @@ const cardDetails = [
       twitter: "#",
       instagram: "#",
     },
+    route: '/'
   },
   {
     title: "Inmobiliaria",
@@ -39,6 +41,7 @@ const cardDetails = [
       twitter: "#",
       instagram: "#",
     },
+    route: '/'
   },
   {
     title: "Experiencias",
@@ -51,6 +54,7 @@ const cardDetails = [
       twitter: "#",
       instagram: "#",
     },
+    route: '/tour'
   },
 ];
 
@@ -111,17 +115,15 @@ const ServicesSection: React.FC = () => {
                 <p className="text-sm text-gray-600 mt-2 mb-4">
                   {card.description}
                 </p>
-                <motion.a
-                  href="#contacto"
-                  className="block text-center bg-gradient-to-r from-[#106a8a] via-[#1e8bc3] to-[#20a4f3] text-white px-4 py-2 rounded-full shadow-md transition-transform duration-300"
-                  whileHover={{
-                    scale: 1.1,
-                    boxShadow: "0px 15px 30px rgba(0, 0, 0, 0.3)",
-                  }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  Descubrir más
-                </motion.a>
+                <Link to={card.route}>
+                  <motion.div
+                    className="block w-full text-center bg-gradient-to-r from-[#106a8a] via-[#1e8bc3] to-[#20a4f3] text-white px-4 py-2 rounded-full shadow-md"
+                    whileTap={{ scale: 0.95 }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Descubrir más
+                  </motion.div>
+                </Link>
                 {/* Redes Sociales */}
                 <div className="mt-4 flex justify-center space-x-4">
                   <motion.a
@@ -148,7 +150,7 @@ const ServicesSection: React.FC = () => {
                 </div>
               </div>
               {/* Indicador visual */}
-              <div className="absolute inset-0 border-2 border-transparent hover:border-[#20a4f3] transition-all duration-300 rounded-xl"></div>
+              {/* <div className="absolute inset-0 border-2 border-transparent hover:border-[#20a4f3] transition-all duration-300 rounded-xl"></div> */}
             </motion.div>
           ))}
         </div>
