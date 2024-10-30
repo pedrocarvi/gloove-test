@@ -112,7 +112,7 @@ const EmployerSidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="bg-gloovePrimary-dark text-glooveText-dark w-64 space-y-6 py-7 px-2 h-screen">
+    <aside className="bg-gloovePrimary-dark text-glooveText-dark w-64 space-y-6 py-7 px-2 min-h-screen h-fit">
       <div className="text-glooveText-dark text-3xl font-bold text-center">
         Gloove
       </div>

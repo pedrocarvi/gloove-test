@@ -67,7 +67,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="bg-primary-dark text-white w-64 space-y-6 py-7 px-2">
+    <aside className="bg-gloovePrimary-dark text-white w-64 space-y-6 py-7 px-2" >
       <div className="text-white text-3xl font-bold text-center">Gloove</div>
       <nav className="space-y-2">
         {menuItems.map((item) => (
