@@ -74,6 +74,7 @@ export const generateCorporatePDF = async (
     height: number,
     isHeader: boolean = false
   ): void => {
+    const cellText = text ? String(text) : ""; 
     if (isHeader) {
       doc.setFillColor(230, 243, 245);
     } else {
@@ -81,7 +82,7 @@ export const generateCorporatePDF = async (
     }
     doc.rect(x, y, width, height, "F");
     doc.setTextColor(isHeader ? "#156b7a" : "#000000");
-    doc.text(text, x + 2, y + 5);
+    doc.text(cellText, x + 2, y + 5);
   };
 
   const addRow = (
@@ -218,17 +219,17 @@ export const generateCorporatePDF = async (
     ],
     [
       "Habitaciones:",
-      formData.habitaciones.toString(),
+      formData.habitaciones ? formData.habitaciones.toString() : "0",
       "Baños:",
-      formData.banos.toString(),
+      formData.banos ? formData.banos.toString() : "0",
       "Aseos:",
-      formData.aseos.toString(),
+      formData.aseos ? formData.aseos.toString() : "0",
       "Ducha:",
-      formData.duchas.toString(),
+      formData.duchas ? formData.duchas.toString() : "0"
     ],
     [
       "Bañera:",
-      formData.baneras.toString(),
+      formData.baneras ? formData.baneras.toString() : "0",
       "Trastero:",
       formData.trastero ? "Sí" : "No",
       "Mascotas:",
@@ -236,7 +237,7 @@ export const generateCorporatePDF = async (
       "Cocina Tipo:",
       formData.cocina,
     ],
-    ["Capacidad Máxima:", formData.capacidadMaxima.toString()],
+    ["Capacidad Máxima:",  formData.capacidadMaxima ? formData.capacidadMaxima.toString() : '0'],
   ];
 
   characteristicsData.forEach((row) => {
@@ -306,9 +307,9 @@ export const generateCorporatePDF = async (
 
   yPos += 15;
   doc.setTextColor("#000000");
-  doc.text(formData.observaciones, margin, yPos, {
-    maxWidth: pageWidth - 2 * margin,
-  });
+  // doc.text(formData.observaciones, margin, yPos, {
+  //   maxWidth: pageWidth - 2 * margin,
+  // });
 
   return doc;
 };

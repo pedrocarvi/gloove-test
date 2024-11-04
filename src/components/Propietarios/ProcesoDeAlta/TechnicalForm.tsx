@@ -73,7 +73,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
   onAccept,
   initialValues = {} as FormData,
 }) => {
-  const defaultCamas = Array(6).fill({
+  const defaultCamas = new Array(6).fill(null).map(() => ({
     tipo: "",
     aireAcondicionado: false,
     calefaccion: false,
@@ -86,46 +86,46 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     persianas: false,
     tv: false,
     mosquiteras: false,
-  });
+  }));
 
   const [formData, setFormData] = useState<FormData>({
-    propietario: initialValues.propietario || "",
-    email: initialValues.email || "",
-    ciudad: initialValues.ciudad || "",
-    provincia: initialValues.provincia || "",
-    direccion: initialValues.direccion || "",
-    cPostal: initialValues.cPostal || "",
-    DNI: initialValues.DNI || "",
-    numCatastro: initialValues.numCatastro || "",
-    licenciaTuristica: initialValues.licenciaTuristica || false,
-    numeroVUT: initialValues.numeroVUT || "",
-    comPropietarios: initialValues.comPropietarios || false,
-    tipoVivienda: initialValues.tipoVivienda || "",
-    exterior: initialValues.exterior || false,
-    interior: initialValues.interior || false,
-    portero: initialValues.portero || false,
-    porteroAutomatico: initialValues.porteroAutomatico || false,
-    ascensor: initialValues.ascensor || false,
-    garaje: initialValues.garaje || false,
-    garajeConcertado: initialValues.garajeConcertado || false,
-    facilAparcamiento: initialValues.facilAparcamiento || false,
-    vistas: initialValues.vistas || "",
-    piscina: initialValues.piscina || false,
-    jardin: initialValues.jardin || false,
-    observaciones: initialValues.observaciones || "",
-    zonasComunes: initialValues.zonasComunes || "",
-    zonasTuristicas: initialValues.zonasTuristicas || "",
-    accesibilidad: initialValues.accesibilidad || "",
-    habitaciones: initialValues.habitaciones || 0,
-    banos: initialValues.banos || 0,
-    aseos: initialValues.aseos || 0,
-    duchas: initialValues.duchas || 0,
-    baneras: initialValues.baneras || 0,
-    trastero: initialValues.trastero || false,
-    mascotas: initialValues.mascotas || false,
-    cocina: initialValues.cocina || "",
-    capacidadMaxima: initialValues.capacidadMaxima || 0,
-    camas: initialValues.camas || defaultCamas,
+    propietario: initialValues.propietario ?? "",
+    email: initialValues.email ?? "",
+    ciudad: initialValues.ciudad ?? "",
+    provincia: initialValues.provincia ?? "",
+    direccion: initialValues.direccion ?? "",
+    cPostal: initialValues.cPostal ?? "",
+    DNI: initialValues.DNI ?? "",
+    numCatastro: initialValues.numCatastro ?? "",
+    licenciaTuristica: initialValues.licenciaTuristica ?? false,
+    numeroVUT: initialValues.numeroVUT ?? "",
+    comPropietarios: initialValues.comPropietarios ?? false,
+    tipoVivienda: initialValues.tipoVivienda ?? "",
+    exterior: initialValues.exterior ?? false,
+    interior: initialValues.interior ?? false,
+    portero: initialValues.portero ?? false,
+    porteroAutomatico: initialValues.porteroAutomatico ?? false,
+    ascensor: initialValues.ascensor ?? false,
+    garaje: initialValues.garaje ?? false,
+    garajeConcertado: initialValues.garajeConcertado ?? false,
+    facilAparcamiento: initialValues.facilAparcamiento ?? false,
+    vistas: initialValues.vistas ?? "",
+    piscina: initialValues.piscina ?? false,
+    jardin: initialValues.jardin ?? false,
+    observaciones: initialValues.observaciones ?? "",
+    zonasComunes: initialValues.zonasComunes ?? "",
+    zonasTuristicas: initialValues.zonasTuristicas ?? "",
+    accesibilidad: initialValues.accesibilidad ?? "",
+    habitaciones: initialValues.habitaciones ?? 0,
+    banos: initialValues.banos ?? 0,
+    aseos: initialValues.aseos ?? 0,
+    duchas: initialValues.duchas ?? 0,
+    baneras: initialValues.baneras ?? 0,
+    trastero: initialValues.trastero ?? false,
+    mascotas: initialValues.mascotas ?? false,
+    cocina: initialValues.cocina ?? "",
+    capacidadMaxima: initialValues.capacidadMaxima ?? 0,
+    camas: initialValues.camas ?? defaultCamas,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -155,22 +155,33 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     const newValue =
       type === "checkbox" ? (e.target as HTMLInputElement).checked : value;
     setFormData({ ...formData, [name]: newValue });
+    console.log("Changed form data", formData);
   };
 
-  const handleCamaChange = (index: number, name: string, value: any) => {
-    const updatedCamas = formData.camas.map((cama, i) =>
-      i === index ? { ...cama, [name]: value } : cama
-    );
-    setFormData({ ...formData, camas: updatedCamas });
-  };
+  // const handleCamaChange = (index: number, name: string, value: any) => {
+  //   const updatedCamas = formData.camas.map((cama, i) =>
+  //     i === index ? { ...cama, [name]: value } : cama
+  //   );
+  //   setFormData({ ...formData, camas: updatedCamas });
+  // };
 
   const handleSubmit = async (e: FormEvent) => {
+
     e.preventDefault();
     if (isSubmitting || !user) return;
+
+    if (!user) {
+      console.error("El objeto 'user' no está definido");
+      return;
+    } else {
+      console.log("El usuario esta bien")
+    }
 
     setIsSubmitting(true);
     try {
       // Generar y subir el PDF
+      console.log("Generando el PDF con los siguientes datos:", formData);
+      // Aca todo bien con FormData.
       const pdfDoc = await generateCorporatePDF(
         "Ficha Técnica del Alojamiento Turístico",
         formData
@@ -870,9 +881,10 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
           </div>
 
           {/* Información de camas */}
-          <div className="space-y-4">
+          {/* CAMAS NO ESTA INICIALIZADO */}
+          {/* <div className="space-y-4">
             <h4 className="text-xl font-semibold mb-2">Camas</h4>
-            {formData.camas.map((cama, index) => (
+            {formData.camas && formData.camas.length > 0 && formData.camas.map((cama, index) => (
               <div
                 key={index}
                 className="space-y-4 bg-gray-100 p-4 rounded-md shadow-md"
@@ -1110,7 +1122,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 </div>
               </div>
             ))}
-          </div>
+          </div> */}
 
           <div className="mt-4">
             <button

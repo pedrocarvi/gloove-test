@@ -61,9 +61,13 @@ const ProcesoDeAlta: React.FC = () => {
       ...prevValues,
       [step]: values,
     }));
-    console.log("Form values updated:", formValues);
   };
 
+  // useEffect(() => {
+  //   console.log("Form values updated:", formValues);
+  // }, [formValues]);
+
+   
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-4xl font-bold mb-4 text-primary-dark text-center">
