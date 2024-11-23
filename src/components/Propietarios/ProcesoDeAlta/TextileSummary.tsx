@@ -17,258 +17,73 @@ import {
 import { generateBenefitPDF, BenefitData } from "@/utils/benefitGenerator";
 
 interface TextileSummaryProps {
+  initialValues: {
+    toallasGrandes: number;
+    toallasPequenas: number;
+    sabanas: number;
+    sabanas90: number;
+    sabanas105: number;
+    sabanas135: number;
+    sabanas150: number;
+    sabanas180: number;
+    sabanas200: number;
+    alfombrines: number;
+    fundasAlmohadaCamas150: number;
+    fundasAlmohadaOtrasCamas: number;
+    totalFundasAlmohada: number;
+    fundasNordico: number;
+  };
+  step1Data: {
+    camas90: number;
+    camas105: number;
+    camas135: number;
+    camas150: number;
+    camas180: number;
+    camas200: number;
+    banos: number;
+    aseos: number;
+    capacidadMaxima: number;
+    propietario: string;
+    dni: string;
+    direccion: string;
+  }
   onAccept: () => void;
-  initialValues?: any;
-}
-
-interface TextileItem {
-  medida: string;
-  cantidad: string;
 }
 
 const TextileSummary: React.FC<TextileSummaryProps> = ({
   onAccept,
-  initialValues = {},
+  step1Data,
+  initialValues,
 }) => {
-  const [formData, setFormData] = useState<any>(initialValues);
-  const [summary, setSummary] = useState<Record<string, number>>({});
   const [isAccepted, setIsAccepted] = useState(false);
   const { user } = useAuth();
 
   const prices = {
-    fundas_edredon: { pvc: 15.07, pvp: 17.26 },
-    alfombrines: { pvc: 2.95, pvp: 3.38 },
-    toallas: { pvc: 5.33, pvp: 6.4 }, // Promedio entre 50x100 y 100x150
-    sabana_90: { pvc: 4.72, pvp: 5.66 },
-    sabana_105: { pvc: 5.07, pvp: 6.08 },
-    sabana_135: { pvc: 5.87, pvp: 7.04 },
-    sabana_150: { pvc: 6.52, pvp: 7.83 },
-    sabana_180: { pvc: 8.42, pvp: 10.11 },
-    funda_almohada_95: { pvc: 1.22, pvp: 1.46 },
-    relleno_almohada_90: { pvc: 9.99, pvp: 11.99 },
-    funda_nordica_90: { pvc: 12.56, pvp: 15.07 },
-    funda_nordica_105: { pvc: 14.38, pvp: 17.26 },
-    funda_nordica_135: { pvc: 17.72, pvp: 21.26 },
-    funda_nordica_150: { pvc: 18.88, pvp: 22.66 },
-    funda_nordica_180: { pvc: 21.57, pvp: 25.88 },
-    protector_colchon: { pvc: 8.96, pvp: 10.75 },
+    toallasGrandes: 5.0,
+    toallasPequenas: 3.0,
+    sabanas: 15.0,
+    alfombrines: 4.0,
+    fundasAlmohadaCamas150: 10.0,
+    fundasAlmohadaOtrasCamas: 8.0,
+    totalFundasAlmohada: 9.0,
+    fundasNordico: 20.0,
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (user) {
-        const docRef = doc(
-          db,
-          "propietarios",
-          user.uid,
-          "proceso_de_alta",
-          "textil_presupuesto"
-        );
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setFormData(data);
-          await calculateBudget(data);
-        }
-      }
-    };
-
-    fetchData();
-  }, [user]);
-
-  const calculateBudget = async (data: any) => {
-    if (!user) {
-      console.error("User is not authenticated");
-      return;
-    }
-
-    const userData = await getUserData(user.uid);
-    const num_viviendas = parseInt(userData.num_viviendas || 1);
-
-    const calculateTotal = (
-      category: TextileItem[] | undefined,
-      factor: number
-    ): number => {
-      return (category || []).reduce(
-        (sum: number, item: TextileItem) =>
-          sum + (parseInt(item.cantidad) || 0) * factor,
-        0
-      );
-    };
-
-    // Ajuste: Verificar si data.toalla está presente
-    const newSummary = {
-      fundas_edredon: calculateTotal(data.fundaNordica, 2) * num_viviendas,
-      alfombrines: calculateTotal(data.alfombrin, 3) * num_viviendas,
-      toallas: calculateTotal(data.toalla, 1) * num_viviendas, // No se necesita filtrar ya que se maneja como una sola categoría
-      sabana_90:
-        calculateTotal(
-          data.sabanaEncimera?.filter(
-            (item: TextileItem) => item.medida === "90"
-          ),
-          1
-        ) * num_viviendas,
-      sabana_105:
-        calculateTotal(
-          data.sabanaEncimera?.filter(
-            (item: TextileItem) => item.medida === "105"
-          ),
-          1
-        ) * num_viviendas,
-      sabana_135:
-        calculateTotal(
-          data.sabanaEncimera?.filter(
-            (item: TextileItem) => item.medida === "135"
-          ),
-          1
-        ) * num_viviendas,
-      sabana_150:
-        calculateTotal(
-          data.sabanaEncimera?.filter(
-            (item: TextileItem) => item.medida === "150"
-          ),
-          1
-        ) * num_viviendas,
-      sabana_180:
-        calculateTotal(
-          data.sabanaEncimera?.filter(
-            (item: TextileItem) => item.medida === "180"
-          ),
-          1
-        ) * num_viviendas,
-      funda_almohada_95:
-        calculateTotal(
-          data.fundaAlmohada?.filter(
-            (item: TextileItem) => item.medida === "95"
-          ),
-          1
-        ) * num_viviendas,
-      relleno_almohada_90:
-        calculateTotal(
-          data.rellenoAlmohada?.filter(
-            (item: TextileItem) => item.medida === "90"
-          ),
-          1
-        ) * num_viviendas,
-      funda_nordica_90:
-        calculateTotal(
-          data.fundaNordica?.filter(
-            (item: TextileItem) => item.medida === "90"
-          ),
-          1
-        ) * num_viviendas,
-      funda_nordica_105:
-        calculateTotal(
-          data.fundaNordica?.filter(
-            (item: TextileItem) => item.medida === "105"
-          ),
-          1
-        ) * num_viviendas,
-      funda_nordica_135:
-        calculateTotal(
-          data.fundaNordica?.filter(
-            (item: TextileItem) => item.medida === "135"
-          ),
-          1
-        ) * num_viviendas,
-      funda_nordica_150:
-        calculateTotal(
-          data.fundaNordica?.filter(
-            (item: TextileItem) => item.medida === "150"
-          ),
-          1
-        ) * num_viviendas,
-      funda_nordica_180:
-        calculateTotal(
-          data.fundaNordica?.filter(
-            (item: TextileItem) => item.medida === "180"
-          ),
-          1
-        ) * num_viviendas,
-      protector_colchon:
-        calculateTotal(data.protectorColchon, 1) * num_viviendas,
-    };
-
-    setSummary(newSummary);
-    await generateAndUploadPDF(newSummary, user.uid, "pvc");
-
-    const docRef = doc(
-      db,
-      "propietarios",
-      user.uid,
-      "proceso_de_alta",
-      "textile_summaries"
-    );
-    await setDoc(docRef, {
-      userId: user.uid,
-      ...newSummary,
-    });
-
-    const userDocRef = doc(db, "users", user.uid);
-    await updateDoc(userDocRef, {
-      currentStep: 3,
-    });
-  };
-
-  const getUserData = async (userId: string) => {
-    const docRef = doc(db, "users", userId);
-    const docSnap = await getDoc(docRef);
-    return docSnap.exists() ? docSnap.data() : {};
-  };
-
-  const generateAndUploadPDF = async (
-    summary: Record<string, number>,
-    userId: string,
-    priceType: "pvc" | "pvp"
-  ) => {
-    const items = Object.entries(summary).map(([concepto, cantidad]) => ({
-      concepto,
-      cantidad,
-      total:
-        cantidad * (prices[concepto as keyof typeof prices]?.[priceType] || 0),
-    }));
-
-    const data: InventoryBudgetData = {
-      presupuestoId: `TEXTIL-${userId.substring(0, 6)}`,
-      fecha: new Date().toLocaleDateString(),
-      iva: 21,
-      items,
-    };
-
-    const pdfDoc = await generateInventoryBudgetPDF(data);
-    const pdfData = pdfDoc.output("datauristring");
-
-    const storage = getStorage();
-    const pdfRef = ref(
-      storage,
-      `Presupuesto Textil/${
-        priceType === "pvc" ? "Beneficio" : "textile_summary"
-      }_${userId}.pdf`
-    );
-    await uploadString(pdfRef, pdfData, "data_url");
-
-    if (priceType === "pvc") {
-      const benefitData: BenefitData = {
-        beneficioId: `BENEFICIO-${userId.substring(0, 6)}`,
-        fecha: new Date().toLocaleDateString(),
-        items: items.map((item) => ({
-          concepto: item.concepto,
-          cantidad: item.cantidad,
-          pvp: prices[item.concepto as keyof typeof prices]?.pvp || 0,
-          pvc: prices[item.concepto as keyof typeof prices]?.pvc || 0,
-        })),
-      };
-      const benefitPDF = await generateBenefitPDF(benefitData);
-      const benefitPDFData = benefitPDF.output("datauristring");
-
-      const benefitPDFRef = ref(
-        storage,
-        `Presupuesto Textil/Beneficio_${userId}.pdf`
-      );
-      await uploadString(benefitPDFRef, benefitPDFData, "data_url");
-    }
-
-    return await getDownloadURL(pdfRef);
+  const itemLabels: { [key: string]: string } = {
+    toallasGrandes: "Toallas baño",
+    toallasPequenas: "Toallas lavabo",
+    sabanas: "Sábanas",
+    sabanas90: "Sábanas 90",
+    sabanas105: "Sábanas 105",
+    sabanas135: "Sábanas 135",
+    sabanas150: "Sábanas 150",
+    sabanas180: "Sábanas 180",
+    sabanas200: "Sábanas 200",
+    alfombrines: "Alfombrines",
+    fundasAlmohadaCamas150: "Fundas de Almohada (Camas 150 cm)",
+    fundasAlmohadaOtrasCamas: "Fundas de Almohada (Otras Camas)",
+    totalFundasAlmohada: "Total de Fundas de Almohada",
+    fundasNordico: "Fundas Nórdicas",
   };
 
   const handleAccept = async () => {
@@ -278,16 +93,12 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
     }
 
     setIsAccepted(true);
-    const userDocRef = doc(db, "users", user.uid);
-    await updateDoc(userDocRef, {
-      currentStep: 3,
-    });
-    onAccept();
     Swal.fire({
       icon: "success",
       title: "Presupuesto aceptado",
       text: "Puedes proceder al siguiente paso.",
     });
+    onAccept();
   };
 
   const handleChat = () => {
@@ -295,29 +106,31 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
   };
 
   const handleDownloadPDF = async () => {
-    if (user) {
-      const pdfDoc = await generateInventoryBudgetPDF({
-        presupuestoId: `TEXTIL-${user.uid.substring(0, 6)}`,
-        fecha: new Date().toLocaleDateString(),
-        iva: 21,
-        items: Object.entries(summary).map(([concepto, cantidad]) => ({
-          concepto,
-          cantidad,
-          total: cantidad * (prices[concepto as keyof typeof prices]?.pvp || 0),
-        })),
-      });
-      const pdfData = pdfDoc.output("datauristring");
+    console.log("Generar y descargar el PDF del resumen textil.");
 
-      const link = document.createElement("a");
-      link.href = pdfData;
-      link.download = `Resumen_Textil_${user.uid}.pdf`;
-      link.click();
-    }
+    // if (user) {
+    //   const pdfDoc = await generateInventoryBudgetPDF({
+    //     presupuestoId: `TEXTIL-${user.uid.substring(0, 6)}`,
+    //     fecha: new Date().toLocaleDateString(),
+    //     iva: 21,
+    //     items: Object.entries(summary).map(([concepto, cantidad]) => ({
+    //       concepto,
+    //       cantidad,
+    //       total: cantidad * (prices[concepto as keyof typeof prices]?.pvp || 0),
+    //     })),
+    //   });
+    //   const pdfData = pdfDoc.output("datauristring");
+
+    //   const link = document.createElement("a");
+    //   link.href = pdfData;
+    //   link.download = `Resumen_Textil_${user.uid}.pdf`;
+    //   link.click();
+    // }
   };
 
-  if (!formData) {
-    return <div>Loading...</div>;
-  }
+  // if (!formData) {
+  //   return <div>Loading...</div>;
+  // }
 
   return (
     <div className="flex items-center justify-center bg-gray-100 py-4">
@@ -325,6 +138,9 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
         <h2 className="text-4xl font-bold mb-8 text-primary-dark text-center">
           Resumen de Textil
         </h2>
+        <p> Propietario: {step1Data.propietario}</p>
+        <p> Dirección: {step1Data.direccion}</p>
+        <p> DNI: {step1Data.dni} </p>
         <table className="w-full text-left mb-6">
           <thead>
             <tr>
@@ -334,15 +150,11 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
             </tr>
           </thead>
           <tbody>
-            {Object.entries(summary).map(([key, value]) => (
+            {Object.entries(initialValues).map(([key, value]) => (
               <tr key={key}>
-                <td className="border-b py-2">
-                  {key.replace(/_/g, " ").toUpperCase()}
-                </td>
+                <td className="border-b py-2">{itemLabels[key]}</td>                
                 <td className="border-b py-2">{value}</td>
-                <td className="border-b py-2">
-                  {prices[key as keyof typeof prices]?.pvp.toFixed(2)} €
-                </td>
+                <td className="border-b py-2">{prices[key as keyof typeof prices]} €</td>
               </tr>
             ))}
           </tbody>

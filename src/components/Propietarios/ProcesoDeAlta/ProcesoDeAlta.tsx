@@ -31,10 +31,48 @@ const ProcesoDeAlta: React.FC = () => {
   const [isAccepted, setIsAccepted] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<any>({});
 
+  const [step1Data, setStep1Data] = useState({
+    camas90: 0,
+    camas105: 0,
+    camas135: 0,
+    camas150: 0,
+    camas180: 0,
+    camas200: 0,
+    banos: 0,
+    aseos: 0,
+    capacidadMaxima: 0,
+    propietario: '',
+    dni: '',
+    direccion: '',
+  });
+
+  const [textileData, setTextileData] = useState({
+    toallasGrandes: 0,
+    toallasPequenas: 0,
+    sabanas: 0,
+    sabanas90: 0,
+    sabanas105 : 0,
+    sabanas135 : 0,
+    sabanas150 : 0,
+    sabanas180 : 0,
+    sabanas200 : 0,
+    alfombrines: 0,
+    fundasAlmohadaCamas150: 0,
+    fundasAlmohadaOtrasCamas: 0,
+    totalFundasAlmohada: 0,
+    fundasNordico: 0,
+  });
+
+  const handleTextileDataChange = (newData: typeof textileData) => {
+    setTextileData(newData);
+    console.log("Info del step 2");
+    console.log(newData);
+  };
+
   useEffect(() => {
     console.log("ProcesoDeAlta mounted, currentStep:", currentStep);
     console.log("User in ProcesoDeAlta:", user);
-    setIsAccepted(false); // Reset acceptance state on step change
+    setIsAccepted(false);
   }, [currentStep]);
 
   const handleNextStep = async () => {
@@ -80,15 +118,17 @@ const ProcesoDeAlta: React.FC = () => {
             <TechnicalForm
               onAccept={() => setIsAccepted(true)}
               initialValues={formValues[0] ?? {}}
+              setStep1Data={setStep1Data}
             />
           )}
           {currentStep === 1 && (
-            <TextileForm onAccept={() => setIsAccepted(true)} />
+            <TextileForm onAccept={() => setIsAccepted(true)} data={step1Data} onDataChange={handleTextileDataChange} />
           )}
           {currentStep === 2 && (
             <TextileSummary
               onAccept={() => setIsAccepted(true)}
-              initialValues={formValues[2] ?? {}}
+              step1Data={step1Data}
+              initialValues={textileData}
             />
           )}
           {currentStep === 3 && (
@@ -101,6 +141,8 @@ const ProcesoDeAlta: React.FC = () => {
                 setIsAccepted(true);
               }}
               initialValues={formValues[4] ?? {}}
+              textileData={textileData} 
+              step1Data={step1Data}   
             />
           )}
           {currentStep === 5 && (

@@ -115,27 +115,25 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
     const file = e.target.files?.[0];
     if (file) {
       const validTypes = [
-        "image/jpeg",
-        "image/jpg",
-        "image/png",
         "application/pdf",
       ];
       if (!validTypes.includes(file.type)) {
         Swal.fire({
           icon: "error",
           title: "Archivo no válido",
-          text: "Solo se permiten archivos JPEG, JPG, PNG y PDF.",
+          text: "Solo se permiten archivos PDF",
         });
         return;
+      } else {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setImages({
+            ...images,
+            [type]: reader.result as string,
+          });
+        };
+        reader.readAsDataURL(file);
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages({
-          ...images,
-          [type]: reader.result as string,
-        });
-      };
-      reader.readAsDataURL(file);
     }
   };
 

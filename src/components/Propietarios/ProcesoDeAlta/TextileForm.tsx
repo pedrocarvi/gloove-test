@@ -1,11 +1,37 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { doc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { useAuth } from "@/context/AuthContext";
 import Swal from "sweetalert2";
-
 interface TextileFormProps {
   onAccept: () => void;
+  data: {
+    camas90: number;
+    camas105: number;
+    camas135: number;
+    camas150: number;
+    camas180: number;
+    camas200: number;
+    banos: number;
+    aseos: number;
+    capacidadMaxima: number;
+  };
+  onDataChange: (newData: {
+    toallasGrandes: number;
+    toallasPequenas: number;
+    sabanas: number;
+    sabanas90: number;
+    sabanas105: number;
+    sabanas135: number;
+    sabanas150: number;
+    sabanas180: number;
+    sabanas200: number;
+    alfombrines: number;
+    fundasAlmohadaCamas150: number;
+    fundasAlmohadaOtrasCamas: number;
+    totalFundasAlmohada: number;
+    fundasNordico: number;
+  }) => void;
 }
 
 interface TextileItem {
@@ -26,7 +52,9 @@ interface TextileFormData {
 
 type Category = keyof TextileFormData;
 
-const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
+const TextileForm: React.FC<TextileFormProps> = ({ onAccept, data, onDataChange }) => {
+
+  
   const initialProductState = { medida: "", cantidad: "" };
 
   const [formData, setFormData] = useState<TextileFormData>({
@@ -40,27 +68,99 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
     protectorColchon: [initialProductState],
   });
 
-  const { user } = useAuth();
+  const [toallasGrandes, setToallasGrandes] = useState(0);
+  const [toallasPequenas, setToallasPequenas] = useState(0);
+  const [sabanas, setSabanas] = useState(0);
+  const [sabanas90, setSabanas90] = useState(0);
+  const [sabanas105, setSabanas105] = useState(0);
+  const [sabanas135, setSabanas135] = useState(0);
+  const [sabanas150, setSabanas150] = useState(0);
+  const [sabanas180, setSabanas180] = useState(0);
+  const [sabanas200, setSabanas200] = useState(0);
+  const [alfombrines, setAlfombrines] = useState(0);
+  const [fundasAlmohadaCamas150, setFundasAlmohadaCamas150] = useState(0);
+  const [fundasAlmohadaOtrasCamas, setFundasAlmohadaOtrasCamas] = useState(0);
+  const [totalFundasAlmohada, setTotalFundasAlmohada] = useState(0);
+  const [fundasNordico, setFundasNordico] = useState(0);
 
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-    category: Category,
-    index: number
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => {
-      const updatedCategory = [...prevData[category]];
-      updatedCategory[index] = { ...updatedCategory[index], [name]: value };
-      return { ...prevData, [category]: updatedCategory };
+  const updateParentData = () => {
+
+    // TODO Agregar protector colchón para cada cama
+    // Revisar el resto en el presupuesto enviado.
+    onDataChange({
+      toallasGrandes,
+      toallasPequenas,
+      sabanas,
+      sabanas90,
+      sabanas105,
+      sabanas135,
+      sabanas150,
+      sabanas180,
+      sabanas200,
+      alfombrines,
+      fundasAlmohadaCamas150,
+      fundasAlmohadaOtrasCamas,
+      totalFundasAlmohada,
+      fundasNordico,
     });
   };
 
-  const handleAdd = (category: Category) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [category]: [...prevData[category], initialProductState],
-    }));
-  };
+  // Calcula y actualiza cada valor en el useEffect
+  // TODO: aca hacer los nuevos calculos
+  useEffect(() => {
+    // Toallas
+    setToallasGrandes(data.capacidadMaxima * 1);
+    setToallasPequenas(data.capacidadMaxima * 1);
+    // Sabanas - Total
+    setSabanas(
+      ((Number(data.camas90) || 0) +
+        (Number(data.camas105) || 0) +
+        (Number(data.camas135) || 0) +
+        (Number(data.camas150) || 0) +
+        (Number(data.camas180) || 0) +
+        (Number(data.camas200) || 0)) * 3
+    );
+    // Sabanas - Por cama
+    setSabanas90((Number(data.camas90) || 0) * 3);
+    setSabanas105((Number(data.camas105) || 0) * 3);
+    setSabanas135((Number(data.camas135) || 0) * 3);
+    setSabanas150((Number(data.camas150) || 0) * 3);
+    setSabanas180((Number(data.camas180) || 0) * 3);
+    setSabanas200((Number(data.camas200) || 0) * 3);
+    // Alfombrines
+    setAlfombrines(data.banos * 3);
+    setFundasAlmohadaCamas150(data.camas150 ? Number(data.camas150) * 2 * 3 : 0);
+    setFundasAlmohadaOtrasCamas(
+      ((Number(data.camas90) || 0) +
+        (Number(data.camas105) || 0) +
+        (Number(data.camas135) || 0) +
+        (Number(data.camas180) || 0) +
+        (Number(data.camas200) || 0)) * 1 * 3
+    );
+    setTotalFundasAlmohada(
+      (data.camas150 ? Number(data.camas150) * 2 * 3 : 0) +
+      ((Number(data.camas90) || 0) +
+        (Number(data.camas105) || 0) +
+        (Number(data.camas135) || 0) +
+        (Number(data.camas180) || 0) +
+        (Number(data.camas200) || 0)) * 1 * 3
+    );
+    setFundasNordico(
+      ((Number(data.camas90) || 0) +
+        (Number(data.camas105) || 0) +
+        (Number(data.camas135) || 0) +
+        (Number(data.camas150) || 0) +
+        (Number(data.camas180) || 0) +
+        (Number(data.camas200) || 0)) * 2
+    );
+    updateParentData();
+  }, [data]);
+
+  useEffect(() => {
+    console.log("Data recibida en TextileForm:", data);
+  }, [data]);
+
+  const { user } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -70,6 +170,7 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
     }
 
     try {
+      updateParentData();
       // Guardar los datos del formulario en Firestore
       const docRef = doc(
         db,
@@ -101,7 +202,7 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
       });
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center bg-gray-100 py-8">
       <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-3xl">
@@ -109,80 +210,21 @@ const TextileForm: React.FC<TextileFormProps> = ({ onAccept }) => {
           Formulario de Textiles
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {[
-            {
-              name: "toalla",
-              label: "Toalla",
-              options: ["50x100 (Lavabo)", "100x150 (Ducha)"],
-            },
-            { name: "alfombrin", label: "Alfombrín", options: ["50x65"] },
-            {
-              name: "sabanaEncimera",
-              label: "Sábana Encimera",
-              options: ["90", "105", "135", "150", "180"],
-            },
-            {
-              name: "fundaAlmohada",
-              label: "Funda Almohada",
-              options: ["95"],
-            },
-            {
-              name: "rellenoAlmohada",
-              label: "Relleno Almohada",
-              options: ["90"],
-            },
-            {
-              name: "fundaNordica",
-              label: "Funda Nórdica",
-              options: ["90", "105", "135", "150", "180"],
-            },
-            {
-              name: "rellenoNordico",
-              label: "Relleno Nórdico",
-              options: ["90", "105", "135", "150", "180"],
-            },
-            {
-              name: "protectorColchon",
-              label: "Protector Colchón",
-              options: ["90", "105", "135", "150", "180"],
-            },
-          ].map(({ name, label, options }) => (
-            <div key={name} className="mb-4">
-              <h3 className="text-lg font-semibold mb-2">{label}</h3>
-              {formData[name as Category].map((item, index) => (
-                <div key={index} className="flex items-center space-x-2 mb-2">
-                  <select
-                    name="medida"
-                    value={item.medida}
-                    onChange={(e) => handleChange(e, name as Category, index)}
-                    className="mt-1 block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                  >
-                    <option value="">Seleccione medida</option>
-                    {options.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    name="cantidad"
-                    value={item.cantidad}
-                    onChange={(e) => handleChange(e, name as Category, index)}
-                    placeholder="Cantidad"
-                    className="mt-1 block w-1/2 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                  />
-                </div>
-              ))}
-              <button
-                type="button"
-                onClick={() => handleAdd(name as Category)}
-                className="py-1 px-2 bg-primary text-white rounded-md"
-              >
-                Añadir {label}
-              </button>
-            </div>
-          ))}
+          <h3 className="fs-5"> Resultados </h3>
+          <p>Toallas grandes: {toallasGrandes}</p>
+          <p>Toallas pequeñas: {toallasPequenas}</p>
+          <p>Sábanas: {sabanas}</p>
+          <p>Sabanas 90: {sabanas90}</p>
+          <p>Sabanas 105: {sabanas105}</p>
+          <p>Sabanas 135: {sabanas135}</p>
+          <p>Sabanas 150: {sabanas150}</p>
+          <p>Sabanas 180: {sabanas180}</p>
+          <p>Sabanas 200: {sabanas200}</p>
+          <p>Alfombrines: {alfombrines}</p>
+          <p>Fundas de almohada (camas 150 cm): {fundasAlmohadaCamas150}</p>
+          <p>Fundas de almohada (otras camas): {fundasAlmohadaOtrasCamas}</p>
+          <p>Total fundas de almohada: {totalFundasAlmohada}</p>
+          <p>Fundas de nórdico: {fundasNordico}</p>
           <div className="mt-6">
             <button
               type="submit"

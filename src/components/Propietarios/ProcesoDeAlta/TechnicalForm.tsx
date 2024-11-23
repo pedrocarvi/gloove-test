@@ -22,6 +22,7 @@ interface FormData {
   numCatastro: string;
   licenciaTuristica: boolean;
   numeroVUT: string;
+  referenciaCatastral: string;
   comPropietarios: boolean;
   tipoVivienda: string;
   exterior: boolean;
@@ -48,45 +49,37 @@ interface FormData {
   mascotas: boolean;
   cocina: string;
   capacidadMaxima: number;
-  camas: Array<{
-    tipo: string;
-    aireAcondicionado: boolean;
-    calefaccion: boolean;
-    ventilador: boolean;
-    electrodomesticos: string;
-    aguaCaliente: string;
-    estadoPintura: string;
-    reformaAno: string;
-    estadoMobiliario: string;
-    persianas: boolean;
-    tv: boolean;
-    mosquiteras: boolean;
-  }>;
+  camas90: number;
+  camas105: number;
+  camas135: number;
+  camas150: number;
+  camas180: number;
+  camas200: number;
+  edredon: number;
+  almohadas: number;
+  relleno_nordico: number;
 }
 
 interface TechnicalFormProps {
   onAccept: () => void;
   initialValues?: FormData;
+  setStep1Data: React.Dispatch<React.SetStateAction<{
+    camas90: number;
+    camas105: number;
+    camas135: number;
+    camas150: number;
+    camas180: number;
+    camas200: number;
+    banos: number;
+    aseos: number;
+    capacidadMaxima: number;
+    propietario: string;
+    dni: string;
+    direccion: string;
+  }>>;
 }
 
-const TechnicalForm: React.FC<TechnicalFormProps> = ({
-  onAccept,
-  initialValues = {} as FormData,
-}) => {
-  const defaultCamas = new Array(6).fill(null).map(() => ({
-    tipo: "",
-    aireAcondicionado: false,
-    calefaccion: false,
-    ventilador: false,
-    electrodomesticos: "",
-    aguaCaliente: "",
-    estadoPintura: "",
-    reformaAno: "",
-    estadoMobiliario: "",
-    persianas: false,
-    tv: false,
-    mosquiteras: false,
-  }));
+const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues = {} as FormData, setStep1Data }) => {
 
   const [formData, setFormData] = useState<FormData>({
     propietario: initialValues.propietario ?? "",
@@ -99,6 +92,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     numCatastro: initialValues.numCatastro ?? "",
     licenciaTuristica: initialValues.licenciaTuristica ?? false,
     numeroVUT: initialValues.numeroVUT ?? "",
+    referenciaCatastral: initialValues.referenciaCatastral ?? "",
     comPropietarios: initialValues.comPropietarios ?? false,
     tipoVivienda: initialValues.tipoVivienda ?? "",
     exterior: initialValues.exterior ?? false,
@@ -125,7 +119,16 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     mascotas: initialValues.mascotas ?? false,
     cocina: initialValues.cocina ?? "",
     capacidadMaxima: initialValues.capacidadMaxima ?? 0,
-    camas: initialValues.camas ?? defaultCamas,
+    camas90: initialValues.camas90 ?? 0,
+    camas105: initialValues.camas105 ?? 0,
+    camas135: initialValues.camas135 ?? 0,
+    camas150: initialValues.camas150 ?? 0,
+    camas180: initialValues.camas180 ?? 0,
+    camas200: initialValues.camas200 ?? 0,
+    edredon: initialValues.edredon ?? 0,
+    almohadas: initialValues.almohadas ?? 0,
+    relleno_nordico: initialValues.relleno_nordico ?? 0
+    // camas: initialValues.camas ?? defaultCamas,
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -158,13 +161,24 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     console.log("Changed form data", formData);
   };
 
-  // const handleCamaChange = (index: number, name: string, value: any) => {
-  //   const updatedCamas = formData.camas.map((cama, i) =>
-  //     i === index ? { ...cama, [name]: value } : cama
-  //   );
-  //   setFormData({ ...formData, camas: updatedCamas });
-  // };
-
+    // Actualizar los datos compartidos solo con las propiedades necesarias para TextileForm
+    useEffect(() => {
+      setStep1Data({
+        camas90: formData.camas90,
+        camas105: formData.camas105,
+        camas135: formData.camas135,
+        camas150: formData.camas150,
+        camas180: formData.camas180,
+        camas200: formData.camas200,
+        banos: formData.banos,
+        aseos: formData.aseos,
+        capacidadMaxima: formData.capacidadMaxima,
+        propietario: formData.propietario,
+        dni: formData.DNI,
+        direccion: formData.direccion,
+      });
+    }, [formData, setStep1Data]);
+    
   const handleSubmit = async (e: FormEvent) => {
 
     e.preventDefault();
@@ -178,6 +192,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
     }
 
     setIsSubmitting(true);
+
     try {
       // Generar y subir el PDF
       console.log("Generando el PDF con los siguientes datos:", formData);
@@ -233,25 +248,25 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Información del propietario */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="propietario"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Propietario <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="propietario"
-                name="propietario"
-                value={formData.propietario}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="propietario"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Propietario <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="propietario"
+                  name="propietario"
+                  value={formData.propietario}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
             </div>
-            <div>
+            <div className="flex-1">
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
@@ -269,26 +284,25 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="DNI"
-                className="block text-sm font-medium text-gray-700"
-              >
-                DNI/PASAPORTE <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="DNI"
-                name="DNI"
-                value={formData.DNI}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="DNI"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  DNI/PASAPORTE <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="DNI"
+                  name="DNI"
+                  value={formData.DNI}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
             </div>
-            <div>
+            <div className="flex-1">
               <label
                 htmlFor="numCatastro"
                 className="block text-sm font-medium text-gray-700"
@@ -319,9 +333,8 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               </p>
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
               <label
                 htmlFor="ciudad"
                 className="block text-sm font-medium text-gray-700"
@@ -338,7 +351,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
-            <div>
+            <div className="flex-1">
               <label
                 htmlFor="provincia"
                 className="block text-sm font-medium text-gray-700"
@@ -356,26 +369,25 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="direccion"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Dirección <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="text"
-                id="direccion"
-                name="direccion"
-                value={formData.direccion}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="direccion"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Dirección <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="direccion"
+                  name="direccion"
+                  value={formData.direccion}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
             </div>
-            <div>
+            <div className="flex-1">
               <label
                 htmlFor="cPostal"
                 className="block text-sm font-medium text-gray-700"
@@ -393,26 +405,8 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
           </div>
-
-          {/* Características adicionales */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="licenciaTuristica"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Licencia Turística
-              </label>
-              <input
-                type="checkbox"
-                id="licenciaTuristica"
-                name="licenciaTuristica"
-                checked={formData.licenciaTuristica}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div className="mt-4">
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
               <label
                 htmlFor="numeroVUT"
                 className="block text-sm font-medium text-gray-700"
@@ -444,24 +438,40 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 .
               </p>
             </div>
-
-            <div>
-              <label
-                htmlFor="comPropietarios"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Comunidad de Propietarios
-              </label>
-              <input
-                type="checkbox"
-                id="comPropietarios"
-                name="comPropietarios"
-                checked={formData.comPropietarios}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="referenciaCatastral"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Referencia catastral <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="referenciaCatastral"
+                  name="referenciaCatastral"
+                  value={formData.referenciaCatastral}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
+                <p className="mt-2 text-sm text-gray-600">
+                ¿Dónde conseguir su referencia catastral?: Facturas de servicios, IBI o en el catastro en el siguiente enlace:
+                  <a
+                    href="https://www1.sedecatastro.gob.es/CYCBienInmueble/OVCBusqueda.aspx. "
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 underline"
+                  >
+                    https://www1.sedecatastro.gob.es/CYCBienInmueble/OVCBusqueda.aspx. 
+                  </a>
+                  .
+                </p>
             </div>
-            <div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
               <label
                 htmlFor="tipoVivienda"
                 className="block text-sm font-medium text-gray-700"
@@ -478,139 +488,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
-          </div>
-
-          {/* Más características adicionales */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="exterior"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Exterior
-              </label>
-              <input
-                type="checkbox"
-                id="exterior"
-                name="exterior"
-                checked={formData.exterior}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="interior"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Interior
-              </label>
-              <input
-                type="checkbox"
-                id="interior"
-                name="interior"
-                checked={formData.interior}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="portero"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Portero
-              </label>
-              <input
-                type="checkbox"
-                id="portero"
-                name="portero"
-                checked={formData.portero}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="porteroAutomatico"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Portero Automático
-              </label>
-              <input
-                type="checkbox"
-                id="porteroAutomatico"
-                name="porteroAutomatico"
-                checked={formData.porteroAutomatico}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="ascensor"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Ascensor <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="checkbox"
-                id="ascensor"
-                name="ascensor"
-                checked={formData.ascensor}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="garaje"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Garaje
-              </label>
-              <input
-                type="checkbox"
-                id="garaje"
-                name="garaje"
-                checked={formData.garaje}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="garajeConcertado"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Garaje Concertado
-              </label>
-              <input
-                type="checkbox"
-                id="garajeConcertado"
-                name="garajeConcertado"
-                checked={formData.garajeConcertado}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="facilAparcamiento"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Fácil Aparcamiento
-              </label>
-              <input
-                type="checkbox"
-                id="facilAparcamiento"
-                name="facilAparcamiento"
-                checked={formData.facilAparcamiento}
-                onChange={handleChange}
-                className="mt-1 block"
-              />
-            </div>
-            <div>
+            <div className="flex-1">
               <label
                 htmlFor="vistas"
                 className="block text-sm font-medium text-gray-700"
@@ -626,7 +504,179 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
-            <div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+              <label
+                htmlFor="licenciaTuristica"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Licencia Turística
+              </label>
+              <input
+                type="checkbox"
+                id="licenciaTuristica"
+                name="licenciaTuristica"
+                checked={formData.licenciaTuristica}
+                onChange={handleChange}
+                className="mt-1 block"
+              />
+            </div>
+            <div className="flex-1">
+              <label
+                htmlFor="comPropietarios"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Comunidad de Propietarios
+              </label>
+              <input
+                type="checkbox"
+                id="comPropietarios"
+                name="comPropietarios"
+                checked={formData.comPropietarios}
+                onChange={handleChange}
+                className="mt-1 block"
+              />
+            </div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="exterior"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Exterior
+                </label>
+                <input
+                  type="checkbox"
+                  id="exterior"
+                  name="exterior"
+                  checked={formData.exterior}
+                  onChange={handleChange}
+                  className="mt-1 block"
+                />
+            </div>
+            <div className="flex-1">
+                <label
+                  htmlFor="interior"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Interior
+                </label>
+                <input
+                  type="checkbox"
+                  id="interior"
+                  name="interior"
+                  checked={formData.interior}
+                  onChange={handleChange}
+                  className="mt-1 block"
+                />
+            </div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="portero"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Portero
+                </label>
+                <input
+                  type="checkbox"
+                  id="portero"
+                  name="portero"
+                  checked={formData.portero}
+                  onChange={handleChange}
+                  className="mt-1 block"
+                />
+              </div>
+              <div className="flex-1">
+                <label
+                  htmlFor="porteroAutomatico"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Portero Automático
+                </label>
+                <input
+                  type="checkbox"
+                  id="porteroAutomatico"
+                  name="porteroAutomatico"
+                  checked={formData.porteroAutomatico}
+                  onChange={handleChange}
+                  className="mt-1 block"
+                />
+              </div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="ascensor"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Ascensor <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="checkbox"
+                  id="ascensor"
+                  name="ascensor"
+                  checked={formData.ascensor}
+                  onChange={handleChange}
+                  className="mt-1 block"
+                />
+            </div>
+            <div className="flex-1">
+              <label
+                htmlFor="garaje"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Garaje
+              </label>
+              <input
+                type="checkbox"
+                id="garaje"
+                name="garaje"
+                checked={formData.garaje}
+                onChange={handleChange}
+                className="mt-1 block"
+              />
+            </div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+                <label
+                  htmlFor="garajeConcertado"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Garaje Concertado
+                </label>
+                <input
+                  type="checkbox"
+                  id="garajeConcertado"
+                  name="garajeConcertado"
+                  checked={formData.garajeConcertado}
+                  onChange={handleChange}
+                  className="mt-1 block"
+                />
+            </div>
+            <div className="flex-1">
+              <label
+                htmlFor="facilAparcamiento"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Fácil Aparcamiento
+              </label>
+              <input
+                type="checkbox"
+                id="facilAparcamiento"
+                name="facilAparcamiento"
+                checked={formData.facilAparcamiento}
+                onChange={handleChange}
+                className="mt-1 block"
+              />
+            </div>
+          </div>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
               <label
                 htmlFor="piscina"
                 className="block text-sm font-medium text-gray-700"
@@ -642,7 +692,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 className="mt-1 block"
               />
             </div>
-            <div>
+            <div className="flex-1">
               <label
                 htmlFor="jardin"
                 className="block text-sm font-medium text-gray-700"
@@ -659,24 +709,23 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
           </div>
-
-          {/* Observaciones */}
-          <div>
-            <label
-              htmlFor="observaciones"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Observaciones
-            </label>
-            <textarea
-              id="observaciones"
-              name="observaciones"
-              value={formData.observaciones}
-              onChange={handleChange}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-            ></textarea>
+          <div className="flex w-100 gap-3">
+            <div className="flex-1">
+              <label
+                htmlFor="observaciones"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Observaciones
+              </label>
+              <textarea
+                id="observaciones"
+                name="observaciones"
+                value={formData.observaciones}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              ></textarea>
+            </div>
           </div>
-
           {/* Servicios adicionales */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
@@ -728,7 +777,6 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
           </div>
-
           {/* Características y amueblamiento */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
@@ -770,13 +818,14 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
                 htmlFor="aseos"
                 className="block text-sm font-medium text-gray-700"
               >
-                Aseos
+                Aseos<span className="text-red-500">*</span>
               </label>
               <input
                 type="number"
                 id="aseos"
                 name="aseos"
                 value={formData.aseos}
+                required
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
@@ -879,250 +928,180 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({
               />
             </div>
           </div>
-
           {/* Información de camas */}
-          {/* CAMAS NO ESTA INICIALIZADO */}
-          {/* <div className="space-y-4">
+          <div className="space-y-4">
             <h4 className="text-xl font-semibold mb-2">Camas</h4>
-            {formData.camas && formData.camas.length > 0 && formData.camas.map((cama, index) => (
-              <div
-                key={index}
-                className="space-y-4 bg-gray-100 p-4 rounded-md shadow-md"
-              >
-                <h5 className="font-bold text-gray-700">Cama {index + 1}</h5>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label
-                      htmlFor={`tipo-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Tipo de habitación
-                    </label>
-                    <input
-                      type="text"
-                      id={`tipo-${index}`}
-                      name={`tipo-${index}`}
-                      value={cama.tipo}
-                      onChange={(e) =>
-                        handleCamaChange(index, "tipo", e.target.value)
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`aireAcondicionado-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Aire Acondicionado
-                    </label>
-                    <input
-                      type="checkbox"
-                      id={`aireAcondicionado-${index}`}
-                      name={`aireAcondicionado-${index}`}
-                      checked={cama.aireAcondicionado}
-                      onChange={(e) =>
-                        handleCamaChange(
-                          index,
-                          "aireAcondicionado",
-                          e.target.checked
-                        )
-                      }
-                      className="mt-1 block"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`calefaccion-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Calefacción
-                    </label>
-                    <input
-                      type="checkbox"
-                      id={`calefaccion-${index}`}
-                      name={`calefaccion-${index}`}
-                      checked={cama.calefaccion}
-                      onChange={(e) =>
-                        handleCamaChange(index, "calefaccion", e.target.checked)
-                      }
-                      className="mt-1 block"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`ventilador-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Ventilador
-                    </label>
-                    <input
-                      type="checkbox"
-                      id={`ventilador-${index}`}
-                      name={`ventilador-${index}`}
-                      checked={cama.ventilador}
-                      onChange={(e) =>
-                        handleCamaChange(index, "ventilador", e.target.checked)
-                      }
-                      className="mt-1 block"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`electrodomesticos-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Electrodomésticos
-                    </label>
-                    <input
-                      type="text"
-                      id={`electrodomesticos-${index}`}
-                      name={`electrodomesticos-${index}`}
-                      value={cama.electrodomesticos}
-                      onChange={(e) =>
-                        handleCamaChange(
-                          index,
-                          "electrodomesticos",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`aguaCaliente-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Agua Caliente
-                    </label>
-                    <input
-                      type="text"
-                      id={`aguaCaliente-${index}`}
-                      name={`aguaCaliente-${index}`}
-                      value={cama.aguaCaliente}
-                      onChange={(e) =>
-                        handleCamaChange(index, "aguaCaliente", e.target.value)
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`estadoPintura-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Estado de la Pintura
-                    </label>
-                    <input
-                      type="text"
-                      id={`estadoPintura-${index}`}
-                      name={`estadoPintura-${index}`}
-                      value={cama.estadoPintura}
-                      onChange={(e) =>
-                        handleCamaChange(index, "estadoPintura", e.target.value)
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`reformaAno-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Año de la Reforma
-                    </label>
-                    <input
-                      type="text"
-                      id={`reformaAno-${index}`}
-                      name={`reformaAno-${index}`}
-                      value={cama.reformaAno}
-                      onChange={(e) =>
-                        handleCamaChange(index, "reformaAno", e.target.value)
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`estadoMobiliario-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Estado del Mobiliario
-                    </label>
-                    <input
-                      type="text"
-                      id={`estadoMobiliario-${index}`}
-                      name={`estadoMobiliario-${index}`}
-                      value={cama.estadoMobiliario}
-                      onChange={(e) =>
-                        handleCamaChange(
-                          index,
-                          "estadoMobiliario",
-                          e.target.value
-                        )
-                      }
-                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`persianas-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Persianas
-                    </label>
-                    <input
-                      type="checkbox"
-                      id={`persianas-${index}`}
-                      name={`persianas-${index}`}
-                      checked={cama.persianas}
-                      onChange={(e) =>
-                        handleCamaChange(index, "persianas", e.target.checked)
-                      }
-                      className="mt-1 block"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`tv-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      TV
-                    </label>
-                    <input
-                      type="checkbox"
-                      id={`tv-${index}`}
-                      name={`tv-${index}`}
-                      checked={cama.tv}
-                      onChange={(e) =>
-                        handleCamaChange(index, "tv", e.target.checked)
-                      }
-                      className="mt-1 block"
-                    />
-                  </div>
-                  <div>
-                    <label
-                      htmlFor={`mosquiteras-${index}`}
-                      className="block text-sm font-medium text-gray-700"
-                    >
-                      Mosquiteras
-                    </label>
-                    <input
-                      type="checkbox"
-                      id={`mosquiteras-${index}`}
-                      name={`mosquiteras-${index}`}
-                      checked={cama.mosquiteras}
-                      onChange={(e) =>
-                        handleCamaChange(index, "mosquiteras", e.target.checked)
-                      }
-                      className="mt-1 block"
-                    />
-                  </div>
-                </div>
+            <div className="flex w-100 gap-3">
+              <div className="flex-1">
+                <label
+                  htmlFor="camas90"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Numero camas 90
+                </label>
+                <input
+                  type="text"
+                  id="camas90"
+                  name="camas90"
+                  value={formData.camas90}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
               </div>
-            ))}
-          </div> */}
+              <div className="flex-1">
+                <label
+                  htmlFor="camas105"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Numero camas 105
+                </label>
+                <input
+                  type="text"
+                  id="camas105"
+                  name="camas105"
+                  value={formData.camas105}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+              <div className="flex-1">
+              <label
+                htmlFor="vistas"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Numero camas 135
+              </label>
+              <input
+                type="text"
+                id="camas135"
+                name="camas135"
+                value={formData.camas135}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+            </div>
+            <div className="flex w-100 gap-3">
+              <div className="flex-1">
+                <label
+                  htmlFor="camas150"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Numero camas 150
+                </label>
+                <input
+                  type="text"
+                  id="camas150"
+                  name="camas150"
+                  value={formData.camas150}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+              <div className="flex-1">
+                <label
+                  htmlFor="camas180"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Numero camas 180
+                </label>
+                <input
+                  type="text"
+                  id="camas180"
+                  name="camas180"
+                  value={formData.camas180}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+              <div className="flex-1">
+              <label
+                htmlFor="camas200"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Numero camas 200
+              </label>
+              <input
+                type="text"
+                id="camas200"
+                name="camas200"
+                value={formData.camas200}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+            </div>
+            <p> Es obligatorio tener dentro de la vivienda: </p>
+            <ul style={{listStyleType: 'disc'}}>
+              <li> Por cada cama 3 sábanas. </li>
+              <li> Por cada almohada por 3 fundas. </li>
+              <li> Por cada cama 2 fundas de edredón. </li>
+              <li> Por cada ducha 3 alfombrines. </li>
+              <li> Por cada persona 3 toallas grandes. </li>
+              <li> Por cada persona 3 toallas pequeñas.</li>
+            </ul>
+            <p> No es obligatorio, pero si debe tener dentro de la vivienda: </p>
+            <ul style={{listStyleType: 'disc'}}>
+              <li> Edredón. </li>
+              <li> Por cada cama de matrimonio 2 almohadas. </li>
+              <li> Almohadas. </li>
+              <li> Relleno nórdico. </li>
+            </ul>
+            <p> Si no dispone de alguno, puede seleccionarlo aquí mismo </p>
+            <div className="flex w-100 gap-3">
+              <div className="flex-1">
+                <label
+                  htmlFor="edredon"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Edredón
+                </label>
+                <input
+                  type="text"
+                  id="edredon"
+                  name="edredon"
+                  value={formData.edredon}
+                  onChange={handleChange}
+                  required
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+              <div className="flex-1">
+                <label
+                  htmlFor="almohadas"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Numero Almohadas
+                </label>
+                <input
+                  type="text"
+                  id="almohadas"
+                  name="almohadas"
+                  value={formData.almohadas}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+                />
+              </div>
+              <div className="flex-1">
+              <label
+                htmlFor="relleno-nordico"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Numero Relleno Nórdico
+              </label>
+              <input
+                type="text"
+                id="relleno-nordico"
+                name="relleno-nordico"
+                value={formData.relleno_nordico}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+            </div>
+          </div>
 
           <div className="mt-4">
             <button

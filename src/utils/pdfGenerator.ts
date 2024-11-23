@@ -32,19 +32,28 @@ interface FormData {
   cocina: string;
   capacidadMaxima: number;
   observaciones: string;
-  camas: Array<{
-    tipo: string;
-    aireAcondicionado: boolean;
-    calefaccion: boolean;
-    ventilador: boolean;
-    tv: boolean;
-    mosquiteras: boolean;
-    electrodomesticos: string;
-    aguaCaliente: string;
-    estadoPintura: string;
-    reformaAno: string;
-    estadoMobiliario: string;
-  }>;
+  camas90: number;
+  camas105: number;
+  camas135: number;
+  camas150: number;
+  camas180: number;
+  camas200: number;
+  edredon: number;
+  almohadas: number;
+  relleno_nordico: number;
+  // camas: Array<{
+  //   tipo: string;
+  //   aireAcondicionado: boolean;
+  //   calefaccion: boolean;
+  //   ventilador: boolean;
+  //   tv: boolean;
+  //   mosquiteras: boolean;
+  //   electrodomesticos: string;
+  //   aguaCaliente: string;
+  //   estadoPintura: string;
+  //   reformaAno: string;
+  //   estadoMobiliario: string;
+  // }>;
 }
 
 export const generateCorporatePDF = async (
@@ -255,48 +264,48 @@ export const generateCorporatePDF = async (
   });
 
   yPos += 15;
-  if (formData.camas && formData.camas.length > 0) {
-    const cama = formData.camas[0];
-    const camaData = [
-      [
-        "Tipo:",
-        cama.tipo,
-        "Aire Acondicionado:",
-        cama.aireAcondicionado ? "Sí" : "No",
-        "Calefacción:",
-        cama.calefaccion ? "Sí" : "No",
-      ],
-      [
-        "Ventilador:",
-        cama.ventilador ? "Sí" : "No",
-        "TV:",
-        cama.tv ? "Sí" : "No",
-        "Mosquiteras:",
-        cama.mosquiteras ? "Sí" : "No",
-      ],
-      ["Electrodomésticos:", cama.electrodomesticos],
-      ["Agua Caliente:", cama.aguaCaliente],
-      [
-        "Estado Pintura:",
-        cama.estadoPintura,
-        "Reforma Año:",
-        cama.reformaAno,
-        "Estado Mobiliario:",
-        cama.estadoMobiliario,
-      ],
-    ];
+  // if (formData.camas && formData.camas.length > 0) {
+  //   const cama = formData.camas[0];
+  //   const camaData = [
+  //     [
+  //       "Tipo:",
+  //       cama.tipo,
+  //       "Aire Acondicionado:",
+  //       cama.aireAcondicionado ? "Sí" : "No",
+  //       "Calefacción:",
+  //       cama.calefaccion ? "Sí" : "No",
+  //     ],
+  //     [
+  //       "Ventilador:",
+  //       cama.ventilador ? "Sí" : "No",
+  //       "TV:",
+  //       cama.tv ? "Sí" : "No",
+  //       "Mosquiteras:",
+  //       cama.mosquiteras ? "Sí" : "No",
+  //     ],
+  //     ["Electrodomésticos:", cama.electrodomesticos],
+  //     ["Agua Caliente:", cama.aguaCaliente],
+  //     [
+  //       "Estado Pintura:",
+  //       cama.estadoPintura,
+  //       "Reforma Año:",
+  //       cama.reformaAno,
+  //       "Estado Mobiliario:",
+  //       cama.estadoMobiliario,
+  //     ],
+  //   ];
 
-    camaData.forEach((row) => {
-      addRow(
-        row,
-        margin,
-        yPos,
-        row.length === 2 ? [40, 140] : [30, 20, 30, 20, 30, 50],
-        10
-      );
-      yPos += 10;
-    });
-  }
+  //   camaData.forEach((row) => {
+  //     addRow(
+  //       row,
+  //       margin,
+  //       yPos,
+  //       row.length === 2 ? [40, 140] : [30, 20, 30, 20, 30, 50],
+  //       10
+  //     );
+  //     yPos += 10;
+  //   });
+  // }
 
   // Observaciones
   yPos += 10;
