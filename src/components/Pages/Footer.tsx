@@ -55,7 +55,7 @@ const Footer = () => {
           <ul className="text-sm space-y-2">
             <li>
               <a
-                href="#"
+                href="https://gloove.me/politica-de-privacidad/"
                 className="hover:text-teal-500 transition duration-300"
               >
                 Política de privacidad
@@ -91,21 +91,21 @@ const Footer = () => {
           <ul className="text-sm space-y-2">
             <li>
               <a
-                href="#"
+                href="https://gloove.me/contacto/"
                 className="hover:text-teal-500 transition duration-300"
               >
                 Centro de Ayuda
               </a>
             </li>
-            <li>
+            {/* <li>
               <a
                 href="#"
                 className="hover:text-teal-500 transition duration-300"
               >
                 Sobre nosotros
               </a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a
                 href="#"
                 className="hover:text-teal-500 transition duration-300"
@@ -120,10 +120,10 @@ const Footer = () => {
               >
                 Trabaja con nosotros
               </a>
-            </li>
+            </li> */}
             <li>
               <a
-                href="#"
+                href="https://gloove.me/blog/"
                 className="hover:text-teal-500 transition duration-300"
               >
                 Nuestro Blog
@@ -166,11 +166,11 @@ const Footer = () => {
           </ul>
           <div className="flex space-x-4 mt-4 justify-center md:justify-start">
             {[
-              { href: "#", icon: FaFacebook },
-              { href: "#", icon: FaInstagram },
-              { href: "#", icon: FaTwitter },
-              { href: "#", icon: FaLinkedin },
-              { href: "#", icon: FaYoutube },
+              { href: "https://www.facebook.com/profile.php?id=100090425376184", icon: FaFacebook },
+              { href: "https://www.instagram.com/gloove_me/", icon: FaInstagram },
+              // { href: "#", icon: FaTwitter },
+              { href: "https://www.linkedin.com/company/gloove-gestor-turistico/?viewAsMember=true", icon: FaLinkedin },
+              { href: "https://www.youtube.com/channel/UCjqP8g14G2SG3lK6OYGupMA", icon: FaYoutube },
             ].map(({ href, icon: Icon }, index) => (
               <motion.a
                 key={index}

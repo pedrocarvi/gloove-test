@@ -16,6 +16,7 @@ import {
 import { motion } from "framer-motion";
 import { useDarkMode } from "../../context/DarkModeContext";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import './0Changes.css';
 
 // Elementos de navegación
 const navItems = [
@@ -33,7 +34,7 @@ const navItems = [
     url: "contacto",
     icon: FaHandsHelping,
   },
-  { title: "Blog", label: "blog", url: "blog", icon: FaBlog },
+  { title: "Blog", label: "blog", url: "https://gloove.me/blog/", icon: FaBlog },
 ];
 
 // Submenú de servicios
@@ -144,11 +145,11 @@ const Header = () => {
         </div>
 
         {/* Menú en dispositivos grandes */}
-        <nav className="hidden md:flex items-center space-x-8">
-          {navItems.map((link) => (
+        <nav className="hidden md:flex items-center space-x-8 navbar">
+        {navItems.map((link) => (
             <div
               key={link.label}
-              className="relative"
+              className="relative nav-item"
               onMouseEnter={
                 link.label === "servicios" ? handleMouseEnter : undefined
               }
@@ -156,24 +157,44 @@ const Header = () => {
                 link.label === "servicios" ? handleMouseLeave : undefined
               }
             >
-              <ScrollLink
-                to={link.url}
-                smooth={true}
-                offset={-70}
-                duration={500}
-                className={`relative flex items-center space-x-2 px-3 py-2 transition ${getNavItemClass(
-                  link.label
-                )}`}
-                style={{ textTransform: "uppercase" }}
-              >
-                <motion.div
-                  className={isTransparent ? "text-white" : ""}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
+              {link.url.startsWith("http") ? ( // Verifica si es una URL externa
+                <a
+                  href={link.url}
+                  target="_blank" // Abre en una nueva pestaña
+                  rel="noopener noreferrer"
+                  className={`relative flex items-center space-x-2 px-3 py-2 transition ${getNavItemClass(
+                    link.label
+                  )}`}
+                  style={{ textTransform: "uppercase" }}
                 >
-                  <link.icon className="mr-2" />
-                </motion.div>
-                <span>{link.title}</span>
-              </ScrollLink>
+                  <motion.div
+                    className={isTransparent ? "text-white" : ""}
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                  >
+                    <link.icon className="mr-2" />
+                  </motion.div>
+                  <span>{link.title}</span>
+                </a>
+              ) : (
+                <ScrollLink
+                  to={link.url}
+                  smooth={true}
+                  offset={-70}
+                  duration={500}
+                  className={`relative flex items-center space-x-2 px-3 py-2 transition ${getNavItemClass(
+                    link.label
+                  )}`}
+                  style={{ textTransform: "uppercase" }}
+                >
+                  <motion.div
+                    className={isTransparent ? "text-white" : ""}
+                    whileHover={{ scale: 1.2, rotate: 5 }}
+                  >
+                    <link.icon className="mr-2" />
+                  </motion.div>
+                  <span>{link.title}</span>
+                </ScrollLink>
+              )}
               {link.label === "servicios" && servicesOpen && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -223,7 +244,7 @@ const Header = () => {
             </motion.button>
           </RouterLink>
 
-          <div className="relative ml-4">
+          {/* <div className="relative ml-4">
             <button
               className={`flex items-center justify-center rounded-full p-2 ${
                 isTransparent
@@ -235,7 +256,6 @@ const Header = () => {
               {mode === "light" && <FaSun />}
               {mode === "dark" && <FaMoon />}
               {mode === "system" && <FaDesktop />}{" "}
-              {/* Ícono para el modo sistema */}
             </button>
             {dropdownOpen && (
               <div className="absolute right-0 mt-2 py-2 w-32 bg-white text-black dark:bg-dark-background rounded-md shadow-lg z-20">
@@ -250,7 +270,7 @@ const Header = () => {
                 ))}
               </div>
             )}
-          </div>
+          </div> */}
         </nav>
       </div>
 

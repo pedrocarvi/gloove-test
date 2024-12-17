@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 import jsPDF from "jspdf";
 import PDFObject from 'pdfobject';
 import GlooveLogo from '../../../assets/gloove-pdf-logo.jpg'
-import { generateContractPDF } from "./ContractPdf";
+import { ContractPdf } from "./ContractPdf";
 
 type TextileData = {
   toallasGrandes: number;
@@ -85,33 +85,53 @@ const Contract: React.FC<ContractProps> = ({
     fetchData();
   }, [user]);
 
+  // useEffect(() => {
+  //   if (technicalFormData) {
+  //     const generatePDF = (textileData: TextileData, step1Data: Step1Data) => {
+ 
+  //     // Crear instancia del PDF
+  //     const pdfDoc = new jsPDF();
+
+  //     // Agregar logo
+  //     pdfDoc.addImage(GlooveLogo, "PNG", 10, 10, 50, 20);
+
+  //     // Título del contrato
+  //     pdfDoc.setFont("Helvetica", "bold");
+  //     pdfDoc.setFontSize(20);
+  //     pdfDoc.text("CONTRATO DE SERVICIO", 105, 50, { align: "center" });
+
+  //     // Agregar datos del propietario
+  //     pdfDoc.setFont("Helvetica", "normal");
+  //     pdfDoc.setFontSize(12);
+  //     pdfDoc.text(`Propietario: ${technicalFormData.propietario}`, 20, 70);
+  //     pdfDoc.text(`DNI: ${technicalFormData.dni}`, 20, 80);
+  //     pdfDoc.text(`Dirección: ${technicalFormData.direccion}`, 20, 90);
+
+  //     // Agregar datos técnicos
+  //     pdfDoc.text(`Camas: ${step1Data.camas90} camas de 90, ${step1Data.camas105} camas de 105`, 20, 110);
+
+  //     // Pie de página
+  //     pdfDoc.text("En Elche a [FECHA] de 2024", 105, 280, { align: "center" });
+
+  //       const pdfDataUri = pdfDoc.output("datauristring");
+  //       setPdfUrl(pdfDataUri);
+
+  //       PDFObject.embed(pdfDataUri, "#pdf-viewer");
+  //     };
+
+  //     generatePDF(textileData, step1Data);
+  //   }
+  // }, [technicalFormData, textileData, step1Data]);
+
   useEffect(() => {
-    if (technicalFormData) {
-      const generatePDF = (textileData: TextileData, step1Data: Step1Data) => {
-      // Generar el PDF
-      const pdfDoc = new jsPDF();
-      // Solo llamar a tu lógica deseada, sin duplicar funciones que pasen datos indebidamente.
-      pdfDoc.addImage(GlooveLogo, "PNG", 10, 10, 50, 20);
+    if (technicalFormData && textileData && step1Data) {
+      const pdfDataUri = ContractPdf(technicalFormData, step1Data, formData.signature);
+      setPdfUrl(pdfDataUri);
 
-      // Asegúrate de que el texto deseado sea añadido correctamente aquí.
-      pdfDoc.setFont("Helvetica", "bold");
-      pdfDoc.setFontSize(20);
-      pdfDoc.text("CONTRATO DE SERVICIO", 105, 50, { align: "center" });
-
-      // Validar si hay pie de página que quieras incluir. Asegúrate de que está después de los datos que necesitas.
-      pdfDoc.setFont("Helvetica", "normal");
-      pdfDoc.setFontSize(12);
-      pdfDoc.text(`En Elche a [FECHA] de 2024`, 105, 280, { align: "center" });
-
-        const pdfDataUri = pdfDoc.output("datauristring");
-        setPdfUrl(pdfDataUri);
-
-        PDFObject.embed(pdfDataUri, "#pdf-viewer");
-      };
-
-      generatePDF(textileData, step1Data);
+      PDFObject.embed(pdfDataUri, "#pdf-viewer");
     }
-  }, [technicalFormData, textileData, step1Data]);
+  }, [technicalFormData, textileData, step1Data, formData.signature]);
+
 
   const handleSign = () => {
     if (sigCanvas.current) {
@@ -130,35 +150,8 @@ const Contract: React.FC<ContractProps> = ({
     }
   
     try {
-      const contractData = {
-        propietario: technicalFormData.propietario,
-        dni: technicalFormData.dni,
-        domicilio: `${technicalFormData.direccion}, ${technicalFormData.cPostal}, ${technicalFormData.ciudad}, ${technicalFormData.provincia}`,
-        ciudad: technicalFormData.ciudad,
-        direccion: technicalFormData.direccion,
-        numCatastro: technicalFormData.numCatastro,
-        numeroVUT: technicalFormData.numeroVUT,
-        email: technicalFormData.email,
-        signature: formData.signature,
-      };
-  
-      // Generar el PDF
-      const pdfDoc = new jsPDF();
-      // Solo llamar a tu lógica deseada, sin duplicar funciones que pasen datos indebidamente.
-      pdfDoc.addImage('gloove-pdf-logo.jpg', "PNG", 10, 10, 50, 20);
-
-      // Asegúrate de que el texto deseado sea añadido correctamente aquí.
-      pdfDoc.setFont("Helvetica", "bold");
-      pdfDoc.setFontSize(20);
-      pdfDoc.text("CONTRATO DE SERVICIO", 105, 50, { align: "center" });
-
-      // Validar si hay pie de página que quieras incluir. Asegúrate de que está después de los datos que necesitas.
-      pdfDoc.setFont("Helvetica", "normal");
-      pdfDoc.setFontSize(12);
-      pdfDoc.text(`En Elche a [FECHA] de 2024`, 105, 280, { align: "center" });
-  
-      // Convertir PDF a DataURL
-      const pdfData = pdfDoc.output("datauristring");
+      // Generar el PDF desde ContractPDF
+      const pdfData = ContractPdf(technicalFormData, step1Data, formData.signature);
   
       // Subir el PDF a Firebase Storage
       const storage = getStorage();
@@ -168,6 +161,7 @@ const Contract: React.FC<ContractProps> = ({
       );
       await uploadString(pdfRef, pdfData, "data_url");
   
+      // Obtener URL del PDF subido
       const pdfUrl = await getDownloadURL(pdfRef);
   
       // Guardar la referencia del PDF en Firestore
@@ -175,12 +169,7 @@ const Contract: React.FC<ContractProps> = ({
         db,
         `propietarios/${user.uid}/proceso_de_alta/contract`
       );
-      await setDoc(docRef, { ...formData, pdfUrl });
-  
-      await updateDoc(doc(db, "users", user.uid), {
-        processStatus: "inventory_form",
-        currentStep: 5,
-      });
+      await setDoc(docRef, { pdfUrl });
   
       Swal.fire({
         icon: "success",
@@ -197,6 +186,81 @@ const Contract: React.FC<ContractProps> = ({
       });
     }
   };
+  
+  // const handleSubmit = async () => {    
+  //   if (!user) {
+  //     console.error("User is not authenticated");
+  //     return;
+  //   }
+  
+  //   try {
+  //     const contractData = {
+  //       propietario: technicalFormData.propietario,
+  //       dni: technicalFormData.dni,
+  //       domicilio: `${technicalFormData.direccion}, ${technicalFormData.cPostal}, ${technicalFormData.ciudad}, ${technicalFormData.provincia}`,
+  //       ciudad: technicalFormData.ciudad,
+  //       direccion: technicalFormData.direccion,
+  //       numCatastro: technicalFormData.numCatastro,
+  //       numeroVUT: technicalFormData.numeroVUT,
+  //       email: technicalFormData.email,
+  //       signature: formData.signature,
+  //     };
+  
+  //     // Generar el PDF
+  //     const pdfDoc = new jsPDF();
+  //     // Solo llamar a tu lógica deseada, sin duplicar funciones que pasen datos indebidamente.
+  //     pdfDoc.addImage('gloove-pdf-logo.jpg', "PNG", 10, 10, 50, 20);
+
+  //     // Asegúrate de que el texto deseado sea añadido correctamente aquí.
+  //     pdfDoc.setFont("Helvetica", "bold");
+  //     pdfDoc.setFontSize(20);
+  //     pdfDoc.text("CONTRATO DE SERVICIO", 105, 50, { align: "center" });
+
+  //     // Validar si hay pie de página que quieras incluir. Asegúrate de que está después de los datos que necesitas.
+  //     pdfDoc.setFont("Helvetica", "normal");
+  //     pdfDoc.setFontSize(12);
+  //     pdfDoc.text(`En Elche a [FECHA] de 2024`, 105, 280, { align: "center" });
+  
+  //     // Convertir PDF a DataURL
+  //     const pdfData = pdfDoc.output("datauristring");
+  
+  //     // Subir el PDF a Firebase Storage
+  //     const storage = getStorage();
+  //     const pdfRef = ref(
+  //       storage,
+  //       `DocumentacionPropietarios/Contratos/contract_${user.uid}.pdf`
+  //     );
+  //     await uploadString(pdfRef, pdfData, "data_url");
+  
+  //     const pdfUrl = await getDownloadURL(pdfRef);
+  
+  //     // Guardar la referencia del PDF en Firestore
+  //     const docRef = doc(
+  //       db,
+  //       `propietarios/${user.uid}/proceso_de_alta/contract`
+  //     );
+  //     await setDoc(docRef, { ...formData, pdfUrl });
+  
+  //     await updateDoc(doc(db, "users", user.uid), {
+  //       processStatus: "inventory_form",
+  //       currentStep: 5,
+  //     });
+  
+  //     Swal.fire({
+  //       icon: "success",
+  //       title: "Contrato guardado",
+  //       text: "El contrato ha sido guardado. Puedes proceder al siguiente paso.",
+  //     });
+  //     onAccept();
+  //   } catch (error) {
+  //     console.error("Error al generar o guardar el contrato:", error);
+  //     Swal.fire({
+  //       icon: "error",
+  //       title: "Error",
+  //       text: "Hubo un problema al generar o guardar el contrato. Por favor, inténtalo de nuevo.",
+  //     });
+  //   }
+  // };
 
   if (!technicalFormData) {
     return <div>Loading...</div>;

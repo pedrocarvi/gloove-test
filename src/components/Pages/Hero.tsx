@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import TypingEffect from "react-typing-effect";
 
 const Hero: React.FC = () => {
-  const handleScrollToContact = () => {
-    const contactSection = document.getElementById("contacto");
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: "smooth" });
+  const handleScrollToServicios = () => {
+    const serviciosSeccion = document.getElementById("servicios-destacados");
+    if (serviciosSeccion) {
+      serviciosSeccion.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -69,7 +69,7 @@ const Hero: React.FC = () => {
             boxShadow: "0px 15px 40px rgba(0, 0, 0, 0.2)",
           }}
           className="mt-8 bg-gradient-to-r from-gloovePrimary via-gloovePrimary-dark to-glooveAccent text-white font-bold py-4 px-10 rounded-full transition duration-300 hover:scale-105 animate-pulse"
-          onClick={handleScrollToContact}
+          onClick={handleScrollToServicios}
         >
           DESCUBRE MÁS
         </motion.button>

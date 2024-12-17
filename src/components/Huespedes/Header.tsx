@@ -18,21 +18,21 @@ const EmployerHeader = () => {
         </h1>
       </div>
       <div className="flex items-center space-x-4">
-        <button
+        {/* <button
           aria-label="Notificaciones"
           className="relative text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-opacity-75"
         >
           <BellIcon className="h-6 w-6" />
           <span className="absolute top-0 right-0 inline-block w-2 h-2 transform translate-x-1/2 -translate-y-1/2 bg-red-600 rounded-full"></span>
-        </button>
-        <button
+        </button> */}
+        {/* <button
           aria-label="Perfil de Usuario"
           className="relative text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-opacity-75"
           onClick={toggleModal}
         >
           <UserCircleIcon className="h-8 w-8" />
           <span className="sr-only">Abrir modal de perfil de usuario</span>
-        </button>
+        </button> */}
       </div>
 
       {isModalOpen && (

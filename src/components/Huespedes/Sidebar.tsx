@@ -38,21 +38,21 @@ const Sidebar = () => {
       path: "/reservation-process",
       icon: <CalendarIcon className="h-6 w-6" />,
     },
-    {
-      name: "Dudas y Preguntas",
-      path: "/questions",
-      icon: <QuestionsIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Dudas y Preguntas",
+    //   path: "/questions",
+    //   icon: <QuestionsIcon className="h-6 w-6" />,
+    // },
     {
       name: "Abrir viviendas",
       path: "/control-panel",
       icon: <ControlPanelIcon className="h-6 w-6" />,
     },
-    {
-      name: "Incidencias",
-      path: "/incidencias",
-      icon: <CogIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Incidencias",
+    //   path: "/incidencias",
+    //   icon: <CogIcon className="h-6 w-6" />,
+    // },
     {
       name: "Mi perfil",
       path: "/profile",

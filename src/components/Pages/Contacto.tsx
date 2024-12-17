@@ -99,19 +99,51 @@ const Contacto = () => {
         </motion.p>
 
         <div className="flex justify-center space-x-4 mb-8">
-          {[FaInstagram, FaFacebook, FaLinkedin, FaYoutube].map(
-            (Icon, index) => (
-              <motion.a
-                key={index}
-                href="#"
-                className="text-white hover:text-glooveAccent transition-colors duration-300"
-                whileHover={{ scale: 1.3, rotate: 15 }}
-              >
-                <Icon size={32} />
-              </motion.a>
-            )
-          )}
+          {/* Instagram */}
+          <motion.a
+            href="https://www.instagram.com/gloove_me/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-glooveAccent transition-colors duration-300"
+            whileHover={{ scale: 1.3, rotate: 15 }}
+          >
+            <FaInstagram size={32} />
+          </motion.a>
+
+          {/* Facebook */}
+          <motion.a
+            href="https://www.facebook.com/profile.php?id=100090425376184"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-glooveAccent transition-colors duration-300"
+            whileHover={{ scale: 1.3, rotate: 15 }}
+          >
+            <FaFacebook size={32} />
+          </motion.a>
+
+          {/* LinkedIn */}
+          <motion.a
+            href="https://www.linkedin.com/company/gloove-gestor-turistico/?viewAsMember=true"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-glooveAccent transition-colors duration-300"
+            whileHover={{ scale: 1.3, rotate: 15 }}
+          >
+            <FaLinkedin size={32} />
+          </motion.a>
+
+          {/* YouTube */}
+          <motion.a
+            href="https://www.youtube.com/channel/UCjqP8g14G2SG3lK6OYGupMA"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white hover:text-glooveAccent transition-colors duration-300"
+            whileHover={{ scale: 1.3, rotate: 15 }}
+          >
+            <FaYoutube size={32} />
+          </motion.a>
         </div>
+
 
         <motion.a
           href="https://wa.me/34613105559"

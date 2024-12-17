@@ -65,8 +65,7 @@ const Dashboard = () => {
         </section>
 
         {/* Gloove Points y otros paneles */}
-        <div className="grid grid-cols-1 gap-6">
-          {/* Gloove Points */}
+        {/* <div className="grid grid-cols-1 gap-6">
           <Link
             to="/points"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
@@ -83,10 +82,10 @@ const Dashboard = () => {
                 descuentos y beneficios exclusivos.
               </p>
             </div>
-          </Link>
+          </Link> */}
 
           {/* Notificaciones */}
-          <Link
+          {/* <Link
             to="/notifications"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
           >
@@ -94,7 +93,7 @@ const Dashboard = () => {
               <FiBell className="mr-2" /> Notificaciones
             </h2>
             <p className="text-gray-700">No tienes nuevas notificaciones.</p>
-          </Link>
+          </Link> */}
 
           {/* Perfil del Huésped */}
           <Link
@@ -107,10 +106,10 @@ const Dashboard = () => {
             <p className="text-gray-700">Nombre: Juan Pérez</p>
             <p className="text-gray-700">Correo: juan.perez@example.com</p>
           </Link>
-        </div>
+        {/* </div> */}
 
         {/* Servicios Adicionales */}
-        <section className="lg:col-span-2 bg-white p-6 shadow-lg rounded-lg">
+        {/* <section className="lg:col-span-2 bg-white p-6 shadow-lg rounded-lg">
           <h2 className="text-2xl font-bold mb-4 text-primary-dark">
             Servicios Adicionales
           </h2>
@@ -124,7 +123,7 @@ const Dashboard = () => {
             <li>Transporte al aeropuerto</li>
             <li>Acceso a gimnasio y spa</li>
           </ul>
-        </section>
+        </section> */}
       </div>
     </div>
   );

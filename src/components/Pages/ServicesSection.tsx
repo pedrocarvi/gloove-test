@@ -60,7 +60,7 @@ const cardDetails = [
 
 const ServicesSection: React.FC = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center bg-[#F6F7F5] overflow-hidden py-12 sm:py-16 lg:py-24">
+    <section className="relative min-h-screen flex items-center justify-center bg-[#F6F7F5] overflow-hidden py-12 sm:py-16 lg:py-24" id="servicios-destacados">
       {/* Fondo ajustado */}
       <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 z-10">
         <motion.h2

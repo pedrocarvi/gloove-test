@@ -229,9 +229,9 @@ const Login: React.FC = () => {
                       {errors.password}
                     </p>
                   )}
-                  <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                  {/* <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                     {t("Fortaleza de la contraseña")}: {passwordStrength}
-                  </p>
+                  </p> */}
                 </div>
                 <div>
                   <button
@@ -245,15 +245,15 @@ const Login: React.FC = () => {
                   </button>
                 </div>
               </form>
-              <div className="flex justify-between mt-4 w-full">
+              {/* <div className="flex justify-between mt-4 w-full">
                 <button className="text-sm text-teal-700 dark:text-teal-300 hover:underline">
                   {t("¿Olvidaste tu contraseña?")}
                 </button>
                 <button className="text-sm text-teal-700 dark:text-teal-300 hover:underline">
                   {t("Registrarse")}
                 </button>
-              </div>
-              <div className="mt-6 w-full flex flex-col space-y-3">
+              </div> */}
+              {/* <div className="mt-6 w-full flex flex-col space-y-3">
                 <GoogleLoginButton
                   iconSize="24px"
                   style={{ height: "48px" }}
@@ -264,7 +264,7 @@ const Login: React.FC = () => {
                   style={{ height: "48px" }}
                   onClick={loginWithFacebook}
                 />
-              </div>
+              </div> */}
             </div>
           </div>
         </Transition>
