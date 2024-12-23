@@ -38,7 +38,7 @@ import PropertyDetails from "./components/Propietarios/PropietariosValidados/Pro
 
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
-  console.log("Current user in AppRoutes:", user);
+  // console.log("Current user in AppRoutes:", user);
 
   return (
     <Routes>
@@ -63,6 +63,7 @@ const AppRoutes: React.FC = () => {
           <Route path="/settings" element={<UnderConstruction />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/property/:propertyId" element={<PropertyDetails />} />
+          <Route path="/proceso-de-alta/:step" element={<ProcesoDeAlta/>}/>
         </Route>
       )}
 

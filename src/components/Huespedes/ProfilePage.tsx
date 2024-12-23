@@ -1,15 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 const ProfilePage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [name, setName] = useState("John Doe");
-  const [email, setEmail] = useState("john.doe@example.com");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("")
   const [bio, setBio] = useState(
     "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
   );
 
+  // Cargar datos desde localStorage al montar el componente
+  useEffect(() => {
+    const storedName = localStorage.getItem("userName");
+    const storedEmail = localStorage.getItem("userEmail");
+    const storedRole = localStorage.getItem("userRole");
+
+    if (storedName) setName(storedName);
+    if (storedEmail) setEmail(storedEmail);
+    if (storedRole) setRole(storedRole);
+  }, []);
+
   const handleSave = () => {
-    // Aquí puedes agregar la lógica para guardar los cambios
+    // Guardar los datos actualizados en el localStorage
+    localStorage.setItem("userName", name);
+    localStorage.setItem("userEmail", email);
     setIsEditing(false);
   };
 
@@ -51,17 +65,9 @@ const ProfilePage: React.FC = () => {
         </div>
         <div>
           <label className="block text-gray-700 text-sm font-bold mb-2">
-            Biografía
+            Tipo de usuario
           </label>
-          {isEditing ? (
-            <textarea
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-primary"
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-            ></textarea>
-          ) : (
-            <p className="text-gray-900">{bio}</p>
-          )}
+          <p className="text-gray-900 capitalize">{role}</p>
         </div>
         <div className="flex justify-end space-x-4">
           {isEditing ? (

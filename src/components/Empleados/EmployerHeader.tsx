@@ -8,15 +8,15 @@ const EmployerHeader = () => {
       <div className="flex items-center">
         <Link to="/profile" className="flex items-center">
           <div className="bg-gray-300 w-10 h-10 rounded-full mr-4 flex items-center justify-center text-gray-700 font-bold">
-            U
+            {localStorage.getItem('userName')?.charAt(0)}
           </div>
           <div>
-            <div className="text-blue-600 font-bold">Empleado</div>
-            <div className="text-gray-600">Hola XXXXX</div>
+            <div className="text-blue-600 font-bold text-black">Empleado</div>
+            <div className="text-gray-600">Hola {localStorage.getItem('userName')}</div>
           </div>
         </Link>
       </div>
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <Link to="/messages" className="text-gray-700 hover:text-blue-600">
           <FiMessageSquare className="h-6 w-6" />
         </Link>
@@ -32,7 +32,7 @@ const EmployerHeader = () => {
             <div className="bg-blue-500 w-2 h-2"></div>
           </div>
         </button>
-      </div>
+      </div> */}
     </header>
   );
 };

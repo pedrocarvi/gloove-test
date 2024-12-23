@@ -81,21 +81,21 @@ const OwnerSidebar: React.FC = () => {
       path: "/properties",
       icon: <HomeModernIcon className="h-6 w-6" />,
     },
-    {
-      name: "Chat",
-      path: "/chat",
-      icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Mi documentación",
-      path: "/documents",
-      icon: <DocumentTextIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Notificaciones",
-      path: "/notifications",
-      icon: <BellIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Chat",
+    //   path: "/chat",
+    //   icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Mi documentación",
+    //   path: "/documents",
+    //   icon: <DocumentTextIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Notificaciones",
+    //   path: "/notifications",
+    //   icon: <BellIcon className="h-6 w-6" />,
+    // },
     {
       name: "Preguntas Frecuentes",
       path: "/faq",
@@ -106,11 +106,11 @@ const OwnerSidebar: React.FC = () => {
       path: "/OwnerProfile",
       icon: <UserIcon className="h-6 w-6" />,
     },
-    {
-      name: "Configuraciones",
-      path: "/settings",
-      icon: <CogIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Configuraciones",
+    //   path: "/settings",
+    //   icon: <CogIcon className="h-6 w-6" />,
+    // },
     {
       name: "Cerrar sesión",
       path: "#",
@@ -118,11 +118,11 @@ const OwnerSidebar: React.FC = () => {
       action: toggleLogoutModal,
     },
     // Nuevo ítem del menú para PropertyDetails
-    {
-      name: "Detalles de la propiedad",
-      path: properties.length > 0 ? `/property/${properties[0].id}` : "#",
-      icon: <HomeModernIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Detalles de la propiedad",
+    //   path: properties.length > 0 ? `/property/${properties[0].id}` : "#",
+    //   icon: <HomeModernIcon className="h-6 w-6" />,
+    // },
   ];
 
   return (

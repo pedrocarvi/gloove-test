@@ -21,8 +21,11 @@ const Header = () => {
     <header className="bg-white shadow-md py-4 px-6 flex items-center justify-between">
       <div className="flex items-center space-x-4">
         <img src="/gloove_marca.png" alt="Logo" className="h-12 w-auto" />
+        <h1 className="text-xl font-bold text-gray-700">
+          Gloove - Panel de {localStorage.getItem("userRole")}
+        </h1>
       </div>
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <button
           aria-label="Notificaciones"
           className="relative text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-light focus:ring-opacity-75"
@@ -40,7 +43,7 @@ const Header = () => {
           <UserCircleIcon className="h-8 w-8" />
           <span className="sr-only">Abrir modal de perfil de usuario</span>
         </button>
-      </div>
+      </div> */}
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">

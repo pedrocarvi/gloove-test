@@ -60,36 +60,101 @@ const fetchDocumentURL = async (
   return "pendiente";
 };
 
-export const updatePropietarioDocuments = async (propietario: Propietario) => {
-  propietario.fichaTecnica = await fetchDocumentURL(
-    propietario.id,
-    `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${propietario.id}`
-  );
-  propietario.presupuestoTextil = await fetchDocumentURL(
-    propietario.id,
-    `Presupuesto Textil/textile_summary_${propietario.id}`
-  );
-  propietario.dni = await fetchDocumentURL(
-    propietario.id,
-    `DocumentacionPropietarios/dNI/dNI_${propietario.id}`
-  );
-  propietario.referenciaCatastral = await fetchDocumentURL(
-    propietario.id,
-    `DocumentacionPropietarios/refCatastral/refCatastral_${propietario.id}`
-  );
-  propietario.vut = await fetchDocumentURL(
-    propietario.id,
-    `DocumentacionPropietarios/vUT/vUT_${propietario.id}`
-  );
-  propietario.contrato = await fetchDocumentURL(
-    propietario.id,
-    `DocumentacionPropietarios/Contratos/contract_${propietario.id}`
-  );
-  propietario.inventario = await fetchDocumentURL(
-    propietario.id,
-    `DocumentacionPropietarios/Inventario/inventario_${propietario.id}`
-  );
-  return propietario;
+// export const updatePropietarioDocuments = async (propietario: Propietario) => {
+//   propietario.fichaTecnica = await fetchDocumentURL(
+//     propietario.id,
+//     `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${propietario.id}`
+//   );
+//   propietario.presupuestoTextil = await fetchDocumentURL(
+//     propietario.id,
+//     `Presupuesto Textil/textile_summary_${propietario.id}`
+//   );
+//   propietario.dni = await fetchDocumentURL(
+//     propietario.id,
+//     `DocumentacionPropietarios/dNI/dNI_${propietario.id}`
+//   );
+//   propietario.referenciaCatastral = await fetchDocumentURL(
+//     propietario.id,
+//     `DocumentacionPropietarios/refCatastral/refCatastral_${propietario.id}`
+//   );
+//   propietario.vut = await fetchDocumentURL(
+//     propietario.id,
+//     `DocumentacionPropietarios/vUT/vUT_${propietario.id}`
+//   );
+//   propietario.contrato = await fetchDocumentURL(
+//     propietario.id,
+//     `DocumentacionPropietarios/Contratos/contract_${propietario.id}`
+//   );
+//   propietario.inventario = await fetchDocumentURL(
+//     propietario.id,
+//     `DocumentacionPropietarios/Inventario/inventario_${propietario.id}`
+//   );
+//   return propietario;
+// };
+
+// export const getPropietariosEnProceso = async (): Promise<Propietario[]> => {
+//   const propietariosRef = collection(db, "users");
+//   const q = query(
+//     propietariosRef,
+//     where("role", "==", "propietario"),
+//     where("completedRegistration", "==", false)
+//   );
+//   const snapshot = await getDocs(q);
+//   const propietarios = snapshot.docs.map(
+//     (doc) => ({ id: doc.id, ...doc.data() } as Propietario)
+//   );
+
+//   for (const propietario of propietarios) {
+//     await updatePropietarioDocuments(propietario);
+//   }
+
+//   return propietarios;
+// };
+
+export const updatePropietarioDocuments = async (
+  propietario: Propietario
+): Promise<Propietario> => {
+  const urls = await Promise.all([
+    fetchDocumentURL(
+      propietario.id,
+      `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${propietario.id}`
+    ),
+    fetchDocumentURL(
+      propietario.id,
+      `Presupuesto Textil/textile_summary_${propietario.id}`
+    ),
+    fetchDocumentURL(
+      propietario.id,
+      `DocumentacionPropietarios/dNI/dNI_${propietario.id}`
+    ),
+    fetchDocumentURL(
+      propietario.id,
+      `DocumentacionPropietarios/refCatastral/refCatastral_${propietario.id}`
+    ),
+    fetchDocumentURL(
+      propietario.id,
+      `DocumentacionPropietarios/vUT/vUT_${propietario.id}`
+    ),
+    fetchDocumentURL(
+      propietario.id,
+      `DocumentacionPropietarios/Contratos/contract_${propietario.id}`
+    ),
+    fetchDocumentURL(
+      propietario.id,
+      `DocumentacionPropietarios/Inventario/inventario_${propietario.id}`
+    ),
+  ]);
+
+  return {
+    ...propietario,
+    fichaTecnica: urls[0],
+    presupuestoTextil: urls[1],
+    dni: urls[2],
+    referenciaCatastral: urls[3],
+    vut: urls[4],
+    contrato: urls[5],
+    inventario: urls[6],
+  };
 };
 
 export const getPropietariosEnProceso = async (): Promise<Propietario[]> => {
@@ -100,13 +165,13 @@ export const getPropietariosEnProceso = async (): Promise<Propietario[]> => {
     where("completedRegistration", "==", false)
   );
   const snapshot = await getDocs(q);
-  const propietarios = snapshot.docs.map(
-    (doc) => ({ id: doc.id, ...doc.data() } as Propietario)
-  );
 
-  for (const propietario of propietarios) {
-    await updatePropietarioDocuments(propietario);
-  }
+  const propietarios = await Promise.all(
+    snapshot.docs.map(async (doc) => {
+      const propietario = { id: doc.id, ...doc.data() } as Propietario;
+      return updatePropietarioDocuments(propietario);
+    })
+  );
 
   return propietarios;
 };

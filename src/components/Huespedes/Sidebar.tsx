@@ -24,6 +24,10 @@ const Sidebar = () => {
   const handleLogout = () => {
     setIsLogoutModalOpen(false);
     navigate("/login");
+    localStorage.removeItem('idToken');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('userName');
+    localStorage.removeItem('userRole');
     // Aquí puedes agregar cualquier lógica adicional para el cierre de sesión
   };
 
@@ -43,11 +47,11 @@ const Sidebar = () => {
     //   path: "/questions",
     //   icon: <QuestionsIcon className="h-6 w-6" />,
     // },
-    {
-      name: "Abrir viviendas",
-      path: "/control-panel",
-      icon: <ControlPanelIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Abrir viviendas",
+    //   path: "/control-panel",
+    //   icon: <ControlPanelIcon className="h-6 w-6" />,
+    // },
     // {
     //   name: "Incidencias",
     //   path: "/incidencias",

@@ -48,61 +48,61 @@ const EmployerSidebar: React.FC = () => {
       path: "/propietarios-validados",
       icon: <UserIcon className="h-6 w-6" />,
     },
-    {
-      name: "Huespedes",
-      path: "/huespedes",
-      icon: <UserGroupIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Tareas",
-      path: "/tasks",
-      icon: <ClipboardIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Chat con Propietarios",
-      path: "/chat",
-      icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Buscador",
-      path: "/buscador",
-      icon: <MagnifyingGlassIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Glovito",
-      path: "/glovito",
-      icon: <SunIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Huespedes",
+    //   path: "/huespedes",
+    //   icon: <UserGroupIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Tareas",
+    //   path: "/tasks",
+    //   icon: <ClipboardIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Chat con Propietarios",
+    //   path: "/chat",
+    //   icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Buscador",
+    //   path: "/buscador",
+    //   icon: <MagnifyingGlassIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Glovito",
+    //   path: "/glovito",
+    //   icon: <SunIcon className="h-6 w-6" />,
+    // },
     {
       name: "Inventario",
       path: "/inventario",
       icon: <PencilSquareIcon className="h-6 w-6" />,
     },
-    {
-      name: "Limpieza",
-      path: "/limpieza",
-      icon: <TrashIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Mantenimiento",
-      path: "/mantenimiento",
-      icon: <WrenchScrewdriverIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Limpieza",
+    //   path: "/limpieza",
+    //   icon: <TrashIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Mantenimiento",
+    //   path: "/mantenimiento",
+    //   icon: <WrenchScrewdriverIcon className="h-6 w-6" />,
+    // },
     {
       name: "Mi Perfil",
       path: "/profile",
       icon: <UserIcon className="h-6 w-6" />,
     },
-    {
-      name: "Configuraciones",
-      path: "/settings",
-      icon: <Cog6ToothIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Ayuda",
-      path: "/help",
-      icon: <QuestionMarkCircleIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Configuraciones",
+    //   path: "/settings",
+    //   icon: <Cog6ToothIcon className="h-6 w-6" />,
+    // },
+    // {
+    //   name: "Ayuda",
+    //   path: "/help",
+    //   icon: <QuestionMarkCircleIcon className="h-6 w-6" />,
+    // },
     {
       name: "Cerrar Sesión",
       path: "#",

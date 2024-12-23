@@ -69,13 +69,24 @@ const Login: React.FC = () => {
       try {
         const userCredential = await login(email, password);
         const user = userCredential.user;
+  
+        // Extraigo el idToken y lo almaceno en LS
+        const idToken = await user.getIdToken();
+        localStorage.setItem("idToken", idToken);
+  
         const userDoc = await getDoc(doc(db, "users", user.uid));
         if (userDoc.exists()) {
           const userData = userDoc.data();
           const role = userData?.role;
           const completedRegistration = userData?.completedRegistration;
           const currentStep = userData?.currentStep;
-
+          
+          // Información del usuario loguardo en LS
+          console.log("User data", userData);
+          localStorage.setItem("userEmail", userData.email)
+          localStorage.setItem("userName", userData.name)
+          localStorage.setItem("userRole", userData.role)
+  
           Swal.fire({
             title: t(`¡Bienvenido, ${role}!`),
             text: t(
@@ -112,7 +123,7 @@ const Login: React.FC = () => {
       }
     }
   };
-
+  
   return (
     <>
       <Header />

@@ -47,11 +47,12 @@ const getLastBookingDetails = async (): Promise<any | null> => {
 
     // Ultima reserva
     const lastBooking = bookings[bookings.length - 1];
-
+    
     // Obtener detalles de la última reserva por ID
     const bookingDetails = await fetchBookingById(lastBooking.id);
     if (bookingDetails) {
       console.log('Detalles de la última reserva:', bookingDetails);
+      getLastBookingAccommodationDetails(bookingDetails.accommodation.id)
       return bookingDetails;
     } else {
       console.log('No se pudieron obtener los detalles de la reserva.');
@@ -59,6 +60,26 @@ const getLastBookingDetails = async (): Promise<any | null> => {
     }
   } catch (error) {
     console.error('Error en la lógica principal:', error);
+    return null;
+  }
+};
+
+// Traigo detalles de la propiedad de la ultima reserva
+const getLastBookingAccommodationDetails = async (id: number): Promise<any> => {
+  try {
+    const response = await fetch(`https://gloove-api-avantio.vercel.app/accommodations/${id}`);
+    if (response.ok) {
+      const accommodationDetails = await response.json();
+      console.log('Detalles de la propiedad de la ultima reserva:', accommodationDetails.data);
+      return accommodationDetails.data;
+      // const bookingDetails = await response.json();
+      // return bookingDetails.data;
+    } else {
+      const errorBody = await response.text();
+      throw new Error(`Request failed: ${response.status} - ${errorBody}`);
+    }
+  } catch (error) {
+    console.error(`Error al obtener los detalles de la propiedad de la ultima reserva con ID ${id}:`, error);
     return null;
   }
 };
@@ -75,7 +96,7 @@ const ReservationProcess = () => {
   }, []);
 
   if (loading) {
-    return <div className="text-center">Cargando reserva...</div>;
+    return <div className="text-center text-black">Cargando reserva...</div>;
   }
 
   const bookingPayment = bookingDetails?.payments?.find(
@@ -90,7 +111,7 @@ const ReservationProcess = () => {
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
-      <h2 className="text-2xl font-bold text-center mb-6">Estado de la reserva</h2>
+      <h2 className="text-2xl font-bold text-black text-center mb-6">Estado de la reserva</h2>
       <div className="w-full bg-gray-200 h-1 rounded-full mb-6">
         <div
           className={`h-1 rounded-full ${
@@ -114,7 +135,7 @@ const ReservationProcess = () => {
               <XCircleIcon className="h-8 w-8 text-red-500" />
             )}
           </div>
-          <h3 className="text-xl font-semibold mb-2">Pago</h3>
+          <h3 className="text-xl font-semibold mb-2 text-black ">Pago</h3>
           <p className="text-gray-700 mb-4">
             {isPaid
               ? "El pago ha sido confirmado. Puedes proceder con los siguientes pasos."
@@ -137,7 +158,7 @@ const ReservationProcess = () => {
               <XCircleIcon className="h-8 w-8 text-red-500" />
             )}
           </div>
-          <h3 className="text-xl font-semibold mb-2">Fianza</h3>
+          <h3 className="text-xl font-semibold mb-2 text-black ">Fianza</h3>
           <p className="text-gray-700 mb-4">
             {isFianzaPaid
               ? "La fianza ha sido pagada correctamente. No olvides seguir los siguientes pasos."
@@ -157,7 +178,7 @@ const ReservationProcess = () => {
         <div className="mb-4">
           <XCircleIcon className="h-8 w-8 text-red-500" />
         </div>
-        <h3 className="text-xl font-semibold mb-2">Check-In</h3>
+        <h3 className="text-xl font-semibold mb-2 text-black ">Check-In</h3>
         <p className="text-gray-700 mb-4">
           Nuestro sistema de check-in te permitirá acceder a la vivienda
           fácilmente. Recibirás un código que podrás usar para entrar durante
@@ -178,7 +199,7 @@ const ReservationProcess = () => {
         <div className="mb-4">
           <XCircleIcon className="h-8 w-8 text-red-500" />
         </div>
-        <h3 className="text-xl font-semibold mb-2">Instrucciones</h3>
+        <h3 className="text-xl font-semibold mb-2 text-black ">Instrucciones</h3>
         <p className="text-gray-700 mb-4">
           Las instrucciones de la vivienda incluyen detalles sobre el uso de
           los electrodomésticos, normas de la casa y otras informaciones

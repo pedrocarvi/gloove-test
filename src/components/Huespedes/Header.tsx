@@ -14,7 +14,7 @@ const EmployerHeader = () => {
       <div className="flex items-center space-x-4">
         <img src="/gloove_marca.png" alt="Logo" className="h-12 w-auto" />
         <h1 className="text-xl font-bold text-gray-700">
-          Gloove - Panel de Empleados
+          Gloove - Panel de {localStorage.getItem("userRole")}
         </h1>
       </div>
       <div className="flex items-center space-x-4">

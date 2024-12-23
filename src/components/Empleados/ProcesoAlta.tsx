@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   CheckCircle,
@@ -24,18 +24,21 @@ const ProcesoAlta: React.FC = () => {
   const itemsPerPage = 10;
   const navigate = useNavigate();
   const functions = getFunctions();
+  
 
   useEffect(() => {
     const fetchPropietarios = async () => {
       try {
         const data = await getPropietariosEnProceso();
-        setPropietarios(data);
+        const validData = data.filter((prop) => prop.presupuestoTextil && prop.contrato);
+        setPropietarios(validData);
       } catch (error) {
         console.error("Error fetching propietarios en proceso:", error);
       } finally {
         setLoading(false);
       }
     };
+    
     fetchPropietarios();
   }, []);
 
@@ -50,26 +53,41 @@ const ProcesoAlta: React.FC = () => {
     }
   };
 
+  // const handleAction = async (id: string, action: string) => {
+  //   try {
+  //     await actualizarEstadoPropietario(id, action);
+  //     const data = await getPropietariosEnProceso();
+  //     setPropietarios(data);
+  //   } catch (error) {
+  //     console.error(
+  //       `Error updating state for propietario with ID ${id}:`,
+  //       error
+  //     );
+  //   }
+  // };
+
   const handleAction = async (id: string, action: string) => {
     try {
       await actualizarEstadoPropietario(id, action);
-      const data = await getPropietariosEnProceso();
-      setPropietarios(data);
-    } catch (error) {
-      console.error(
-        `Error updating state for propietario with ID ${id}:`,
-        error
+      setPropietarios((prev) =>
+        prev.map((prop) =>
+          prop.id === id ? { ...prop, [action]: true } : prop
+        )
       );
+    } catch (error) {
+      console.error(`Error updating state for propietario with ID ${id}:`, error);
     }
   };
+  
 
-  const renderStatusIcon = (step: number, currentStep: number) => {
+  const renderStatusIcon = useCallback((step: number, currentStep: number) => {
     return step <= currentStep ? (
       <CheckCircle className="text-green-500" size={20} />
     ) : (
       <XCircle className="text-red-500" size={20} />
     );
-  };
+  }, []);
+  
 
   const renderActionButton = (
     status: boolean | "pendiente" | string,
@@ -77,13 +95,13 @@ const ProcesoAlta: React.FC = () => {
     action: string,
     url?: string
   ) => {
-    if (typeof status === "string" && status !== "pendiente") {
+    if (typeof status === "string" && status !== "pendiente" && url) {
       return (
         <a href={url} target="_blank" rel="noopener noreferrer">
           <Download size={16} />
         </a>
       );
-    }
+    }    
     if (status === true) {
       return <CheckCircle className="text-green-500" size={16} />;
     } else if (status === "pendiente") {
@@ -121,7 +139,7 @@ const ProcesoAlta: React.FC = () => {
   }
 
   return (
-    <div className="p-4 max-w-6xl mx-auto bg-gray-50 min-h-screen">
+    <div className="p-4 mx-auto bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold mb-6 text-center">
         Dashboard de Empleados - Proceso de Alta
       </h1>
@@ -140,7 +158,7 @@ const ProcesoAlta: React.FC = () => {
           Enviar Invitación
         </button>
       </form>
-      <div className="mb-6 flex justify-center space-x-4">
+      {/* <div className="mb-6 flex justify-center space-x-4">
         <select className="border p-2 rounded-lg bg-white">
           <option>Filtrar por región</option>
         </select>
@@ -150,7 +168,7 @@ const ProcesoAlta: React.FC = () => {
           <option>Más antiguos</option>
           <option>Acciones pendientes</option>
         </select>
-      </div>
+      </div> */}
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white shadow-lg rounded-lg">
           <thead className="bg-gray-200">

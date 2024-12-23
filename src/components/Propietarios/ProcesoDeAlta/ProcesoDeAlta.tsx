@@ -25,9 +25,7 @@ const ProcesoDeAlta: React.FC = () => {
   const { step } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [currentStep, setCurrentStep] = useState<number>(
-    parseInt(step ?? "0", 10)
-  );
+  const [currentStep, setCurrentStep] = useState<number>(0);
   const [isAccepted, setIsAccepted] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<any>({});
 
