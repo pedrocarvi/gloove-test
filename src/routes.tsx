@@ -35,6 +35,8 @@ import CleaningPage from "./components/Empleados/CleaningPage";
 import MaintenancePage from "./components/Empleados/MaintenancePage";
 import FaqPage from "./components/Propietarios/PropietariosValidados/FaqPage";
 import PropertyDetails from "./components/Propietarios/PropietariosValidados/PropertyDetails";
+import MisReservas from "./components/Huespedes/MisReservasPage";
+import MisReservasDetails from "./components/Huespedes/MisReservasDetails";
 
 const AppRoutes: React.FC = () => {
   const { user } = useAuth();
@@ -75,6 +77,8 @@ const AppRoutes: React.FC = () => {
           <Route path="/control-panel" element={<ControlPanel />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/incidencias" element={<IncidentForm />} />
+          <Route path="/mis-reservas" element={<MisReservas/>}/>
+          <Route path="/mis-reservas/:id" element={<MisReservasDetails/>}/>
         </Route>
       )}
 

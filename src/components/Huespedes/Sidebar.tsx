@@ -9,6 +9,7 @@ import {
   ArrowRightOnRectangleIcon as LogoutIcon,
   QuestionMarkCircleIcon as QuestionsIcon,
   HomeModernIcon as ControlPanelIcon,
+  ClipboardDocumentCheckIcon as MisReservasIcon
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 
@@ -57,6 +58,11 @@ const Sidebar = () => {
     //   path: "/incidencias",
     //   icon: <CogIcon className="h-6 w-6" />,
     // },
+    {
+      name: "Mis reservas",
+      path: "/mis-reservas",
+      icon: <MisReservasIcon className="h-6 w-6" />,
+    },
     {
       name: "Mi perfil",
       path: "/profile",

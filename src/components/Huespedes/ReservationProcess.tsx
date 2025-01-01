@@ -52,7 +52,7 @@ const getLastBookingDetails = async (): Promise<any | null> => {
     const bookingDetails = await fetchBookingById(lastBooking.id);
     if (bookingDetails) {
       console.log('Detalles de la última reserva:', bookingDetails);
-      getLastBookingAccommodationDetails(bookingDetails.accommodation.id)
+      // getLastBookingAccommodationDetails(bookingDetails.accommodation.id)
       return bookingDetails;
     } else {
       console.log('No se pudieron obtener los detalles de la reserva.');
@@ -65,24 +65,24 @@ const getLastBookingDetails = async (): Promise<any | null> => {
 };
 
 // Traigo detalles de la propiedad de la ultima reserva
-const getLastBookingAccommodationDetails = async (id: number): Promise<any> => {
-  try {
-    const response = await fetch(`https://gloove-api-avantio.vercel.app/accommodations/${id}`);
-    if (response.ok) {
-      const accommodationDetails = await response.json();
-      console.log('Detalles de la propiedad de la ultima reserva:', accommodationDetails.data);
-      return accommodationDetails.data;
-      // const bookingDetails = await response.json();
-      // return bookingDetails.data;
-    } else {
-      const errorBody = await response.text();
-      throw new Error(`Request failed: ${response.status} - ${errorBody}`);
-    }
-  } catch (error) {
-    console.error(`Error al obtener los detalles de la propiedad de la ultima reserva con ID ${id}:`, error);
-    return null;
-  }
-};
+// const getLastBookingAccommodationDetails = async (id: number): Promise<any> => {
+//   try {
+//     const response = await fetch(`https://gloove-api-avantio.vercel.app/accommodations/${id}`);
+//     if (response.ok) {
+//       const accommodationDetails = await response.json();
+//       // console.log('Detalles de la propiedad de la ultima reserva:', accommodationDetails.data);
+//       return accommodationDetails.data;
+//       // const bookingDetails = await response.json();
+//       // return bookingDetails.data;
+//     } else {
+//       const errorBody = await response.text();
+//       throw new Error(`Request failed: ${response.status} - ${errorBody}`);
+//     }
+//   } catch (error) {
+//     console.error(`Error al obtener los detalles de la propiedad de la ultima reserva con ID ${id}:`, error);
+//     return null;
+//   }
+// };
 
 const ReservationProcess = () => {
   const [loading, setLoading] = useState(true);

@@ -1,10 +1,20 @@
-import react, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+// Otros componentes
+import ReservationProcess from "./ReservationProcess";
+// Routing
+import { Link } from "react-router-dom";
+// Xml
+import * as xmljs from "xml-js";
+// Carousel imagenes
 import Slider from "react-slick";
 import { Dialog } from "@headlessui/react";
-import * as xmljs from "xml-js";
-import { Link } from "react-router-dom";
-import ReservationProcess from "./ReservationProcess";
+// Imagenes / Iconos
 import { FaChevronRight, FaChevronLeft } from "react-icons/fa";
+import BathhubIcon from "../../assets/bathtub.png";
+import BedroomIcon from "../../assets/bedroom.png";
+import HouseIcon from "../../assets/house.png";
+import LocationIcon from "../../assets/location-tick.png";
+import PersonasIcon from "../../assets/user.png";
 
 const CustomPrevArrow = ({ onClick }: any) => (
   <div
@@ -65,14 +75,11 @@ const Dashboard = () => {
     );
   };
 
-  // Traigo todas las reservas
   const fetchBookings = async (): Promise<any[]> => {
-    // console.log("Entra al fetch bookings de dashboard")
     try {
       const response = await fetch('https://gloove-api-avantio.vercel.app/bookings');
       if (response.ok) {
         const bookings = await response.json();
-        console.log("Bookings dashboard", bookings)
         return bookings.data;
       } else {
         const errorBody = await response.text();
@@ -84,22 +91,18 @@ const Dashboard = () => {
     }
   };
 
-  // Traigo detalles de la propiedad 
   const getAccomodationDetails = async (id: number): Promise<any> => {
     try {
       const response = await fetch(`https://gloove-api-avantio.vercel.app/accommodations/${id}`);
       if (response.ok) {
         const accommodationDetails = await response.json();
-        console.log('Detalles de la propiedad de la ultima reserva:', accommodationDetails.data);
         return accommodationDetails.data;
-        // const bookingDetails = await response.json();
-        // return bookingDetails.data;
       } else {
         const errorBody = await response.text();
         throw new Error(`Request failed: ${response.status} - ${errorBody}`);
       }
     } catch (error) {
-      console.error(`Error al obtener los detalles de la propiedad de la ultima reserva con ID ${id}:`, error);
+      console.error(`Error al obtener los detalles de la propiedad con ID ${id}:`, error);
       return null;
     }
   };
@@ -143,6 +146,8 @@ const Dashboard = () => {
     fetchAndProcessData();
   }, []);
 
+  const latestPropertyDetails = detallesPropiedades[0]; // Detalles de la última propiedad
+
   return (
     <div className="overflow-auto p-6 bg-gray-100 min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -153,7 +158,36 @@ const Dashboard = () => {
           {renderFirstAccommodationPictures()}
         </section>
         <section className="bg-white p-6 shadow-lg rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-primary-dark"> Datos de la reserva </h2>
+          <h2 className="text-2xl font-bold mb-4 text-primary-dark">Datos de la vivienda </h2>
+          {latestPropertyDetails ? (
+            <div className="d-flex flex-column align-items-start gap-3">
+              <p><strong>Nombre:</strong> {latestPropertyDetails.name}</p>
+              <div className="d-flex gap-2 align-items-center">
+                <img src={HouseIcon} alt="house" width={20} />
+                <p>
+                  <strong>Tipo:</strong> {latestPropertyDetails.type === "APARTMENT" ? "Departamento" : latestPropertyDetails.type}
+                </p>
+              </div>
+              <div className="d-flex gap-2 align-items-center">
+                <img src={LocationIcon} alt="location" width={20} />
+                <p><strong>Dirección:</strong> {latestPropertyDetails.location.address}, {latestPropertyDetails.location.cityName}</p>
+              </div>
+              <div className="d-flex gap-2 align-items-center">
+                <img src={PersonasIcon} alt="personas" width={20} />
+                <p><strong>Capacidad:</strong> {latestPropertyDetails.capacity.maxAdults} adultos, {latestPropertyDetails.capacity.maxChildren} niños</p>
+              </div>
+              <div className="d-flex gap-2 align-items-center">
+                <img src={BedroomIcon} alt="bedroom" width={20} />
+                <p><strong>Dormitorios:</strong> {latestPropertyDetails.distribution.bedrooms.length}</p>
+              </div>
+              <div className="d-flex gap-2 align-items-center">
+                <img src={BathhubIcon} alt="bahthub" width={20} />
+                <p><strong>Baños:</strong> {latestPropertyDetails.distribution.bathrooms.length}</p>
+              </div>
+            </div>
+          ) : (
+            <p>Cargando detalles de la reserva...</p>
+          )}
         </section>
         {/* Proceso de Reserva */}
         <section className="lg:col-span-2 bg-white p-6 shadow-lg rounded-lg">
@@ -170,7 +204,26 @@ const Dashboard = () => {
             {reservas.map((reserva, index) => (
               <div key={reserva.id} className="p-4 bg-white shadow rounded-lg">
                 <h4 className="text-lg font-bold text-gray-800">
-                  Reserva #{reserva.reference} ({reserva.status})
+                  Reserva #{reserva.reference} 
+                    <p
+                                className={`text-sm font-medium ${reserva.status === "UNPAID"
+                                        ? "text-red-500"
+                                        : reserva.status === "CONFIRMED"
+                                            ? "text-blue-500"
+                                            : reserva.status === "PAID"
+                                                ? "text-green-500"
+                                                : "text-gray-500"
+                                    }`}
+                            >
+                                Estado:{" "}
+                                {reserva.status === "UNPAID"
+                                    ? "No paga"
+                                    : reserva.status === "CONFIRMED"
+                                        ? "Confirmada"
+                                        : reserva.status === "PAID"
+                                            ? "Paga"
+                                            : reserva.status}
+                            </p>
                 </h4>
                 <p className="text-gray-600">
                   Desde: <b>{new Date(reserva.stayDates.arrival).toLocaleDateString()}</b>
@@ -180,10 +233,9 @@ const Dashboard = () => {
 
                 {/* Detalles de la propiedad */}
                 {detallesPropiedades[index] ? (
-                  <div className="mt-4">
-                    <h3 className="text-md font-semibold text-gray-700">Detalles de la Propiedad:</h3>
+                  <div className="d-flex align-items-center gap-1 mt-4">
+                    <h3 className="text-md font-semibold text-gray-700">Propiedad:</h3>
                     <p className="text-gray-600">{detallesPropiedades[index].name}</p>
-                    <p className="text-gray-600">{detallesPropiedades[index].description}</p>
                   </div>
                 ) : (
                   <p className="text-gray-600">Cargando detalles de la propiedad...</p>

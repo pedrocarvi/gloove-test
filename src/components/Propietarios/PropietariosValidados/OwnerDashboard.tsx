@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import * as xmljs from "xml-js";
 import { Link } from "react-router-dom";
 import {
   BarChart,
@@ -67,13 +68,136 @@ const CustomYAxis = (props: { [x: string]: any }) => {
 };
 
 const OwnerDashboard: React.FC = () => {
+  const [properties, setProperties] = useState<any[]>([]); 
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        // Cargar el XML
+        const response = await fetch("./accommodations.xml");
+        if (!response.ok) {
+          throw new Error(`Error HTTP: ${response.status}`);
+        }
+        const text = await response.text();
+
+        const result: any = xmljs.xml2js(text, { compact: true });
+
+        // Extraer las propiedades
+        const accommodations = result.AccommodationList?.Accommodation;
+        const accommodationsFilterByCompany = accommodations.filter(
+          (a: { CompanyId: { _text: string } }) => a.CompanyId._text === "362"
+        ).slice(0,3);
+        console.log("Todas las propiedades", accommodations);
+        console.log("Filtrado de la compañía con id 352", accommodationsFilterByCompany);
+        if (Array.isArray(accommodationsFilterByCompany)) {
+          setProperties(accommodationsFilterByCompany);
+          console.log("Loaded Properties:", accommodationsFilterByCompany);
+        } else if (accommodationsFilterByCompany) {
+          // Si solo hay un <Accommodation>, xml-js lo parsea como un objeto
+          setProperties([accommodationsFilterByCompany]);
+          console.log("Loaded Single Property:", accommodationsFilterByCompany);
+        } else {
+          console.log("No accommodations found in XML.");
+        }
+      } catch (error) {
+        console.error("Error al cargar el XML:", error);
+      }
+    };
+
+    fetchProperties();
+  }, []);
+
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
-      {/* <h1 className="text-3xl font-bold text-center mb-6">
+      <h1 className="text-3xl font-bold text-center mb-6">
         Dashboard de Propietarios
-      </h1> */}
+      </h1>
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {properties.map((property) => (
+      {properties.map((property, index) => (
+  <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
+    <h2 className="text-2xl font-bold mb-4">
+      {property.AccommodationName?._text || "Propiedad sin nombre"}
+    </h2>
+    <p className="mb-2">
+      <strong>ID:</strong> {property.AccommodationId?._text || "N/A"}
+    </p>
+    <p className="mb-2">
+      <strong>Compañía:</strong> {property.Company?._text || "N/A"}
+    </p>
+    <p className="mb-2">
+      <strong>Unidades disponibles:</strong>{" "}
+      {property.AccommodationUnits?._text || "N/A"}
+    </p>
+    <p className="mb-2">
+      <strong>Tipo:</strong> {property.UserKind?._text || "N/A"}
+    </p>
+    <p className="mb-2">
+      <strong>Ubicación:</strong>{" "}
+      {property.LocalizationData?.City?.Name?._text || "Ciudad no especificada"},{" "}
+      {property.LocalizationData?.Country?.Name?._text || "País no especificado"}
+    </p>
+    <p className="mb-4">
+      <strong>Propósito:</strong> {property.Purpose?._text || "N/A"}
+    </p>
+
+    {property.HotelFeatures && (
+      <div className="mb-4">
+        <h3 className="text-lg font-bold">Características del Hotel:</h3>
+        <ul className="list-disc pl-5">
+          <li>
+            <strong>Estrellas:</strong>{" "}
+            {property.HotelFeatures.Stars?._text || "N/A"}
+          </li>
+          <li>
+            <strong>Restaurante:</strong>{" "}
+            {property.HotelFeatures.Restaurant?._text || "N/A"}
+          </li>
+          <li>
+            <strong>Bar:</strong> {property.HotelFeatures.Bar?._text || "N/A"}
+          </li>
+          <li>
+            <strong>Gimnasio:</strong>{" "}
+            {property.HotelFeatures.Gym?._text || "No disponible"}
+          </li>
+          <li>
+            <strong>Sauna:</strong>{" "}
+            {property.HotelFeatures.Sauna?._text || "No disponible"}
+          </li>
+        </ul>
+      </div>
+    )}
+
+    {property.Reviews?.Review && (
+      <div>
+        <h3 className="text-lg font-bold mb-2">Reseñas:</h3>
+        <ul className="list-disc pl-5">
+          {Array.isArray(property.Reviews.Review)
+            ? property.Reviews.Review.map((review: { GuestName: { _text: any; }; Rating: { _text: any; }; PositiveComment: { _text: any; }; }, reviewIndex: React.Key | null | undefined) => (
+                <li key={reviewIndex} className="mb-2">
+                  <strong>Huésped:</strong> {review.GuestName?._text || "Anónimo"}{" "}
+                  - <strong>Calificación:</strong> {review.Rating?._text || "N/A"}
+                  <p>{review.PositiveComment?._text || "Sin comentarios"}</p>
+                </li>
+              ))
+            : (
+              <li>
+                <strong>Huésped:</strong>{" "}
+                {property.Reviews.Review.GuestName?._text || "Anónimo"} -{" "}
+                <strong>Calificación:</strong>{" "}
+                {property.Reviews.Review.Rating?._text || "N/A"}
+                <p>
+                  {property.Reviews.Review.PositiveComment?._text ||
+                    "Sin comentarios"}
+                </p>
+              </li>
+            )}
+        </ul>
+      </div>
+    )}
+  </div>
+))}
+
+        {/* {properties.map((property) => (
           <div key={property.id} className="bg-white p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold">{property.name}</h2>
@@ -128,10 +252,10 @@ const OwnerDashboard: React.FC = () => {
               </ResponsiveContainer>
             </div>
           </div>
-        ))}
+        ))} */}
 
         {/* Paneles Adicionales */}
-        <div className="grid grid-cols-1 gap-6">
+        {/* <div className="grid grid-cols-1 gap-6">
           <Link
             to="/statistics"
             className="block bg-white p-6 shadow-lg rounded-lg hover:bg-gray-50 transition"
@@ -180,7 +304,7 @@ const OwnerDashboard: React.FC = () => {
               Edita y actualiza la información de tu perfil.
             </p>
           </Link>
-        </div>
+        </div> */}
       </div>
     </div>
   );
