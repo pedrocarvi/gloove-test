@@ -151,79 +151,88 @@ const Dashboard = () => {
   return (
     <div className="overflow-auto p-6 bg-gray-100 min-h-screen">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <section className="lg:col-span-2 bg-white p-6 shadow-lg rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-primary-dark">
-            Fotos de la Vivienda
-          </h2>
-          {renderFirstAccommodationPictures()}
-        </section>
-        <section className="bg-white p-6 shadow-lg rounded-lg">
-          <h2 className="text-2xl font-bold mb-4 text-primary-dark">Datos de la vivienda </h2>
-          {latestPropertyDetails ? (
-            <div className="d-flex flex-column align-items-start gap-3">
-              <p><strong>Nombre:</strong> {latestPropertyDetails.name}</p>
-              <div className="d-flex gap-2 align-items-center">
-                <img src={HouseIcon} alt="house" width={20} />
-                <p>
-                  <strong>Tipo:</strong> {latestPropertyDetails.type === "APARTMENT" ? "Departamento" : latestPropertyDetails.type}
-                </p>
-              </div>
-              <div className="d-flex gap-2 align-items-center">
-                <img src={LocationIcon} alt="location" width={20} />
-                <p><strong>Dirección:</strong> {latestPropertyDetails.location.address}, {latestPropertyDetails.location.cityName}</p>
-              </div>
-              <div className="d-flex gap-2 align-items-center">
-                <img src={PersonasIcon} alt="personas" width={20} />
-                <p><strong>Capacidad:</strong> {latestPropertyDetails.capacity.maxAdults} adultos, {latestPropertyDetails.capacity.maxChildren} niños</p>
-              </div>
-              <div className="d-flex gap-2 align-items-center">
-                <img src={BedroomIcon} alt="bedroom" width={20} />
-                <p><strong>Dormitorios:</strong> {latestPropertyDetails.distribution.bedrooms.length}</p>
-              </div>
-              <div className="d-flex gap-2 align-items-center">
-                <img src={BathhubIcon} alt="bahthub" width={20} />
-                <p><strong>Baños:</strong> {latestPropertyDetails.distribution.bathrooms.length}</p>
-              </div>
+        <section className="lg:col-span-3 bg-white p-6 shadow-sm rounded-lg">
+          <h2 className="text-2xl font-bold mb-6 text-primary-dark">Vivienda reservada</h2>
+
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            {/* Property Details - Left Side (40%) */}
+            <div className="lg:col-span-2">
+              {latestPropertyDetails ? (
+                <div className="space-y-4">
+                  <p><strong>Nombre:</strong> {latestPropertyDetails.name}</p>
+                  <div className="flex items-center gap-2">
+                    <img src={HouseIcon} alt="house" width={20} />
+                    <p>
+                      <strong>Tipo:</strong> {latestPropertyDetails.type === "APARTMENT" ? "Departamento" : latestPropertyDetails.type}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={LocationIcon} alt="location" width={20} />
+                    <p><strong>Dirección:</strong> {latestPropertyDetails.location.address}, {latestPropertyDetails.location.cityName}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={PersonasIcon} alt="personas" width={20} />
+                    <p><strong>Capacidad:</strong> {latestPropertyDetails.capacity.maxAdults} adultos, {latestPropertyDetails.capacity.maxChildren} niños</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={BedroomIcon} alt="bedroom" width={20} />
+                    <p><strong>Dormitorios:</strong> {latestPropertyDetails.distribution.bedrooms.length}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img src={BathhubIcon} alt="bahthub" width={20} />
+                    <p><strong>Baños:</strong> {latestPropertyDetails.distribution.bathrooms.length}</p>
+                  </div>
+                </div>
+              ) : (
+                <p>Cargando detalles de la reserva...</p>
+              )}
             </div>
-          ) : (
-            <p>Cargando detalles de la reserva...</p>
-          )}
+
+            <div className="lg:col-span-3">
+              {renderFirstAccommodationPictures()}
+            </div>
+          </div>
         </section>
         {/* Proceso de Reserva */}
-        <section className="lg:col-span-2 bg-white p-6 shadow-lg rounded-lg">
+        <section className="lg:col-span-2 bg-white p-6 rounded-lg">
           <Link to="/reservation-process" className="text-primary font-bold">
             <ReservationProcess />
           </Link>
         </section>
         {/* Últimas Reservas */}
-        <section className="bg-white p-6 shadow-lg rounded-lg">
+        <section className="bg-white p-6 rounded-lg">
           <h2 className="text-2xl font-bold mb-4 text-primary-dark">
             Últimas Reservas
           </h2>
           <div className="space-y-6">
             {reservas.map((reserva, index) => (
-              <div key={reserva.id} className="p-4 bg-white shadow rounded-lg">
+              <Link 
+              key={reserva.id} 
+              to={`/mis-reservas/${reserva.id}`}
+              className="block hover:shadow-lg transition-shadow duration-200"
+            >
+                <div key={reserva.id} className="p-4 bg-white shadow-md rounded-lg">
                 <h4 className="text-lg font-bold text-gray-800">
-                  Reserva #{reserva.reference} 
-                    <p
-                                className={`text-sm font-medium ${reserva.status === "UNPAID"
-                                        ? "text-red-500"
-                                        : reserva.status === "CONFIRMED"
-                                            ? "text-blue-500"
-                                            : reserva.status === "PAID"
-                                                ? "text-green-500"
-                                                : "text-gray-500"
-                                    }`}
-                            >
-                                Estado:{" "}
-                                {reserva.status === "UNPAID"
-                                    ? "No paga"
-                                    : reserva.status === "CONFIRMED"
-                                        ? "Confirmada"
-                                        : reserva.status === "PAID"
-                                            ? "Paga"
-                                            : reserva.status}
-                            </p>
+                  Reserva #{reserva.reference}
+                  <p
+                    className={`text-sm font-medium ${reserva.status === "UNPAID"
+                      ? "text-red-500"
+                      : reserva.status === "CONFIRMED"
+                        ? "text-blue-500"
+                        : reserva.status === "PAID"
+                          ? "text-green-500"
+                          : "text-gray-500"
+                      }`}
+                  >
+                    Estado:{" "}
+                    {reserva.status === "UNPAID"
+                      ? "No paga"
+                      : reserva.status === "CONFIRMED"
+                        ? "Confirmada"
+                        : reserva.status === "PAID"
+                          ? "Paga"
+                          : reserva.status}
+                  </p>
                 </h4>
                 <p className="text-gray-600">
                   Desde: <b>{new Date(reserva.stayDates.arrival).toLocaleDateString()}</b>
@@ -241,6 +250,7 @@ const Dashboard = () => {
                   <p className="text-gray-600">Cargando detalles de la propiedad...</p>
                 )}
               </div>
+              </Link>
             ))}
           </div>
         </section>

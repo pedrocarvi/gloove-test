@@ -110,7 +110,7 @@ const ReservationProcess = () => {
   const isFianzaPaid = securityDeposit?.status === "PAID";
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md max-w-4xl mx-auto">
+    <div className="p-6 bg-white rounded-lg max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold text-black text-center mb-6">Estado de la reserva</h2>
       <div className="w-full bg-gray-200 h-1 rounded-full mb-6">
         <div
