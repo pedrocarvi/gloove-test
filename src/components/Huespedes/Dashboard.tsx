@@ -96,6 +96,7 @@ const Dashboard = () => {
       const response = await fetch(`https://gloove-api-avantio.vercel.app/accommodations/${id}`);
       if (response.ok) {
         const accommodationDetails = await response.json();
+        console.log("Informacion de la propiedad", accommodationDetails)
         return accommodationDetails.data;
       } else {
         const errorBody = await response.text();
