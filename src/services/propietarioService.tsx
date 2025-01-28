@@ -145,6 +145,14 @@ export const updatePropietarioDocuments = async (
     ),
   ]);
 
+    urls.forEach((url, index) => {
+      if (!url) {
+        console.error(`URL de documento no encontrada para el índice ${index + 1}`);
+      } else {
+        console.log(`Documento ${index + 1} cargado con éxito: ${url}`);
+      }
+    });
+
   return {
     ...propietario,
     fichaTecnica: urls[0],
@@ -187,6 +195,8 @@ export const getPropietariosValidados = async (): Promise<Propietario[]> => {
   const propietarios = snapshot.docs.map(
     (doc) => ({ id: doc.id, ...doc.data() } as Propietario)
   );
+
+  console.log("Propietarios service", propietarios)
 
   for (const propietario of propietarios) {
     await updatePropietarioDocuments(propietario);

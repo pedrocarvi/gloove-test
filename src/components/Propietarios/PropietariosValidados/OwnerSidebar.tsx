@@ -86,11 +86,11 @@ const OwnerSidebar: React.FC = () => {
     //   path: "/chat",
     //   icon: <ChatBubbleLeftRightIcon className="h-6 w-6" />,
     // },
-    // {
-    //   name: "Mi documentación",
-    //   path: "/documents",
-    //   icon: <DocumentTextIcon className="h-6 w-6" />,
-    // },
+    {
+      name: "Mi documentación",
+      path: "/documents",
+      icon: <DocumentTextIcon className="h-6 w-6" />,
+    },
     // {
     //   name: "Notificaciones",
     //   path: "/notifications",

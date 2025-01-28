@@ -44,6 +44,8 @@ const PropietariosValidados: React.FC = () => {
     );
     setPropietarios(propietariosConDocumentos);
     setFilteredPropietarios(propietariosConDocumentos);
+    console.log("Propietarios", propietarios);
+    console.log("Propietarios filtered", filteredPropietarios);
     setLoading(false);
   };
 

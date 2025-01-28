@@ -225,7 +225,7 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(2, propietario.currentStep)}
                   </td>
-                  <td
+                  {/* <td
                     className={`p-4 text-center ${
                       propietario.presupuestoTextil === "pendiente"
                         ? "bg-yellow-100"
@@ -252,7 +252,8 @@ const ProcesoAlta: React.FC = () => {
                     >
                       Ir a Presupuesto
                     </button>
-                  </td>
+                  </td> */}
+                  <td> Ver presupuesto</td>
                   <td className="p-4 text-center">
                     {renderStatusIcon(4, propietario.currentStep)}
                   </td>

@@ -105,27 +105,41 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
     console.log("Abrir chat para preguntas sobre el presupuesto textil.");
   };
 
+  // Define el tipo de summary
+  interface Summary {
+    [concepto: string]: number;
+  }
+
+  // Inicializa summary con los datos adecuados
+  const summary: Summary = {
+    "Concepto1": 10,
+    "Concepto2": 5,
+    // Añade más conceptos según sea necesario
+  };
+
   const handleDownloadPDF = async () => {
-    console.log("Generar y descargar el PDF del resumen textil.");
+    // console.log("Generar y descargar el PDF del resumen textil.");
 
-    // if (user) {
-    //   const pdfDoc = await generateInventoryBudgetPDF({
-    //     presupuestoId: `TEXTIL-${user.uid.substring(0, 6)}`,
-    //     fecha: new Date().toLocaleDateString(),
-    //     iva: 21,
-    //     items: Object.entries(summary).map(([concepto, cantidad]) => ({
-    //       concepto,
-    //       cantidad,
-    //       total: cantidad * (prices[concepto as keyof typeof prices]?.pvp || 0),
-    //     })),
-    //   });
-    //   const pdfData = pdfDoc.output("datauristring");
+    console.log("TODO")
+    if (user) {
+      const pdfDoc = await generateInventoryBudgetPDF({
+        presupuestoId: `TEXTIL-${user.uid.substring(0, 6)}`,
+        fecha: new Date().toLocaleDateString(),
+        iva: 21,
+        items: Object.entries(summary).map(([concepto, cantidad]) => ({
+          concepto,
+          cantidad,
+          total: 1000
+          // total: cantidad * (prices[concepto as keyof typeof prices]?.pvp || 0),
+        })),
+      });
+      const pdfData = pdfDoc.output("datauristring");
 
-    //   const link = document.createElement("a");
-    //   link.href = pdfData;
-    //   link.download = `Resumen_Textil_${user.uid}.pdf`;
-    //   link.click();
-    // }
+      const link = document.createElement("a");
+      link.href = pdfData;
+      link.download = `textile_summary_${user.uid}.pdf`;
+      link.click();
+    }
   };
 
   // if (!formData) {
