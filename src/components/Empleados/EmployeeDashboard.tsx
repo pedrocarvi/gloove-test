@@ -77,7 +77,7 @@ const EmployeeDashboard: React.FC = () => {
       <h1 className="text-3xl font-bold text-center mb-6">
         Dashboard de Empleados
       </h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      {/* <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="col-span-2">
           <table className="min-w-full bg-white border border-gray-200 rounded shadow-lg">
             <thead className="bg-gray-100">
@@ -208,7 +208,7 @@ const EmployeeDashboard: React.FC = () => {
             </p>
           </Link>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

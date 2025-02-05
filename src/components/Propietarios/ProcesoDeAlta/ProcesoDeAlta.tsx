@@ -12,6 +12,8 @@ import DistinctDocument from "./DistinctDocument";
 import Contract from "./Contract";
 import InventoryForm from "./InventoryForm";
 
+import GlooveLogo from "../../../assets/gloove-logo.jpg"
+
 const steps = [
   "Ficha técnica",
   "Textil",
@@ -106,6 +108,7 @@ const ProcesoDeAlta: React.FC = () => {
    
   return (
     <div className="container mx-auto p-4">
+      <img src={GlooveLogo} alt="Logo de Gloove" width={220} />
       <h1 className="text-4xl font-bold mb-4 text-primary-dark text-center">
         Proceso de Alta
       </h1>

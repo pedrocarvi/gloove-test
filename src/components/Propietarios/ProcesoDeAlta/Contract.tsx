@@ -267,8 +267,8 @@ const Contract: React.FC<ContractProps> = ({
   }
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 py-8">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-2xl">
+    <div className="flex items-center justify-center py-8">
+      <div className="bg-white p-8 rounded-xl w-full max-w-2xl">
         <h2 className="text-4xl font-bold mb-8 text-primary-dark text-center">
           Contrato
         </h2>

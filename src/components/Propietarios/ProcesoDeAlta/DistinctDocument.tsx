@@ -138,8 +138,8 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-lg mb-8">
+    <div className="flex flex-col items-center justify-center py-8 px-4 sm:px-6 lg:px-8">
+      <div className="bg-white p-6 rounded-lg w-full max-w-lg mb-8">
         <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Documentación Necesaria
         </h2>
@@ -183,15 +183,19 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
               {type.replace(/_/g, " ")}
             </h3>
             {images[type as keyof ImageState] ? (
-              <div className="flex flex-col items-center">
-                <img
-                  src={images[type as keyof ImageState]}
-                  alt={`${type} document`}
-                  className="w-40 h-40 object-cover mb-4 border border-gray-300 rounded-md"
-                />
+              <div className="flex items-center justify-between">
+                <div className="d-flex gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+                  </svg>
+
+                  <p>
+                    El archivo fue subido correctamente.
+                  </p>
+                </div>
                 <button
                   onClick={() => setImages({ ...images, [type]: "" })}
-                  className="py-2 px-4 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+                  className="py-2 px-4 text-red-500 border border-red-500 font-semibold rounded-md hover:bg-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
                 >
                   Eliminar
                 </button>
@@ -219,11 +223,10 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
               !images.vut ||
               loading
             }
-            className={`w-full py-3 px-4 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50 ${
-              images.dni && images.referenciaCatastral && images.vut && !loading
+            className={`w-full py-3 px-4 font-semibold rounded-md shadow-md focus:outline-none focus:ring-2 focus:ring-opacity-50 ${images.dni && images.referenciaCatastral && images.vut && !loading
                 ? "bg-primary text-white hover:bg-primary-dark focus:ring-primary"
                 : "bg-gray-300 text-gray-800 cursor-not-allowed focus:ring-gray-300"
-            }`}
+              }`}
           >
             {loading ? "Subiendo..." : "Subir Documentos"}
           </button>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
@@ -46,7 +46,7 @@ interface TextileSummaryProps {
     propietario: string;
     dni: string;
     direccion: string;
-  }
+  };
   onAccept: () => void;
 }
 
@@ -86,75 +86,95 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
     fundasNordico: "Fundas Nórdicas",
   };
 
+  // Función que se ejecuta al aceptar el presupuesto.
+  // Se genera el PDF y se guarda en Firebase Storage.
   const handleAccept = async () => {
     if (!user) {
       console.error("User is not authenticated");
       return;
     }
 
-    setIsAccepted(true);
-    Swal.fire({
-      icon: "success",
-      title: "Presupuesto aceptado",
-      text: "Puedes proceder al siguiente paso.",
-    });
-    onAccept();
-  };
+    // Construir el array de items para pasarlo al PDF
+    const items = Object.entries(initialValues).map(([key, value]) => ({
+      concepto: itemLabels[key], // "Toallas baño", "Sábanas", etc.
+      cantidad: value, // Cantidad
+      precio: prices[key as keyof typeof prices] || 0, // Precio unitario
+    }));
 
-  const handleChat = () => {
-    console.log("Abrir chat para preguntas sobre el presupuesto textil.");
-  };
-
-  // Define el tipo de summary
-  interface Summary {
-    [concepto: string]: number;
-  }
-
-  // Inicializa summary con los datos adecuados
-  const summary: Summary = {
-    "Concepto1": 10,
-    "Concepto2": 5,
-    // Añade más conceptos según sea necesario
-  };
-
-  const handleDownloadPDF = async () => {
-    // console.log("Generar y descargar el PDF del resumen textil.");
-
-    console.log("TODO")
-    if (user) {
+    try {
+      // Generar el PDF utilizando la función generateInventoryBudgetPDF
       const pdfDoc = await generateInventoryBudgetPDF({
         presupuestoId: `TEXTIL-${user.uid.substring(0, 6)}`,
         fecha: new Date().toLocaleDateString(),
         iva: 21,
-        items: Object.entries(summary).map(([concepto, cantidad]) => ({
-          concepto,
-          cantidad,
-          total: 1000
-          // total: cantidad * (prices[concepto as keyof typeof prices]?.pvp || 0),
-        })),
+        items,
       });
       const pdfData = pdfDoc.output("datauristring");
 
-      const link = document.createElement("a");
-      link.href = pdfData;
-      link.download = `textile_summary_${user.uid}.pdf`;
-      link.click();
+      // Subir el PDF a Firebase Storage en la ruta indicada
+      const storage = getStorage();
+      console.log("USER UUI", user.uid);
+      console.log("USER DEMAS DATA", user)
+      const pdfRef = ref(
+        storage,
+        `DocumentacionPropietarios/PresupuestoTextil/presupuestoTextil_${user.uid}.pdf`
+      );
+      await uploadString(pdfRef, pdfData, "data_url");
+
+      // (Opcional) Obtener la URL de descarga del PDF
+      const pdfUrl = await getDownloadURL(pdfRef);
+      console.log("PDF subido en:", pdfUrl);
+
+      setIsAccepted(true);
+      Swal.fire({
+        icon: "success",
+        title: "Presupuesto aceptado",
+        text: "El PDF del presupuesto se ha guardado. Puedes proceder al siguiente paso.",
+      });
+      onAccept();
+    } catch (error) {
+      console.error("Error al generar o subir el PDF del presupuesto:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Hubo un problema al guardar el presupuesto. Por favor, inténtalo de nuevo.",
+      });
     }
   };
 
-  // if (!formData) {
-  //   return <div>Loading...</div>;
-  // }
+  const handleDownloadPDF = async () => {
+    if (!user) return;
+
+    const items = Object.entries(initialValues).map(([key, value]) => ({
+      concepto: itemLabels[key],
+      cantidad: value,
+      precio: prices[key as keyof typeof prices] || 0,
+    }));
+
+    const pdfDoc = await generateInventoryBudgetPDF({
+      presupuestoId: `TEXTIL-${user.uid.substring(0, 6)}`,
+      fecha: new Date().toLocaleDateString(),
+      iva: 21,
+      items,
+    });
+
+    const pdfData = pdfDoc.output("datauristring");
+    const link = document.createElement("a");
+    link.href = pdfData;
+    link.download = `textile_summary_${user.uid}.pdf`;
+    link.click();
+  };
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 py-4">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl">
+    <div className="flex items-center justify-center py-4">
+      <div className="bg-white p-8 rounded-xl w-full max-w-4xl">
         <h2 className="text-4xl font-bold mb-8 text-primary-dark text-center">
           Resumen de Textil
         </h2>
-        <p> Propietario: {step1Data.propietario}</p>
-        <p> Dirección: {step1Data.direccion}</p>
-        <p> DNI: {step1Data.dni} </p>
+        <p>Propietario: {step1Data.propietario}</p>
+        <p>Dirección: {step1Data.direccion}</p>
+        <p>DNI: {step1Data.dni}</p>
+        <br />
         <table className="w-full text-left mb-6">
           <thead>
             <tr>
@@ -166,9 +186,11 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
           <tbody>
             {Object.entries(initialValues).map(([key, value]) => (
               <tr key={key}>
-                <td className="border-b py-2">{itemLabels[key]}</td>                
+                <td className="border-b py-2">{itemLabels[key]}</td>
                 <td className="border-b py-2">{value}</td>
-                <td className="border-b py-2">{prices[key as keyof typeof prices]} €</td>
+                <td className="border-b py-2">
+                  {prices[key as keyof typeof prices]} €
+                </td>
               </tr>
             ))}
           </tbody>
@@ -183,12 +205,6 @@ const TextileSummary: React.FC<TextileSummaryProps> = ({
             }`}
           >
             Aceptar
-          </button>
-          <button
-            onClick={handleChat}
-            className="py-2 px-4 bg-secondary text-white font-semibold rounded-md shadow-md hover:bg-secondary-dark focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-opacity-50"
-          >
-            Preguntar sobre el presupuesto
           </button>
           <button
             onClick={handleDownloadPDF}

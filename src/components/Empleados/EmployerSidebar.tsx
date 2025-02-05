@@ -73,11 +73,11 @@ const EmployerSidebar: React.FC = () => {
     //   path: "/glovito",
     //   icon: <SunIcon className="h-6 w-6" />,
     // },
-    {
-      name: "Inventario",
-      path: "/inventario",
-      icon: <PencilSquareIcon className="h-6 w-6" />,
-    },
+    // {
+    //   name: "Inventario",
+    //   path: "/inventario",
+    //   icon: <PencilSquareIcon className="h-6 w-6" />,
+    // },
     // {
     //   name: "Limpieza",
     //   path: "/limpieza",

@@ -117,7 +117,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
     baneras: initialValues.baneras ?? 0,
     trastero: initialValues.trastero ?? false,
     mascotas: initialValues.mascotas ?? false,
-    cocina: initialValues.cocina ?? "",
+    cocina: initialValues.cocina ?? 0,
     capacidadMaxima: initialValues.capacidadMaxima ?? 0,
     camas90: initialValues.camas90 ?? 0,
     camas105: initialValues.camas105 ?? 0,
@@ -241,8 +241,8 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-100 py-8">
-      <div className="bg-white p-8 rounded-xl shadow-md w-full max-w-4xl">
+    <div className="flex items-center justify-center">
+      <div className="bg-white p-8 rounded-xl w-full max-w-4xl">
         <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
           Ficha Técnica del Alojamiento Turístico
         </h1>
@@ -254,7 +254,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                   htmlFor="propietario"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Propietario <span className="text-red-500">*</span>
+                  Propietario<span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"
@@ -262,6 +262,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                   name="propietario"
                   value={formData.propietario}
                   onChange={handleChange}
+                  placeholder="Ingrese su nombre y apellido"
                   required
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 />
@@ -280,6 +281,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 value={formData.email}
                 onChange={handleChange}
                 required
+                placeholder="Ingrese su email"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -296,6 +298,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                   type="text"
                   id="DNI"
                   name="DNI"
+                  placeholder="Ingrese su número de DNI"
                   value={formData.DNI}
                   onChange={handleChange}
                   required
@@ -316,6 +319,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 value={formData.numCatastro}
                 onChange={handleChange}
                 required
+                placeholder="Ingrese su número de catastro"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
               <p className="mt-2 text-sm text-gray-600">
@@ -347,6 +351,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="ciudad"
                 value={formData.ciudad}
                 onChange={handleChange}
+                placeholder="Ingrese la ciudad de la propiedad"
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
@@ -364,6 +369,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="provincia"
                 value={formData.provincia}
                 onChange={handleChange}
+                placeholder="Ingrese la provincia de la propiedad"
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
@@ -383,6 +389,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                   name="direccion"
                   value={formData.direccion}
                   onChange={handleChange}
+                  placeholder="Ingrese la dirección de la propiedad"
                   required
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 />
@@ -398,6 +405,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 type="text"
                 id="cPostal"
                 name="cPostal"
+                placeholder="Ingrese el código postal de la propiedad"
                 value={formData.cPostal}
                 onChange={handleChange}
                 required
@@ -419,6 +427,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="numeroVUT"
                 value={formData.numeroVUT}
                 onChange={handleChange}
+                placeholder="Ingrese su número de VUT"
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
@@ -453,6 +462,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                   name="referenciaCatastral"
                   value={formData.referenciaCatastral}
                   onChange={handleChange}
+                  placeholder="Ingrese su referencia catastral"
                   required
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
                 />
@@ -484,6 +494,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="tipoVivienda"
                 value={formData.tipoVivienda}
                 onChange={handleChange}
+                placeholder="Ingrese el tipo de vivienda (Casa, departamento, etc.)"
                 required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
@@ -501,6 +512,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="vistas"
                 value={formData.vistas}
                 onChange={handleChange}
+                placeholder="Ingrese las vistas (al mar, montaña, etc.)"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -613,7 +625,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                   htmlFor="ascensor"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Ascensor <span className="text-red-500">*</span>
+                  Ascensor
                 </label>
                 <input
                   type="checkbox"
@@ -722,6 +734,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="observaciones"
                 value={formData.observaciones}
                 onChange={handleChange}
+                placeholder="Ingrese información extra de la propiedad (opcional)"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               ></textarea>
             </div>
@@ -741,6 +754,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="zonasComunes"
                 value={formData.zonasComunes}
                 onChange={handleChange}
+                placeholder="Ingrese zonas comunes (living, galería, etc.)"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -757,6 +771,7 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="zonasTuristicas"
                 value={formData.zonasTuristicas}
                 onChange={handleChange}
+                placeholder="Ingrese zonas turísticas (atracciones, monumentos, etc)"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
@@ -773,12 +788,30 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 name="accesibilidad"
                 value={formData.accesibilidad}
                 onChange={handleChange}
+                placeholder="Ingrese facilidades de accesibilidad"
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
           </div>
           {/* Características y amueblamiento */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div>
+              <label
+                htmlFor="capacidadMaxima"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Capacidad Máxima <span className="text-red-500">*</span>
+              </label>
+              <input
+                type="number"
+                id="capacidadMaxima"
+                name="capacidadMaxima"
+                value={formData.capacidadMaxima}
+                onChange={handleChange}
+                required
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
             <div>
               <label
                 htmlFor="habitaciones"
@@ -864,6 +897,22 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
             </div>
             <div>
               <label
+                htmlFor="cocina"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Cocina
+              </label>
+              <input
+                type="text"
+                id="cocina"
+                name="cocina"
+                value={formData.cocina}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
+              />
+            </div>
+            <div>
+              <label
                 htmlFor="trastero"
                 className="block text-sm font-medium text-gray-700"
               >
@@ -892,39 +941,6 @@ const TechnicalForm: React.FC<TechnicalFormProps> = ({ onAccept, initialValues =
                 checked={formData.mascotas}
                 onChange={handleChange}
                 className="mt-1 block"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="cocina"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Cocina
-              </label>
-              <input
-                type="text"
-                id="cocina"
-                name="cocina"
-                value={formData.cocina}
-                onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="capacidadMaxima"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Capacidad Máxima <span className="text-red-500">*</span>
-              </label>
-              <input
-                type="number"
-                id="capacidadMaxima"
-                name="capacidadMaxima"
-                value={formData.capacidadMaxima}
-                onChange={handleChange}
-                required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary"
               />
             </div>
           </div>

@@ -54,32 +54,33 @@ const PresupuestoTextil: React.FC = () => {
     if (!id) return;
     try {
       const storage = getStorage();
+      // console.log("ID DEL USER ID ", id)
       const presupuestoRef = ref(
         storage,
-        `Presupuesto Textil/textile_summary_${id}.pdf`
+        `DocumentacionPropietarios/PresupuestoTextil/presupuestoTextil_${id}.pdf`
       );
-      const beneficioRef = ref(
-        storage,
-        `Presupuesto Textil/Beneficio_${id}.pdf`
-      );
-      const facturaRef = ref(storage, `Presupuesto Textil/Factura_${id}.pdf`);
+      // const beneficioRef = ref(
+      //   storage,
+      //   `Presupuesto Textil/Beneficio_${id}.pdf`
+      // );
+      // const facturaRef = ref(storage, `Presupuesto Textil/Factura_${id}.pdf`);
 
       const presupuestoUrl = await getDownloadURL(presupuestoRef);
       setPresupuestoUrl(presupuestoUrl);
 
-      try {
-        const beneficioUrl = await getDownloadURL(beneficioRef);
-        setBeneficioUrl(beneficioUrl);
-      } catch (error) {
-        console.log("Beneficio aún no generado");
-      }
+      // try {
+      //   const beneficioUrl = await getDownloadURL(beneficioRef);
+      //   setBeneficioUrl(beneficioUrl);
+      // } catch (error) {
+      //   console.log("Beneficio aún no generado");
+      // }
 
-      try {
-        const facturaUrl = await getDownloadURL(facturaRef);
-        setFacturaUrl(facturaUrl);
-      } catch (error) {
-        console.log("Factura aún no generada");
-      }
+      // try {
+      //   const facturaUrl = await getDownloadURL(facturaRef);
+      //   setFacturaUrl(facturaUrl);
+      // } catch (error) {
+      //   console.log("Factura aún no generada");
+      // }
     } catch (error) {
       console.error("Error fetching PDF URLs:", error);
       Swal.fire({
@@ -269,7 +270,7 @@ const PresupuestoTextil: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6 text-center">
         Presupuesto Textil
       </h1>
-      <div className="mb-4 flex justify-center space-x-4">
+      {/* <div className="mb-4 flex justify-center space-x-4">
         <button
           onClick={() => setActiveTab("presupuesto")}
           className={`py-2 px-4 rounded-md ${
@@ -302,7 +303,7 @@ const PresupuestoTextil: React.FC = () => {
             Ver Factura
           </button>
         )}
-      </div>
+      </div> */}
       {activeTab === "presupuesto" && presupuestoUrl && (
         <iframe
           src={presupuestoUrl}
@@ -310,7 +311,7 @@ const PresupuestoTextil: React.FC = () => {
           title="Presupuesto Textil"
         />
       )}
-      {activeTab === "beneficio" && beneficioUrl && (
+      {/* {activeTab === "beneficio" && beneficioUrl && (
         <iframe
           src={beneficioUrl}
           className="w-full h-screen border-2 border-gray-300"
@@ -323,7 +324,7 @@ const PresupuestoTextil: React.FC = () => {
           className="w-full h-screen border-2 border-gray-300"
           title="Factura Textil"
         />
-      )}
+      )} */}
       <div className="mt-4 flex space-x-2 justify-center">
         <button
           onClick={handleAccept}
@@ -331,7 +332,7 @@ const PresupuestoTextil: React.FC = () => {
         >
           Aceptar Presupuesto
         </button>
-        <button
+        {/* <button
           onClick={handleGenerateBeneficio}
           className="bg-blue-500 text-white py-2 px-4 rounded-md"
         >
@@ -348,7 +349,7 @@ const PresupuestoTextil: React.FC = () => {
           className="bg-purple-500 text-white py-2 px-4 rounded-md"
         >
           Descargar Factura
-        </button>
+        </button> */}
         <button
           onClick={handleBackClick}
           className="bg-gray-500 text-white py-2 px-4 rounded-md"

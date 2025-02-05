@@ -195,12 +195,12 @@ const ProcesoAlta: React.FC = () => {
               <th className="p-4 text-center font-medium text-gray-700">
                 Inventario
               </th>
-              <th className="p-4 text-center font-medium text-gray-700">
+              {/* <th className="p-4 text-center font-medium text-gray-700">
                 Chat
-              </th>
-              <th className="p-4 text-center font-medium text-gray-700">
+              </th> */}
+              {/* <th className="p-4 text-center font-medium text-gray-700">
                 Estado
-              </th>
+              </th> */}
             </tr>
           </thead>
           <tbody>
@@ -225,22 +225,22 @@ const ProcesoAlta: React.FC = () => {
                   <td className="p-4 text-center">
                     {renderStatusIcon(2, propietario.currentStep)}
                   </td>
-                  {/* <td
+                  <td
                     className={`p-4 text-center ${
                       propietario.presupuestoTextil === "pendiente"
                         ? "bg-yellow-100"
                         : ""
                     }`}
                   >
-                    {renderActionButton(
+                    {/* {renderActionButton(
                       propietario.presupuestoTextil,
                       propietario.id,
                       "presupuestoTextil",
                       typeof propietario.presupuestoTextil === "string"
                         ? propietario.presupuestoTextil
                         : undefined
-                    )}
-                    <button
+                    )} */}
+                    <a
                       onClick={() =>
                         handleNavigate(
                           `/presupuesto-textil/${propietario.id}`,
@@ -248,12 +248,12 @@ const ProcesoAlta: React.FC = () => {
                           "presupuestoTextil"
                         )
                       }
-                      className="ml-2 bg-blue-500 text-white p-1 rounded"
+                      style={{textDecoration: 'underline', fontSize: '14px', cursor: 'pointer'}
+                    }
                     >
-                      Ir a Presupuesto
-                    </button>
-                  </td> */}
-                  <td> Ver presupuesto</td>
+                      Ver Presupuesto
+                    </a>
+                  </td>
                   <td className="p-4 text-center">
                     {renderStatusIcon(4, propietario.currentStep)}
                   </td>
@@ -264,15 +264,15 @@ const ProcesoAlta: React.FC = () => {
                         : ""
                     }`}
                   >
-                    {renderActionButton(
+                    {/* {renderActionButton(
                       propietario.contrato,
                       propietario.id,
                       "contrato",
                       typeof propietario.contrato === "string"
                         ? propietario.contrato
                         : undefined
-                    )}
-                    <button
+                    )} */}
+                    <a
                       onClick={() =>
                         handleNavigate(
                           `/contrato/${propietario.id}`,
@@ -280,15 +280,15 @@ const ProcesoAlta: React.FC = () => {
                           "contrato"
                         )
                       }
-                      className="ml-2 bg-blue-500 text-white p-1 rounded"
+                      style={{textDecoration: 'underline', fontSize: '14px', cursor: 'pointer'}}
                     >
-                      Ir a Contrato
-                    </button>
+                      Ver Contrato
+                    </a>
                   </td>
                   <td className="p-4 text-center">
                     {renderStatusIcon(6, propietario.currentStep)}
                   </td>
-                  <td className="p-4 text-center">
+                  {/* <td className="p-4 text-center">
                     <button className="bg-blue-500 text-white p-2 rounded relative">
                       <MessageCircle size={16} />
                       {propietario.chat > 0 && (
@@ -297,13 +297,13 @@ const ProcesoAlta: React.FC = () => {
                         </span>
                       )}
                     </button>
-                  </td>
-                  <td className="p-4 text-center">
+                  </td> */}
+                  {/* <td className="p-4 text-center">
                     {renderStatusIcon(
                       propietario.completedRegistration ? 7 : 0,
                       7
                     )}
-                  </td>
+                  </td> */}
                 </tr>
               ))}
           </tbody>
