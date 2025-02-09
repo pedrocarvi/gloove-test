@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["http://localhost:5173", "https://software-gloove.web.app"],
+    "origin": ["http://localhost:5173", "https://software-gloove.web.app", "https://gloove-test.vercel.app/"],
     "method": ["GET", "HEAD", "DELETE", "POST", "PUT"],
     "maxAgeSeconds": 3600,
     "responseHeader": ["Content-Type", "Authorization"]
