@@ -31,11 +31,27 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
   };
 
+  // Función para subir un archivo a Firebase Storage
+  // Los paths de almacenamiento son los siguientes
+  //
+  // Para el DNI:
+  //   gs://software-gloove.appspot.com/DocumentacionPropietarios/DNI
+  //   Archivo: "DocumentacionPropietarios/DNI/archivoDNI_<uniqueId>.pdf"
+  //
+  // Para el VUT:
+  //   gs://software-gloove.appspot.com/DocumentacionPropietarios/VUT
+  //   Archivo: "DocumentacionPropietarios/VUT/archivoVUT_<uniqueId>.pdf"
+  //
+  // Para la Referencia Catastral:
+  //   gs://software-gloove.appspot.com/DocumentacionPropietarios/RefCatastral
+  //   Archivo: "DocumentacionPropietarios/RefCatastral/archivoRefCatastral_<uniqueId>.pdf"
   const uploadFile = async (
     file: string,
     documentType: string
   ): Promise<string> => {
-    const fileName = `${documentType}_${generateUniqueId()}.jpg`;
+    // Genera el nombre del archivo. Por ejemplo, para DNI:
+    const fileName = `archivo${documentType}_${user ? user.uid : 'ErrorUser'}.pdf`;
+    // Se arma el path de almacenamiento usando la carpeta correspondiente:
     const path = `DocumentacionPropietarios/${documentType}/${fileName}`;
     const storage = getStorage();
     const storageRef = ref(storage, path);
@@ -60,10 +76,16 @@ const DistinctDocument: React.FC<DistinctDocumentProps> = ({ onAccept }) => {
 
     try {
       const uploadedPaths = {
-        dni: images.dni ? await uploadFile(images.dni, "dNI") : "",
-        vut: images.vut ? await uploadFile(images.vut, "vUT") : "",
+        // Guarda el archivo en la ruta para DNI:
+        // "DocumentacionPropietarios/DNI/archivoDNI_<uniqueId>.pdf"
+        dni: images.dni ? await uploadFile(images.dni, "DNI") : "",
+        // Guarda el archivo en la ruta para VUT:
+        // "DocumentacionPropietarios/VUT/archivoVUT_<uniqueId>.pdf"
+        vut: images.vut ? await uploadFile(images.vut, "VUT") : "",
+        // Guarda el archivo en la ruta para Referencia Catastral:
+        // "DocumentacionPropietarios/RefCatastral/archivoRefCatastral_<uniqueId>.pdf"
         referenciaCatastral: images.referenciaCatastral
-          ? await uploadFile(images.referenciaCatastral, "refCatastral")
+          ? await uploadFile(images.referenciaCatastral, "RefCatastral")
           : "",
       };
 

@@ -49,10 +49,10 @@ const fetchDocumentURL = async (
       return url;
     } catch (error) {
       if ((error as any).code === "storage/object-not-found") {
-        console.warn(`Document ${fullPath} not found.`);
+        // console.warn(`Document ${fullPath} not found.`);
         failedDocumentsCache[cacheKey] = true;
       } else {
-        console.error(`Error getting URL for document ${fullPath}:`, error);
+        // console.error(`Error getting URL for document ${fullPath}:`, error);
         return "pendiente";
       }
     }
@@ -60,60 +60,10 @@ const fetchDocumentURL = async (
   return "pendiente";
 };
 
-// export const updatePropietarioDocuments = async (propietario: Propietario) => {
-//   propietario.fichaTecnica = await fetchDocumentURL(
-//     propietario.id,
-//     `DocumentacionPropietarios/FichaTecnica/ficha_tecnica_${propietario.id}`
-//   );
-//   propietario.presupuestoTextil = await fetchDocumentURL(
-//     propietario.id,
-//     `Presupuesto Textil/textile_summary_${propietario.id}`
-//   );
-//   propietario.dni = await fetchDocumentURL(
-//     propietario.id,
-//     `DocumentacionPropietarios/dNI/dNI_${propietario.id}`
-//   );
-//   propietario.referenciaCatastral = await fetchDocumentURL(
-//     propietario.id,
-//     `DocumentacionPropietarios/refCatastral/refCatastral_${propietario.id}`
-//   );
-//   propietario.vut = await fetchDocumentURL(
-//     propietario.id,
-//     `DocumentacionPropietarios/vUT/vUT_${propietario.id}`
-//   );
-//   propietario.contrato = await fetchDocumentURL(
-//     propietario.id,
-//     `DocumentacionPropietarios/Contratos/contract_${propietario.id}`
-//   );
-//   propietario.inventario = await fetchDocumentURL(
-//     propietario.id,
-//     `DocumentacionPropietarios/Inventario/inventario_${propietario.id}`
-//   );
-//   return propietario;
-// };
-
-// export const getPropietariosEnProceso = async (): Promise<Propietario[]> => {
-//   const propietariosRef = collection(db, "users");
-//   const q = query(
-//     propietariosRef,
-//     where("role", "==", "propietario"),
-//     where("completedRegistration", "==", false)
-//   );
-//   const snapshot = await getDocs(q);
-//   const propietarios = snapshot.docs.map(
-//     (doc) => ({ id: doc.id, ...doc.data() } as Propietario)
-//   );
-
-//   for (const propietario of propietarios) {
-//     await updatePropietarioDocuments(propietario);
-//   }
-
-//   return propietarios;
-// };
-
 export const updatePropietarioDocuments = async (
   propietario: Propietario
 ): Promise<Propietario> => {
+  console.log("Propietario ID", propietario.id);
   const urls = await Promise.all([
     fetchDocumentURL(
       propietario.id,
@@ -121,19 +71,19 @@ export const updatePropietarioDocuments = async (
     ),
     fetchDocumentURL(
       propietario.id,
-      `Presupuesto Textil/textile_summary_${propietario.id}`
+      `DocumentacionPropietarios/PresupuestoTextil/presupuestoTextil_${propietario.id}`
     ),
     fetchDocumentURL(
       propietario.id,
-      `DocumentacionPropietarios/dNI/dNI_${propietario.id}`
+      `DocumentacionPropietarios/DNI/archivoDNI_${propietario.id}`
     ),
     fetchDocumentURL(
       propietario.id,
-      `DocumentacionPropietarios/refCatastral/refCatastral_${propietario.id}`
+      `DocumentacionPropietarios/RefCatastral/archivoRefCatastral_${propietario.id}`
     ),
     fetchDocumentURL(
       propietario.id,
-      `DocumentacionPropietarios/vUT/vUT_${propietario.id}`
+      `DocumentacionPropietarios/VUT/archivoVUT_${propietario.id}`
     ),
     fetchDocumentURL(
       propietario.id,
@@ -145,13 +95,13 @@ export const updatePropietarioDocuments = async (
     ),
   ]);
 
-    urls.forEach((url, index) => {
-      if (!url) {
-        console.error(`URL de documento no encontrada para el índice ${index + 1}`);
-      } else {
-        console.log(`Documento ${index + 1} cargado con éxito: ${url}`);
-      }
-    });
+  urls.forEach((url, index) => {
+    if (!url) {
+      console.error(`URL de documento no encontrada para el índice ${index + 1}`);
+    } else {
+      console.log(`Documento ${index + 1} cargado con éxito: ${url}`);
+    }
+  });
 
   return {
     ...propietario,

@@ -33,21 +33,25 @@ const PropietariosValidados: React.FC = () => {
   }, [searchQuery, propietarios]);
 
   const fetchPropietarios = async () => {
+    // Obtienes los propietarios validados
     const data = await getPropietariosValidados();
+    // console.log("Datos iniciales de propietarios:", data);
+  
+    // Actualizas cada propietario con sus documentos correspondientes
     const propietariosConDocumentos = await Promise.all(
       data.map(async (propietario) => {
-        const updatedPropietario = await updatePropietarioDocuments(
-          propietario
-        );
+        const updatedPropietario = await updatePropietarioDocuments(propietario);
+        // console.log(`Propietario actualizado (ID: ${propietario.id}):`, updatedPropietario);
         return updatedPropietario;
       })
     );
+  
+    // Actualizas el estado con la lista de propietarios actualizada
     setPropietarios(propietariosConDocumentos);
     setFilteredPropietarios(propietariosConDocumentos);
-    console.log("Propietarios", propietarios);
-    console.log("Propietarios filtered", filteredPropietarios);
     setLoading(false);
   };
+  
 
   const handleSearch = () => {
     if (searchQuery.trim() === "") {
@@ -111,8 +115,8 @@ const PropietariosValidados: React.FC = () => {
               <th className="p-3 text-center">VUT</th>
               <th className="p-3 text-center">Contrato</th>
               <th className="p-3 text-center">Inventario</th>
-              <th className="p-3 text-center">Chat</th>
-              <th className="p-3 text-center">Detalles</th>
+              {/* <th className="p-3 text-center">Chat</th>
+              <th className="p-3 text-center">Detalles</th> */}
             </tr>
           </thead>
           <tbody>
@@ -218,7 +222,7 @@ const PropietariosValidados: React.FC = () => {
                     <span className="text-red-500">Pendiente</span>
                   )}
                 </td>
-                <td className="p-3 text-center">
+                {/* <td className="p-3 text-center">
                   <button className="bg-blue-500 text-white p-2 rounded relative">
                     <MessageCircle size={16} />
                     {propietario.chat > 0 && (
@@ -235,7 +239,7 @@ const PropietariosValidados: React.FC = () => {
                   >
                     Ver Detalles
                   </button>
-                </td>
+                </td> */}
               </tr>
             ))}
           </tbody>
